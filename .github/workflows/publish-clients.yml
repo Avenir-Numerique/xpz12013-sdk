@@ -6,6 +6,12 @@ name: Publish clients
 
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: "Registre(s) à publier"
+        type: choice
+        default: all
+        options: [ all, npm, pypi, maven ]
   push:
     tags: [ 'clients-v*' ]
 
@@ -16,6 +22,7 @@ permissions:
 jobs:
   npm:
     name: npm (${{ matrix.service }})
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'npm' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -36,6 +43,7 @@ jobs:
 
   pypi:
     name: PyPI (${{ matrix.service }})
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'pypi' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -57,6 +65,7 @@ jobs:
 
   maven:
     name: Maven → GitHub Packages (${{ matrix.service }})
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.target == 'all' || inputs.target == 'maven' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -72,7 +81,7 @@ jobs:
           server-password: MAVEN_TOKEN
       - name: Deploy to GitHub Packages
         working-directory: clients/java/${{ matrix.service }}
-        run: mvn --batch-mode deploy -DaltDeploymentRepository=github::https://maven.pkg.github.com/Avenir-Numerique/xpz12013-sdk
+        run: mvn --batch-mode deploy -DskipTests -DaltDeploymentRepository=github::https://maven.pkg.github.com/Avenir-Numerique/xpz12013-sdk
         env:
           MAVEN_USERNAME: ${{ github.actor }}
           MAVEN_TOKEN: ${{ secrets.GITHUB_TOKEN }}
