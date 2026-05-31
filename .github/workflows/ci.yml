@@ -14,10 +14,10 @@ jobs:
     name: Build & unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
@@ -33,7 +33,7 @@ jobs:
           dotnet pack dotnet/XpZ12013.Sdk/XpZ12013.Sdk.csproj -c Release --no-build -o artifacts
           dotnet pack dotnet/XpZ12013.Sdk.DependencyInjection/XpZ12013.Sdk.DependencyInjection.csproj -c Release --no-build -o artifacts
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: nupkg
           path: artifacts/*.nupkg
@@ -46,10 +46,10 @@ jobs:
     if: github.event_name == 'push'
     environment: sandbox
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
