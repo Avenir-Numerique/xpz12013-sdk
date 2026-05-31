@@ -58,7 +58,9 @@ if (result.IsSuccess)
   avec conversions implicites depuis/vers `string`.
 - **OAuth2 Client Credentials** avec refresh automatique du token (ou Bearer statique).
 - **Résilience intégrée** — retries avec backoff exponentiel + jitter sur les erreurs transitoires.
-- **Zéro dépendance** — uniquement la BCL .NET (`HttpClient` + `System.Text.Json`).
+- **Cœur sans dépendance** — uniquement la BCL .NET (`HttpClient` + `System.Text.Json`).
+  L'intégration `Microsoft.Extensions.DependencyInjection` est fournie dans un paquet séparé et
+  optionnel (`NeoTimo.XpZ12013.Sdk.DependencyInjection`).
 
 ## Authentification
 
@@ -69,6 +71,25 @@ if (result.IsSuccess)
 
 > La délégation multi-tenant est gérée via `OrganizationId` (en-tête `Organization-Id`).
 > Chaque requête porte un `Request-Id` de corrélation.
+
+## Injection de dépendances (optionnel)
+
+```xml
+<PackageReference Include="NeoTimo.XpZ12013.Sdk.DependencyInjection" />
+```
+
+```csharp
+services.AddXpZ12013Client(options =>
+{
+    options.FlowServiceBaseUrl      = "https://api.flow.mon-pdp.fr/flow-service";
+    options.DirectoryServiceBaseUrl = "https://api.directory.mon-pdp.fr/directory-service";
+    options.ClientId     = "...";
+    options.ClientSecret = "...";
+    options.TokenUrl     = "https://auth.mon-pdp.fr/auth-service/{custId}/token";
+});
+```
+
+`XpZ12013Client` est enregistré en **Singleton** (le client HTTP est sans état).
 
 ## Surface couverte
 
@@ -93,8 +114,9 @@ la norme (dossier [`/spec`](./spec)). Voir la feuille de route.
 
 ```
 spec/        Contrats OpenAPI AFNOR (source de génération multi-langue)
-dotnet/      SDK C# fait main (implémentation de référence)
+dotnet/      SDK C# fait main : XpZ12013.Sdk (cœur) + XpZ12013.Sdk.DependencyInjection
 examples/    Exemples exécutables
+tests/       Tests unitaires (xUnit)
 clients/     Clients générés (Java / TS / Python) — à venir
 ```
 
