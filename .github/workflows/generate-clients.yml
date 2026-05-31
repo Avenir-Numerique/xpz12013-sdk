@@ -1,0 +1,52 @@
+name: Generate clients
+
+# Régénère les clients multi-langues depuis spec/ et échoue si le code commité a divergé
+# de la spec. Tant que spec/ ne contient pas les swaggers, le script est un no-op et le diff
+# reste vide → le job passe sans rien faire (en attente de NEOTIMO-1417).
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'spec/**'
+      - 'clients/**'
+      - 'scripts/generate-clients.sh'
+      - 'openapitools.json'
+      - '.github/workflows/generate-clients.yml'
+  pull_request:
+    paths:
+      - 'spec/**'
+      - 'clients/**'
+      - 'scripts/generate-clients.sh'
+      - 'openapitools.json'
+      - '.github/workflows/generate-clients.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-and-diff:
+    name: Regenerate & check drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Generate clients
+        run: bash scripts/generate-clients.sh
+
+      - name: Fail on drift
+        run: |
+          if ! git diff --exit-code -- clients/; then
+            echo "::error::Les clients générés sont obsolètes. Relancez 'scripts/generate-clients.sh' et committez."
+            exit 1
+          fi

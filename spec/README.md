@@ -1,10 +1,13 @@
 # `/spec` — Contrats OpenAPI AFNOR XP Z12-013
 
 Ce dossier accueille les contrats **OpenAPI 3.0.3 v1.2.0** de la norme, source de génération
-des clients multi-langues (phase 3) :
+des clients multi-langues (phase 3). Déposez les annexes AFNOR ici en les renommant ainsi
+(noms attendus par les scripts de génération) :
 
-- `ANNEXE A - XP Z12-013 - Flow_Service-1.2.0-swagger-resolved.json`
-- `ANNEXE B - XP Z12-013 - Directory_Service-1.2.0-swagger-resolved.json`
+| Fichier attendu | Source AFNOR |
+|-----------------|--------------|
+| `flow-service.json` | `ANNEXE A - XP Z12-013 - Flow_Service-1.2.0-swagger-resolved.json` |
+| `directory-service.json` | `ANNEXE B - XP Z12-013 - Directory_Service-1.2.0-swagger-resolved.json` |
 
 > ⚠️ **Les fichiers ne sont volontairement pas encore committés.**
 > La redistribution des annexes AFNOR (copyright AFNOR) dans un dépôt public MIT doit être
