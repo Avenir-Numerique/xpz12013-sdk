@@ -1,0 +1,78 @@
+name: Publish clients
+
+# Publie les clients générés (TypeScript → npm, Python → PyPI, Java → GitHub Packages).
+# Déclenché manuellement, ou sur un tag clients-v*. Chaque job nécessite le secret de son
+# registre ; sans lui, le job échoue (volontaire — à lancer quand les jetons sont posés).
+
+on:
+  workflow_dispatch:
+  push:
+    tags: [ 'clients-v*' ]
+
+permissions:
+  contents: read
+  packages: write   # Maven → GitHub Packages
+
+jobs:
+  npm:
+    name: npm (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ flow, directory ]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Publish to npm
+        working-directory: clients/typescript/${{ matrix.service }}
+        run: |
+          npm install
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  pypi:
+    name: PyPI (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ flow, directory ]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build & upload to PyPI
+        working-directory: clients/python/${{ matrix.service }}
+        run: |
+          python -m pip install --upgrade build twine
+          python -m build
+          twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
+  maven:
+    name: Maven → GitHub Packages (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [ flow, directory ]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          server-id: github
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_TOKEN
+      - name: Deploy to GitHub Packages
+        working-directory: clients/java/${{ matrix.service }}
+        run: mvn --batch-mode deploy -DaltDeploymentRepository=github::https://maven.pkg.github.com/Avenir-Numerique/xpz12013-sdk
+        env:
+          MAVEN_USERNAME: ${{ github.actor }}
+          MAVEN_TOKEN: ${{ secrets.GITHUB_TOKEN }}

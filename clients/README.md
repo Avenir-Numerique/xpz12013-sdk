@@ -56,8 +56,17 @@ l'utilisateur du client généré doit **fournir explicitement la base URL** du 
 Le workflow [`generate-clients.yml`](../.github/workflows/generate-clients.yml) régénère les clients
 et **échoue si le code commité diverge de la spec** : la source de vérité reste `/spec`.
 
-## Publication (à activer en même temps que la génération)
+## Publication
 
-Une fois les clients générés et committés, la publication se fera par langage :
-`npm publish` (npm), `twine upload` (PyPI), `mvn deploy` (Maven Central). Workflow dédié à ajouter
-lorsque les paquets seront prêts.
+Le workflow [`publish-clients.yml`](../.github/workflows/publish-clients.yml) publie les clients
+(déclenchement manuel `workflow_dispatch` ou tag `clients-v*`) :
+
+| Cible | Job | Secret requis | Pré-requis |
+|-------|-----|---------------|-----------|
+| **npm** | `npm` | `NPM_TOKEN` | org/scope `@neotimo` sur npmjs, jeton avec droit publish |
+| **PyPI** | `pypi` | `PYPI_API_TOKEN` | projets `neotimo-xpz12013-*` disponibles, jeton scopé |
+| **Maven** | `maven` | *(aucun — `GITHUB_TOKEN` intégré)* | publie vers **GitHub Packages** |
+
+> **Maven** : la cible est **GitHub Packages** (immédiat, sans compte tiers ni signature GPG).
+> Pour une diffusion publique sans authentification côté consommateur, viser **Maven Central**
+> (Sonatype) ultérieurement — cela demande la propriété du namespace `fr.neotimo` et une clé GPG.
