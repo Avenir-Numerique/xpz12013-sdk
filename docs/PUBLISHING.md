@@ -1,4 +1,4 @@
-# Mise en ligne — `neotimo/xpz12013-sdk`
+# Mise en ligne — `avenir-numerique/xpz12013-sdk`
 
 Marche à suivre pour publier le dépôt sur GitHub, brancher la CI et publier les paquets.
 Le dépôt local est prêt : branche **`main`**, 5 commits, build vert, tests verts, clients générés.
@@ -20,7 +20,7 @@ gh auth login          # interactif : choisir GitHub.com + HTTPS + navigateur
 Puis, depuis la racine du dépôt :
 
 ```powershell
-gh repo create neotimo/xpz12013-sdk --public --source . --remote origin `
+gh repo create avenir-numerique/xpz12013-sdk --public --source . --remote origin `
   --description "SDK & implémentation de référence de la norme AFNOR XP Z12-013 (facturation électronique FR). Par NeoTimo." `
   --push
 ```
@@ -35,7 +35,7 @@ gh repo create neotimo/xpz12013-sdk --public --source . --remote origin `
 
 ```powershell
 cd C:\Users\manu.HVB\source\repos\xpz12013-sdk
-git remote add origin https://github.com/neotimo/xpz12013-sdk.git
+git remote add origin https://github.com/avenir-numerique/xpz12013-sdk.git
 git push -u origin main
 ```
 

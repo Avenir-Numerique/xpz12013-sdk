@@ -1,6 +1,6 @@
 # XP Z12-013 SDK &nbsp;·&nbsp; by NeoTimo
 
-[![CI](https://github.com/neotimo/xpz12013-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/neotimo/xpz12013-sdk/actions/workflows/ci.yml)
+[![CI](https://github.com/avenir-numerique/xpz12013-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/avenir-numerique/xpz12013-sdk/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/NeoTimo.XpZ12013.Sdk.svg)](https://www.nuget.org/packages/NeoTimo.XpZ12013.Sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 

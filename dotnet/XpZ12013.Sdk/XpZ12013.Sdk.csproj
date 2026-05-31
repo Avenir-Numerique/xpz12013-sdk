@@ -9,8 +9,8 @@
     <Product>NeoTimo XP Z12-013 SDK</Product>
     <PackageTags>afnor;xpz12013;facturation-electronique;e-invoicing;factur-x;pdp;ppf;sdk</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/neotimo/xpz12013-sdk</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/neotimo/xpz12013-sdk.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/avenir-numerique/xpz12013-sdk</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/avenir-numerique/xpz12013-sdk.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <IsPackable>true</IsPackable>
