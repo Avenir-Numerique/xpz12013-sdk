@@ -16,6 +16,8 @@
 <PackageReference Include="Neotimo.XpZ12013.Sdk" />
 ```
 
+> Compatible **.NET 8** et **.NET 9** (multi-ciblage `net8.0` / `net9.0`).
+
 La norme couvre deux services, tous deux pilotés depuis un seul client :
 
 | Service | Annexe | Rôle |

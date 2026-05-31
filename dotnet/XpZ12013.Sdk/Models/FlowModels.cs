@@ -6,26 +6,26 @@ namespace XpZ12013.Sdk.Models;
 // -----------------------------------------------------------------------------------
 
 /// <summary>Syntax of the original file belonging to a flow.</summary>
-[JsonConverter(typeof(JsonStringEnumConverter<FlowSyntax>))]
+[JsonConverter(typeof(StringEnumConverter<FlowSyntax>))]
 public enum FlowSyntax
 {
     CII,
     UBL,
 
-    [JsonStringEnumMemberName("Factur-X")]
+    [JsonEnumValue("Factur-X")]
     FacturX,
     CDAR,
     FRR
 }
 
 /// <summary>Profile of a flow.</summary>
-[JsonConverter(typeof(JsonStringEnumConverter<FlowProfile>))]
+[JsonConverter(typeof(StringEnumConverter<FlowProfile>))]
 public enum FlowProfile
 {
     Basic,
     CIUS,
 
-    [JsonStringEnumMemberName("Extended-CTC-FR")]
+    [JsonEnumValue("Extended-CTC-FR")]
     ExtendedCtcFr
 }
 

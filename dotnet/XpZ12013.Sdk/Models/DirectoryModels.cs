@@ -47,13 +47,13 @@ public enum DirectoryLineStatus
 }
 
 /// <summary>Sorting order.</summary>
-[JsonConverter(typeof(JsonStringEnumConverter<SortingOrder>))]
+[JsonConverter(typeof(StringEnumConverter<SortingOrder>))]
 public enum SortingOrder
 {
-    [JsonStringEnumMemberName("ascending")]
+    [JsonEnumValue("ascending")]
     Ascending,
 
-    [JsonStringEnumMemberName("descending")]
+    [JsonEnumValue("descending")]
     Descending
 }
 
