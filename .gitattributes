@@ -1,0 +1,8 @@
+# Normalise tous les fichiers texte en LF dans le dépôt (sortie de génération
+# déterministe entre Windows local et CI Linux → contrôle de dérive fiable).
+* text=auto eol=lf
+
+# Binaires
+*.jar binary
+*.png binary
+*.ico binary

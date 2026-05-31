@@ -1,0 +1,3759 @@
+openapi: 3.0.3
+info:
+  contact:
+    email: sg5@afnor.org
+    name: AFNOR
+  description: "\nThe __Directory Service__ API allows you to:\n- View and search\
+    \ for companies (SIREN)\n- View and search for establishments (SIRET)\n- View,\
+    \ and search for routing codes\n- View, and search for directory entries\n\n**Authentication\
+    \ :** Each endpoint must be called with an access token (Bearer). This token is\
+    \ retrieved by a call to a token URL.\n\n---\n## Siren\n\nCompany by Siren number\n\
+    \n- `POST /siren/search` => Search for companies (legal unit) meeting all the\
+    \ criteria passed as parameters, potentially multiple results returned.\n  - Permissions\
+    \ : _according to your permissions_\n  - **Request Body** : `{ <search criteria\
+    \ in JSON format> }`\n    - filters : the list of filters to apply to the search.\n\
+    \    - sorting : sorting criteria by field with ascending or descending value.\n\
+    \    - fields : the list of fields expected in the response.\n    - limit : the\
+    \ maximum number of results to return.\n    - ignore : a number designating the\
+    \ offset to apply to the returned results. Useful for pagination.\n  - Réponse\
+    \ : a paginated list of siren resources (legal unit).\n\n- `GET /siren/code-insee:{siren}`\
+    \ => Consult a siren (legal unit) identified by a siren passed as a parameter.\n\
+    \  - Permissions : _according to your permissions_\n  - Mandatory parameter: a\
+    \ SIREN number.\n  - Response : the details of a siren resource (legal unit).\n\
+    \n### Scenarios\n\nExample scenarios :\n\n1. `POST /siren/search` => Search for\
+    \ companies (legal units) meeting all the criteria passed as parameters, potentially\
+    \ returning multiple results.\n\n2. `GET /siren/code-insee:{siren}` => Get company\
+    \ details.\n\n---\n## Siret\n\nFacility by SIRET number\n\n- `POST /siret/search`\
+    \ =>  Search for establishments meeting all of the criteria passed as parameters,\
+    \ potentially returning multiple results.\n  - Permissions : _according to your\
+    \ permissions_\n  - **Request body** : `{ <search criteria in JSON format> }`\n\
+    \    - filters: the list of filters to apply to the search.\n    - sorting: sort\
+    \ criteria by field with ascending or descending value.\n    - fields: the list\
+    \ of fields expected in the response.\n    - include: the list of relationships\
+    \ (siren) to include in the returned results.\n    - limit: the maximum number\
+    \ of results to return.\n    - ignore: A number designating the offset to apply\
+    \ to the returned results. Useful for pagination.\n  - Response : a paginated\
+    \ list of SIRET (facility) resources.\n\n- `GET /siret/code-insee:{siret}` =>\
+    \ Get a SIRET (facility) identified by SIRET.\n  - Permissions : _according to\
+    \ your permissions_\n  - Mandatory parameter: a SIRET number.\n  - Response :\
+    \ the details of a SIRET resource (facility).\n\n### Scenarios\n\nExample scenarios\
+    \ :\n\n1. `POST /siret/search` => Search for establishments meeting all of the\
+    \ criteria passed as parameters, potentially returning multiple results.\n\n2.\
+    \ `GET /siret/code-insee:{siret}` => Get the facility details.\n\n---\n## Routing\
+    \ Code\n\n- `POST /routing-code/search` => Search for routing codes that meet\
+    \ all the criteria passed as parameters, potentially returning multiple results.\n\
+    \  - Permissions : _according to your permissions_\n  - **Request body** : `{\
+    \ <search criteria in JSON format> }`\n    - filters: the list of filters to apply\
+    \ to the search.\n    - sorting: sort criteria by field with ascending or descending\
+    \ value.\n    - fields: the list of fields expected in the response.\n    - limit:\
+    \ the maximum number of results to return\n    - ignore: A number designating\
+    \ the offset to apply to the returned results. Useful for pagination.\n  - Response\
+    \ : a paginated list of routing code resources.\n\n- `GET /routing-code/siret:{siret}/code:{routing-identifier}`\
+    \ => Consult the routing code identified by the SIRET and a routing identifier.\n\
+    \  - Permissions : _according to your permissions_\n  - Mandatory parameter: the\
+    \ SIRET number of the routing code for which you wish to obtain details. \n  -\
+    \ Mandatory parameter: the routing identifier for which you want to obtain details.\n\
+    \  - Response : the detail of a routing code.\n\n### Scenarios\n\nExample scenarios\
+    \ :\n\n1. `POST /routing-code/search` => Search for routing codes that meet all\
+    \ the criteria passed as parameters, potentially returning multiple results.\n\
+    \n2. `GET /routing-code/siret:{siret}/code:{routing-identifier}` => Get the details\
+    \ of a routing code by SIRET and a routing identifier.\n---\n## Directory Line\n\
+    \nThe directory line is the location at which the recipient wishes to receive\
+    \ his invoices (SIREN or SIREN/SIRET or SIREN/SIRET/routingIdentifier). The routing\
+    \ identifier can be a service code, a GLN 0224 code, an ODETTE 0088 code or an\
+    \ internal management code used by the recipient.\n\n- `POST /directory-line/search`\
+    \ => Search for directory lines that meet all the criteria passed as parameters,\
+    \ potentially returning multiple results.\n  - Permissions : _according to your\
+    \ permissions_\n  - **Request body** : `{ <search criteria in JSON format> }`\n\
+    \    - filters: the list of filters to apply to the search.\n    - sorting: sort\
+    \ criteria by field with ascending or descending value.\n    - fields: the list\
+    \ of fields expected in the response.\n    - limit: the maximum number of results\
+    \ to return\n    - ignore: A number designating the offset to apply to the returned\
+    \ results. Useful for pagination.\n  - Response : a paginated list of directory-line\
+    \ resources\n\n- `GET /directory-line/code:{addressing-identifier}` => Get a line\
+    \ in the directory identified by an address identifier.\n  - Permissions : _according\
+    \ to your permissions_\n  -Mandatory parameter: un identifiant addressage.\n \
+    \ - Response : the detail of a directory line.\n\n### Scenarios\n\nExample scenarios\
+    \ :\n\n  1. `POST /directory-line/search` => Search for directory lines that meet\
+    \ all the criteria passed as parameters, potentially returning multiple results.\n\
+    \n  2. `GET /directory-line/code:{addressing-identifier}` => Get a directory line.\n\
+    \n---\n## Supervisor\n\n- `GET /healthcheck` => Check if the Directory API is\
+    \ online.\n  - Permissions : _according to your permissions_\n\n\nHistory:\n \
+    \ - `1.0.0` : First release\n  - `1.1.0` : Fixes following SG5 meeting\n    -\
+    \ Remove the concept of history\n    - Remove the platformRegistrationNumber,\
+    \ effectiveEndDate, dateFrom and dateTo from the available filters, the payloads\
+    \ and the responses\n    - Remove PUT /v1/directory-line/id-instance:{id-instance}\n\
+    \    - Add the major version number in the path \n    - Remove the PPF-affiliations\
+    \ from the headers\n    - Standardize the language so that no French remains in\
+    \ the SWAGGER\n    - Standardize the responses from GET /v1/siret/id-instance:{id-instance}\
+    \ and GET /v1/siret/code-insee:{siren}\n    - Modify the routingCode regex\n \
+    \   - Change PDP to PA\n    - Translate PPF and PA into a UNTDID 3035 code\n \
+    \ - `1.2.0` : Fixes following 2026/01/12 SG5 meeting\n    - __WARNING: Breaking\
+    \ changes occured in this version__\n    - Remove POST /v1/directory-line\n  \
+    \  - Remove DELETE /v1/directory-line/id-instance:{id-instance}\n    - Remove\
+    \ PATCH /v1/directory-line/id-instance:{id-instance}\n    - Remove GET /v1/siren/id-instance:{id-instance}\n\
+    \    - Remove GET /v1/siret/id-instance:{id-instance}\n    - Remove GET /v1/routing-code/id-instance:{id-instance}\n\
+    \    - Remove GET /v1/directory-line/id-instance:{id-instance}\n    - Remove id-instance\
+    \ from the ressource fields\n    - Change platformStatus into directoryLineStatus\n\
+    \    - Add Upcoming as a directoryLineStatus option \n    - Add OAuth2 security\
+    \ scheme\n    - Remove Accept-language and Content-Language from the header\n\
+    \    - Change diffusible into salesProspectingForbidden\n    - Add 204 response\
+    \ for search routes\n"
+  title: AFNOR Directory Service
+  version: 1.2.0
+  x-audience: external-public
+  x-api-id: 3230c8a1-f7df-4fa1-8506-24ce034670ce
+externalDocs:
+  description: Spécifications externes du PPF v3.0
+  url: https://www.impots.gouv.fr
+servers:
+- description: Prod public URLs
+  url: "https://{sub-domain}.{domain}/directory-service"
+  variables:
+    sub-domain:
+      default: api.directory
+      description: Sub domain related to the directory API if any
+    domain:
+      default: company.com
+      description: Domain name
+security:
+- bearerAuth: []
+- OAuth2: []
+tags:
+- description: Company by Siren number
+  name: Siren
+- description: Facility by Siret number
+  name: Siret
+- description: routing Code
+  name: Routing Code
+- description: Directory Line
+  name: Directory Line
+- description: Reserved for the supervisor
+  name: Supervisor
+paths:
+  /v1/siren/search:
+    post:
+      description: Multi-criteria company search.
+      operationId: searchCompanyBySiren
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/searchSiren'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sirenSearchPost200Response'
+          description: Returns one or more companies.
+        "204":
+          description: No Content - No content expected
+        "206":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sirenSearchPost200Response'
+          description: "Request processed without error, but the volume of information\
+            \ returned has been reduced."
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: SIREN search (or legal unit)
+      tags:
+      - Siren
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/siren/code-insee:{siren}:
+    get:
+      description: Returns the details of a company (legal unit) identified by the
+        SIREN number passed as a parameter.
+      operationId: getCompanyBySiren
+      parameters:
+      - description: Corresponds to the SIREN number of a legal unit.
+        example: "702042755"
+        explode: false
+        in: path
+        name: siren
+        required: true
+        schema:
+          maxLength: 9
+          pattern: "^([0-9]{9})$"
+          type: string
+        style: simple
+      - description: Fields of the SIREN resource.
+        example:
+        - siren
+        - businessName
+        - entityType
+        - administrativeStatus
+        - instructions
+        explode: false
+        in: query
+        name: fields
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/sirenField'
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/legalUnitPayloadHistory'
+          description: Returns a company.
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: Consult a siren (legal unit) by SIREN number
+      tags:
+      - Siren
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/siret/search:
+    post:
+      description: Multi-criteria search for facilities.
+      operationId: searchFacilityBySiret
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/searchSiret'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/siretSearchPost200Response'
+          description: Returns an establishment as defined on a given observation
+            date or as defined on the current date if the observation date is not
+            specified.
+        "204":
+          description: No Content - No content expected
+        "206":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/siretSearchPost200Response'
+          description: "Request processed without error, but the volume of information\
+            \ returned has been reduced."
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: Search for a SIRET (facility)
+      tags:
+      - Siret
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/siret/code-insee:{siret}:
+    get:
+      description: Returns the details of a facility associated to a SIRET.
+      operationId: getFacilityBySiret
+      parameters:
+      - description: SIRET number of a facility.
+        example: "70204275500240"
+        explode: false
+        in: path
+        name: siret
+        required: true
+        schema:
+          maxLength: 14
+          pattern: "^([0-9]{14})$"
+          type: string
+        style: simple
+      - description: Fields of the SIRET resource.
+        example:
+        - siret
+        - siren
+        - businessName
+        - facilityType
+        - siretInstructions
+        - address
+        - administrativeStatus
+        - pmStatus
+        - pmOnly
+        - managesPaymentStatus
+        - managesLegalCommitment
+        - managesLegalCommitmentOrService
+        - serviceCodeStatus
+        explode: false
+        in: query
+        name: fields
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/siretField'
+          type: array
+        style: form
+      - description: Relations to include in the response.
+        example:
+        - siren
+        explode: false
+        in: query
+        name: include
+        required: false
+        schema:
+          items:
+            enum:
+            - siren
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/facilityPayloadHistory'
+          description: Returns a facility.
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: Gets a siret (facility) by SIRET number
+      tags:
+      - Siret
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/routing-code/search:
+    post:
+      description: Search for routing codes that meet all the criteria passed as parameters
+        and return the routing codes in the desired format.
+      operationId: searchRoutingCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/routingCodeSearch'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/routingCodeSearchPost200Response'
+          description: Returns the routing code(s) matching the search criteria.
+        "204":
+          description: No Content - No content expected
+        "206":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/routingCodeSearchPost200Response'
+          description: "Request processed without error, but the volume of information\
+            \ returned has been reduced."
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: Search for a routing code
+      tags:
+      - Routing Code
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/routing-code/siret:{siret}/code:{routing-identifier}:
+    get:
+      description: Retrieve the Routing Code data corresponding to the identifier
+        passed in parameters.
+      operationId: getRoutingCodeBySiretAndId
+      parameters:
+      - description: SIRET number of a facility.
+        example: "70204275500240"
+        explode: false
+        in: path
+        name: siret
+        required: true
+        schema:
+          maxLength: 14
+          pattern: "^([0-9]{14})$"
+          type: string
+        style: simple
+      - description: Routing Identifier of a routing code
+        example: "702042755"
+        explode: false
+        in: path
+        name: routing-identifier
+        required: true
+        schema:
+          maxLength: 100
+          type: string
+        style: simple
+      - description: Relations to include in the response.
+        example:
+        - siren
+        - siret
+        explode: false
+        in: query
+        name: include
+        required: false
+        schema:
+          items:
+            enum:
+            - siren
+            - siret
+            type: string
+          type: array
+        style: form
+      - description: Fields of the Routing Code resource
+        example:
+        - siret
+        - routingIdentifierType
+        - routingCodeName
+        - routingIdentifier
+        - managesLegalCommitment
+        - administrativeStatus
+        - address
+        explode: false
+        in: query
+        name: fields
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/routingCodeField'
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/routingCodePayloadHistoryLegalUnitFacility'
+          description: Returns a routing code.
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: Get a routing code by SIRET and routing identifier
+      tags:
+      - Routing Code
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/directory-line/search:
+    post:
+      description: Search for directory lines that meet all the criteria passed as
+        parameters and return the results in the desired format.
+      operationId: searchDirectoryLine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/searchDirectoryLine'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directoryLineSearchPost200Response'
+          description: returns the directory line(s) matching the search criteria.
+        "204":
+          description: No Content - No content expected
+        "206":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directoryLineSearchPost200Response'
+          description: "Request processed without error, but the volume of information\
+            \ returned has been reduced."
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: Search for a directory line
+      tags:
+      - Directory Line
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/directory-line/code:{addressing-identifier}:
+    get:
+      description: Retrieve the data from the directory line corresponding to the
+        identifier passed in parameters.
+      operationId: getDirectoryLineById
+      parameters:
+      - description: Addressing identifier of the directory line
+        example: dcsc456sdcsdcs556
+        explode: false
+        in: path
+        name: addressing-identifier
+        required: true
+        schema:
+          maxLength: 125
+          type: string
+        style: simple
+      - description: Relations to include in the response..
+        example:
+        - siren
+        - siret
+        - routingCode
+        explode: false
+        in: query
+        name: include
+        required: false
+        schema:
+          items:
+            enum:
+            - siren
+            - siret
+            - routingCode
+            type: string
+          type: array
+        style: form
+      - description: Fields of the Directory Line resource
+        example:
+        - addressingIdentifier
+        - siren
+        - siret
+        - routingIdentifier
+        - addressingSuffix
+        explode: false
+        in: query
+        name: fields
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/directoryLineField'
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/directoryLinePayloadLegalUnitFacilityRoutingCode'
+          description: Retourns a directory line.
+        "400":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_REQUIRED_FIELD
+                errorMessage: Invalid request format
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 400 : Bad request."
+        "401":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_TOKEN
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 401 : Authentication error."
+        "403":
+          content:
+            application/json:
+              example:
+                errorCode: FORBIDDEN_ACCESS
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 403 : Forbidden."
+        "404":
+          content:
+            application/json:
+              example:
+                errorCode: MISSING_RESOURCE
+                errorMessage: Requested resource is Not Found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 404 : Resource Not Found."
+        "408":
+          content:
+            application/json:
+              example:
+                errorCode: REQUEST_TIMEOUT
+                errorMessage: Requested timeout is Exceeded
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 408 : Request Timeout Exceeded."
+        "422":
+          content:
+            application/json:
+              example:
+                errorCode: UNPROCESSABLE_ENTITY
+                errorMessage: Entity consistency error
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 422 : Unprocessable entity."
+        "429":
+          content:
+            application/json:
+              example:
+                errorCode: TOO_MANY_REQUESTS
+                errorMessage: The client emitted too many requests
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 429 : Too many requests."
+        "500":
+          content:
+            application/json:
+              example:
+                errorCode: INTERNAL_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 500 : Server Internal Error."
+        "501":
+          content:
+            application/json:
+              example:
+                errorCode: NOT_IMPLEMENTED
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 501 : Not Implemented."
+        "503":
+          content:
+            application/json:
+              example:
+                errorCode: RESOURCE_ERROR
+                errorMessage: null
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: "Error 503 : Unavailable Resource."
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: An error has occurred - See the status code and json response
+            for more information.
+      summary: Get a directory line.
+      tags:
+      - Directory Line
+      x-accepts:
+      - application/json
+      - application/problem+json
+  /v1/healthcheck:
+    get:
+      description: Checks if the API connection is operational.
+      operationId: getHealth
+      responses:
+        "200":
+          description: The connection to the API is functional.
+        "500":
+          description: Internal Server Error.
+        "503":
+          description: Service unavailable.
+      security:
+      - bearerAuth:
+        - health.read
+      summary: Checks if the API connection is operational.
+      tags:
+      - Supervisor
+      x-accepts:
+      - application/json
+components:
+  parameters:
+    sirenPath:
+      description: Corresponds to the SIREN number of a legal unit.
+      example: "702042755"
+      explode: false
+      in: path
+      name: siren
+      required: true
+      schema:
+        maxLength: 9
+        pattern: "^([0-9]{9})$"
+        type: string
+      style: simple
+    sirenFields:
+      description: Fields of the SIREN resource.
+      example:
+      - siren
+      - businessName
+      - entityType
+      - administrativeStatus
+      - instructions
+      explode: false
+      in: query
+      name: fields
+      required: false
+      schema:
+        items:
+          $ref: '#/components/schemas/sirenField'
+        type: array
+      style: form
+    siretPath:
+      description: SIRET number of a facility.
+      example: "70204275500240"
+      explode: false
+      in: path
+      name: siret
+      required: true
+      schema:
+        maxLength: 14
+        pattern: "^([0-9]{14})$"
+        type: string
+      style: simple
+    siretFields:
+      description: Fields of the SIRET resource.
+      example:
+      - siret
+      - siren
+      - businessName
+      - facilityType
+      - siretInstructions
+      - address
+      - administrativeStatus
+      - pmStatus
+      - pmOnly
+      - managesPaymentStatus
+      - managesLegalCommitment
+      - managesLegalCommitmentOrService
+      - serviceCodeStatus
+      explode: false
+      in: query
+      name: fields
+      required: false
+      schema:
+        items:
+          $ref: '#/components/schemas/siretField'
+        type: array
+      style: form
+    includeSiren:
+      description: Relations to include in the response.
+      example:
+      - siren
+      explode: false
+      in: query
+      name: include
+      required: false
+      schema:
+        items:
+          enum:
+          - siren
+          type: string
+        type: array
+      style: form
+    routingIdentifier:
+      description: Routing Identifier of a routing code
+      example: "702042755"
+      explode: false
+      in: path
+      name: routing-identifier
+      required: true
+      schema:
+        maxLength: 100
+        type: string
+      style: simple
+    includeSirenSiret:
+      description: Relations to include in the response.
+      example:
+      - siren
+      - siret
+      explode: false
+      in: query
+      name: include
+      required: false
+      schema:
+        items:
+          enum:
+          - siren
+          - siret
+          type: string
+        type: array
+      style: form
+    routingCodeFields:
+      description: Fields of the Routing Code resource
+      example:
+      - siret
+      - routingIdentifierType
+      - routingCodeName
+      - routingIdentifier
+      - managesLegalCommitment
+      - administrativeStatus
+      - address
+      explode: false
+      in: query
+      name: fields
+      required: false
+      schema:
+        items:
+          $ref: '#/components/schemas/routingCodeField'
+        type: array
+      style: form
+    addressingIdentifier:
+      description: Addressing identifier of the directory line
+      example: dcsc456sdcsdcs556
+      explode: false
+      in: path
+      name: addressing-identifier
+      required: true
+      schema:
+        maxLength: 125
+        type: string
+      style: simple
+    includeSirenSiretRoutingCodePlatform:
+      description: Relations to include in the response..
+      example:
+      - siren
+      - siret
+      - routingCode
+      explode: false
+      in: query
+      name: include
+      required: false
+      schema:
+        items:
+          enum:
+          - siren
+          - siret
+          - routingCode
+          type: string
+        type: array
+      style: form
+    directoryLineFields:
+      description: Fields of the Directory Line resource
+      example:
+      - addressingIdentifier
+      - siren
+      - siret
+      - routingIdentifier
+      - addressingSuffix
+      explode: false
+      in: query
+      name: fields
+      required: false
+      schema:
+        items:
+          $ref: '#/components/schemas/directoryLineField'
+        type: array
+      style: form
+  responses:
+    Ok204EmptyResponse:
+      description: No Content - No content expected
+    Error400Response:
+      content:
+        application/json:
+          example:
+            errorCode: MISSING_REQUIRED_FIELD
+            errorMessage: Invalid request format
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 400 : Bad request."
+    Error401Response:
+      content:
+        application/json:
+          example:
+            errorCode: MISSING_TOKEN
+            errorMessage: null
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 401 : Authentication error."
+    Error403Response:
+      content:
+        application/json:
+          example:
+            errorCode: FORBIDDEN_ACCESS
+            errorMessage: null
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 403 : Forbidden."
+    Error404Response:
+      content:
+        application/json:
+          example:
+            errorCode: MISSING_RESOURCE
+            errorMessage: Requested resource is Not Found
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 404 : Resource Not Found."
+    Error408Response:
+      content:
+        application/json:
+          example:
+            errorCode: REQUEST_TIMEOUT
+            errorMessage: Requested timeout is Exceeded
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 408 : Request Timeout Exceeded."
+    Error422Response:
+      content:
+        application/json:
+          example:
+            errorCode: UNPROCESSABLE_ENTITY
+            errorMessage: Entity consistency error
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 422 : Unprocessable entity."
+    Error429Response:
+      content:
+        application/json:
+          example:
+            errorCode: TOO_MANY_REQUESTS
+            errorMessage: The client emitted too many requests
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 429 : Too many requests."
+    Error500Response:
+      content:
+        application/json:
+          example:
+            errorCode: INTERNAL_ERROR
+            errorMessage: null
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 500 : Server Internal Error."
+    Error501Response:
+      content:
+        application/json:
+          example:
+            errorCode: NOT_IMPLEMENTED
+            errorMessage: null
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 501 : Not Implemented."
+    Error503Response:
+      content:
+        application/json:
+          example:
+            errorCode: RESOURCE_ERROR
+            errorMessage: null
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Error 503 : Unavailable Resource."
+  schemas:
+    searchSiren:
+      example:
+        sorting:
+        - field: siren
+          order: ascending
+        - field: administrativeStatus
+          order: descending
+        limit: 50
+        ignore: 20
+        filters:
+          siren:
+            op: strict
+            value: "702042755"
+          administrativeStatus:
+            op: strict
+            value: A
+          entityType:
+            op: strict
+            value: Public
+          businessName:
+            op: contains
+            value: Boulangerie Pascale
+        fields:
+        - siren
+        - businessName
+        - entityType
+        - administrativeStatus
+        - instructions
+      properties:
+        filters:
+          $ref: '#/components/schemas/searchSirenFilters'
+        sorting:
+          description: Sorting criteria on a field and an order (ascending or descending).
+          example:
+          - field: siren
+            order: ascending
+          - field: administrativeStatus
+            order: descending
+          items:
+            $ref: '#/components/schemas/searchSirenSortingInner'
+          type: array
+        fields:
+          description: Allows you to filter the desired fields in the response.
+          example:
+          - siren
+          - businessName
+          - entityType
+          - administrativeStatus
+          - instructions
+          items:
+            $ref: '#/components/schemas/sirenField'
+          type: array
+        limit:
+          description: Maximum number of results
+          example: 50
+          format: int32
+          type: integer
+        ignore:
+          description: Number of results to skip
+          example: 20
+          format: int32
+          type: integer
+      title: searchSiren
+      type: object
+    totalNumberOfResults:
+      description: The total number of results
+      example: 1500
+      format: int32
+      type: integer
+    legalUnitPayloadHistory:
+      example:
+        instructions:
+          isSalesProspectingForbidden: false
+        siren: "702042755"
+        administrativeStatus: A
+        entityType: Public
+        businessName: Boulangerie Pascale
+      properties:
+        siren:
+          description: SIREN number
+          example: "702042755"
+          maxLength: 9
+          pattern: "^([0-9]{9})$"
+          type: string
+        businessName:
+          description: Business name
+          example: Boulangerie Pascale
+          maxLength: 150
+          type: string
+        entityType:
+          $ref: '#/components/schemas/entityType'
+        administrativeStatus:
+          $ref: '#/components/schemas/legalUnitAdministrativeStatus'
+        instructions:
+          $ref: '#/components/schemas/sirenInstructions'
+      title: legalUnitPayloadHistory
+      type: object
+    sirenField:
+      description: Fields of the Siren resource.
+      enum:
+      - siren
+      - businessName
+      - entityType
+      - administrativeStatus
+      - instructions
+      example: siren
+      type: string
+    searchSiret:
+      example:
+        include:
+        - siren
+        sorting:
+        - field: siret
+          order: ascending
+        - field: name
+          order: descending
+        limit: 50
+        ignore: 20
+        filters:
+          siren:
+            op: strict
+            value: "702042755"
+          facilityType:
+            op: strict
+            value: P
+          administrativeStatus:
+            op: strict
+            value: A
+          postalCode:
+            op: startWith
+            value: "38100"
+          name:
+            op: contains
+            value: Boulangerie Pascale
+          locality:
+            op: contains
+            value: Grenoble
+          addressLines:
+            op: contains
+            value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+          siret:
+            op: strict
+            value: "70204275500000"
+          countrySubdivision:
+            op: strict
+            value: Bretagne
+        fields:
+        - siret
+        - siren
+        - name
+        - facilityType
+        - administrativeStatus
+        - siretInstructions
+        - address
+        - pmStatus
+        - pmOnly
+        - managesPaymentStatus
+        - managesLegalCommitment
+        - managesLegalCommitmentOrService
+        - serviceCodeStatus
+      properties:
+        filters:
+          $ref: '#/components/schemas/searchSiretFilters'
+        sorting:
+          description: Sorting criteria on a field and an order (ascending or descending).
+          example:
+          - field: siret
+            order: ascending
+          - field: name
+            order: descending
+          items:
+            $ref: '#/components/schemas/searchSiretSortingInner'
+          type: array
+        fields:
+          description: Allows you to filter the desired fields in the response.
+          example:
+          - siret
+          - siren
+          - name
+          - facilityType
+          - administrativeStatus
+          - siretInstructions
+          - address
+          - pmStatus
+          - pmOnly
+          - managesPaymentStatus
+          - managesLegalCommitment
+          - managesLegalCommitmentOrService
+          - serviceCodeStatus
+          items:
+            $ref: '#/components/schemas/siretField'
+          type: array
+        include:
+          example:
+          - siren
+          items:
+            enum:
+            - siren
+            type: string
+          type: array
+        limit:
+          description: Maximum number of results
+          example: 50
+          format: int32
+          type: integer
+        ignore:
+          description: Number of results to skip
+          example: 20
+          format: int32
+          type: integer
+      title: searchSiret
+      type: object
+    facilityPayloadHistory:
+      example:
+        siren: "702042755"
+        address:
+          countryCode: FR
+          postalCode: "38100"
+          locality: Grenoble
+          addressLine1: 16 BIS RUE HENRI BARBUSSE
+          addressLine2: CEDEX 1
+          addressLine3: Bâtiment le Callipso
+          countryName: France
+          countrySubdivision: Bretagne
+        facilityType: P
+        administrativeStatus: A
+        b2gAdditionalData:
+          managesPaymentStatus: true
+          managesLegalCommitmentOrServiceCode: true
+          managesLegalCommitmentCode: true
+          pm: true
+          pmOnly: true
+          serviceCodeStatus: true
+        siretInstructions:
+          isSalesProspectingForbidden: false
+        name: Boulangerie Pascale
+        legalUnit:
+          siren: "702042755"
+          administrativeStatus: A
+          entityType: Public
+          businessName: Boulangerie Pascale
+        siret: "70204275500240"
+      properties:
+        siret:
+          description: SIRET Number
+          example: "70204275500240"
+          maxLength: 14
+          pattern: "^([0-9]{14})$"
+          type: string
+        siren:
+          description: SIREN number
+          example: "702042755"
+          maxLength: 9
+          pattern: "^([0-9]{9})$"
+          type: string
+        name:
+          description: business name
+          example: Boulangerie Pascale
+          maxLength: 100
+          type: string
+        facilityType:
+          $ref: '#/components/schemas/facilityType'
+        administrativeStatus:
+          $ref: '#/components/schemas/facilityAdministrativeStatus'
+        siretInstructions:
+          $ref: '#/components/schemas/siretInstructions'
+        address:
+          $ref: '#/components/schemas/addressRead'
+        b2gAdditionalData:
+          $ref: '#/components/schemas/facilityPayloadHistoryUleB2gAdditionalData'
+        legalUnit:
+          $ref: '#/components/schemas/legalUnitPayloadIncluded'
+      title: facilityPayloadHistory
+      type: object
+    siretField:
+      description: Fields of the Siret resource.
+      enum:
+      - siret
+      - siren
+      - name
+      - facilityType
+      - administrativeStatus
+      - siretInstructions
+      - address
+      - pmStatus
+      - pmOnly
+      - managesPaymentStatus
+      - managesLegalCommitment
+      - managesLegalCommitmentOrService
+      - serviceCodeStatus
+      example: siret
+      type: string
+    sirenInstructions:
+      description: Instructions regarding the SIREN
+      example:
+        isSalesProspectingForbidden: false
+      properties:
+        isSalesProspectingForbidden:
+          description: Indicates whether the information is forbidden from being used
+            for sales prospecting purposes.
+          example: false
+          type: boolean
+      type: object
+    siretInstructions:
+      description: Instructions regarding the SIRET
+      example:
+        isSalesProspectingForbidden: false
+      properties:
+        isSalesProspectingForbidden:
+          description: Indicates whether the information is forbidden from being used
+            for sales prospecting purposes.
+          example: false
+          type: boolean
+      type: object
+    isSalesProspectingForbidden:
+      description: Indicates whether the information is forbidden from being used
+        for sales prospecting purposes.
+      example: false
+      type: boolean
+    siret:
+      description: SIRET Number
+      example: "70204275500240"
+      maxLength: 14
+      pattern: "^([0-9]{14})$"
+      type: string
+    routingIdentifier:
+      description: Routing identifier od a routing code.
+      example: dcsc456sdcsdcs556
+      maxLength: 100
+      pattern: "^(?!\\s+$)[\\-_/a-zA-Z0-9]{1,100}$"
+      type: string
+    routingCodeSearch:
+      example:
+        include:
+        - siren
+        - siret
+        sorting:
+        - field: siret
+          order: ascendant
+        - field: routingIdentifier
+          order: ascendant
+        limit: 50
+        ignore: 20
+        filters:
+          routingIdentifier:
+            op: contains
+            value: dcsc456sdcsdcs556
+          administrativeStatus:
+            op: strict
+            value: A
+          postalCode:
+            op: startWith
+            value: "38100"
+          locality:
+            op: contains
+            value: Grenoble
+          addressLines:
+            op: contains
+            value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+          siret:
+            op: strict
+            value: "70204275500000"
+          routingCodeName:
+            op: contains
+            value: Libellé Code routage
+        fields:
+        - siret
+        - routingIdentifierType
+        - routingCodeName
+        - routingIdentifier
+        - managesLegalCommitmentCode
+        - administrativeStatus
+        - address
+      properties:
+        filters:
+          $ref: '#/components/schemas/routingCodeSearchFilters'
+        sorting:
+          description: Sorting criteria on a field and an order (ascending or descending).
+          example:
+          - field: siret
+            order: ascendant
+          - field: routingIdentifier
+            order: ascendant
+          items:
+            $ref: '#/components/schemas/routingCodeSearchSortingInner'
+          type: array
+        fields:
+          description: Allows you to filter the desired fields in the response.
+          example:
+          - siret
+          - routingIdentifierType
+          - routingCodeName
+          - routingIdentifier
+          - managesLegalCommitmentCode
+          - administrativeStatus
+          - address
+          items:
+            $ref: '#/components/schemas/routingCodeField'
+          type: array
+        include:
+          example:
+          - siren
+          - siret
+          items:
+            enum:
+            - siren
+            - siret
+            type: string
+          type: array
+        limit:
+          description: Maximum number of results
+          example: 50
+          format: int32
+          type: integer
+        ignore:
+          description: Number of results to skip
+          example: 20
+          format: int32
+          type: integer
+      title: routingCodeSearch
+      type: object
+    routingCodePayloadHistoryLegalUnitFacility:
+      example:
+        routingIdentifier: dcsc456sdcsdcs556
+        address:
+          countryCode: FR
+          postalCode: "38100"
+          locality: Grenoble
+          addressLine1: 16 BIS RUE HENRI BARBUSSE
+          addressLine2: CEDEX 1
+          addressLine3: Bâtiment le Callipso
+          countryName: France
+          countrySubdivision: Bretagne
+        administrativeStatus: A
+        managesLegalCommitmentCode: true
+        legalUnit:
+          siren: "702042755"
+          administrativeStatus: A
+          entityType: Public
+          businessName: Boulangerie Pascale
+        routingIdentifierType: "0224"
+        siret: "70204275500240"
+        facility:
+          siren: "702042755"
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          facilityType: P
+          administrativeStatus: A
+          b2gAdditionalData:
+            managesPaymentStatus: true
+            managesLegalCommitmentOrServiceCode: true
+            managesLegalCommitmentCode: true
+            pm: true
+            pmOnly: true
+            serviceCodeStatus: true
+          name: Boulangerie Pascale
+          siret: "70204275500240"
+        routingCodeName: Libellé Code routage
+      properties:
+        routingIdentifier:
+          description: Routing identifier od a routing code.
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          pattern: "^(?!\\s+$)[\\-_/a-zA-Z0-9]{1,100}$"
+          type: string
+        siret:
+          description: SIRET Number
+          example: "70204275500240"
+          maxLength: 14
+          pattern: "^([0-9]{14})$"
+          type: string
+        routingIdentifierType:
+          description: Routing Identifier type.
+          example: "0224"
+          maxLength: 4
+          pattern: ^(?!\s*$).+
+          type: string
+        routingCodeName:
+          description: Name of the directory line routing code. This attribute is
+            only returned if the directory line is defined at the SIREN / SIRET /
+            Routing code mesh.
+          example: Libellé Code routage
+          maxLength: 100
+          pattern: ^(?!\s*$).+
+          type: string
+        managesLegalCommitmentCode:
+          description: Indicates whether the public structure requires a legal commitment
+            number. This attribute is only returned if the directory line is defined
+            for a public structure at the SIREN / SIRET or SIREN / SIRET / Routing
+            code level.
+          example: true
+          type: boolean
+        administrativeStatus:
+          $ref: '#/components/schemas/routingCodeAdministrativeStatus'
+        address:
+          $ref: '#/components/schemas/addressRead'
+        legalUnit:
+          $ref: '#/components/schemas/legalUnitPayloadIncluded'
+        facility:
+          $ref: '#/components/schemas/facilityPayloadIncluded'
+      title: routingCodePayloadHistoryLegalUnitFacility
+      type: object
+    routingCodeField:
+      description: Fields of the routing code resource.
+      enum:
+      - siret
+      - routingIdentifierType
+      - routingCodeName
+      - routingIdentifier
+      - managesLegalCommitmentCode
+      - administrativeStatus
+      - address
+      example: siret
+      type: string
+    searchDirectoryLine:
+      example:
+        sorting:
+        - field: addressingIdentifier
+          order: ascending
+        limit: 50
+        ignore: 20
+        filters:
+          addressingSuffix:
+            op: contains
+            value: dcsc456sdcsdcs556
+          siren:
+            op: strict
+            value: "702042755"
+          routingIdentifier:
+            op: contains
+            value: dcsc456sdcsdcs556
+          addressingIdentifier:
+            op: contains
+            value: dcsc456sdcsdcs556
+          siret:
+            op: strict
+            value: "70204275500000"
+        fields:
+        - addressingIdentifier
+        - siren
+        - siret
+        - addressingSuffix
+      properties:
+        filters:
+          $ref: '#/components/schemas/searchDirectoryLineFilters'
+        sorting:
+          description: Sorting criteria on a field and an order (ascending or descending).
+          example:
+          - field: addressingIdentifier
+            order: ascending
+          items:
+            $ref: '#/components/schemas/searchDirectoryLineSortingInner'
+          type: array
+        fields:
+          description: Allows you to filter the desired fields in the response.
+          example:
+          - addressingIdentifier
+          - siren
+          - siret
+          - addressingSuffix
+          items:
+            $ref: '#/components/schemas/directoryLineField'
+          type: array
+        limit:
+          description: Maximum number of results
+          example: 50
+          format: int32
+          type: integer
+        ignore:
+          description: Number of results to skip
+          example: 20
+          format: int32
+          type: integer
+      title: searchDirectoryLine
+      type: object
+    directoryLinePayloadStatusLegalUnitFacilityRoutingCode:
+      example:
+        addressingSuffix: dcsc456sdcsdcs556
+        siren: "702042755"
+        addressingIdentifier: dcsc456sdcsdcs556
+        platformType: WK
+        directoryLineStatus: Enabled
+        legalUnit:
+          siren: "702042755"
+          administrativeStatus: A
+          entityType: Public
+          businessName: Boulangerie Pascale
+        siret: "70204275500240"
+        facility:
+          siren: "702042755"
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          facilityType: P
+          administrativeStatus: A
+          b2gAdditionalData:
+            managesPaymentStatus: true
+            managesLegalCommitmentOrServiceCode: true
+            managesLegalCommitmentCode: true
+            pm: true
+            pmOnly: true
+            serviceCodeStatus: true
+          name: Boulangerie Pascale
+          siret: "70204275500240"
+        routingCode:
+          managesLegalCommitment: true
+          routingIdentifier: dcsc456sdcsdcs556
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          administrativeStatus: A
+          routingIdentifierType: "0224"
+          routingCodeName: Libellé Code routage
+      properties:
+        addressingIdentifier:
+          description: Addressing identifier of the directory line.
+          example: dcsc456sdcsdcs556
+          maxLength: 125
+          type: string
+        platformType:
+          $ref: '#/components/schemas/recipientPlatformType'
+        directoryLineStatus:
+          $ref: '#/components/schemas/directoryLineStatus'
+        siren:
+          description: SIREN number
+          example: "702042755"
+          maxLength: 9
+          pattern: "^([0-9]{9})$"
+          type: string
+        siret:
+          description: SIRET Number
+          example: "70204275500240"
+          maxLength: 14
+          pattern: "^([0-9]{14})$"
+          type: string
+        addressingSuffix:
+          description: suffix of the directory line which defines an address mesh
+            not attached to a facility
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          type: string
+        routingCode:
+          $ref: '#/components/schemas/directoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode'
+        legalUnit:
+          $ref: '#/components/schemas/legalUnitPayloadIncluded'
+        facility:
+          $ref: '#/components/schemas/facilityPayloadIncluded'
+      title: directoryLinePayloadHistoryLegalUnitFacilityRoutingCode
+      type: object
+    directoryLinePayloadLegalUnitFacilityRoutingCode:
+      example:
+        addressingSuffix: dcsc456sdcsdcs556
+        siren: "702042755"
+        addressingIdentifier: dcsc456sdcsdcs556
+        platformType: WK
+        legalUnit:
+          siren: "702042755"
+          administrativeStatus: A
+          entityType: Public
+          businessName: Boulangerie Pascale
+        siret: "70204275500240"
+        facility:
+          siren: "702042755"
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          facilityType: P
+          administrativeStatus: A
+          b2gAdditionalData:
+            managesPaymentStatus: true
+            managesLegalCommitmentOrServiceCode: true
+            managesLegalCommitmentCode: true
+            pm: true
+            pmOnly: true
+            serviceCodeStatus: true
+          name: Boulangerie Pascale
+          siret: "70204275500240"
+        routingCode:
+          managesLegalCommitment: true
+          routingIdentifier: dcsc456sdcsdcs556
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          administrativeStatus: A
+          routingIdentifierType: "0224"
+          routingCodeName: Libellé Code routage
+      properties:
+        addressingIdentifier:
+          description: Addressing identifier of the directory line.
+          example: dcsc456sdcsdcs556
+          maxLength: 125
+          type: string
+        platformType:
+          $ref: '#/components/schemas/recipientPlatformType'
+        siren:
+          description: SIREN number
+          example: "702042755"
+          maxLength: 9
+          pattern: "^([0-9]{9})$"
+          type: string
+        siret:
+          description: SIRET Number
+          example: "70204275500240"
+          maxLength: 14
+          pattern: "^([0-9]{14})$"
+          type: string
+        addressingSuffix:
+          description: suffix of the directory line which defines an address mesh
+            not attached to a facility
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          type: string
+        routingCode:
+          $ref: '#/components/schemas/directoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode'
+        legalUnit:
+          $ref: '#/components/schemas/legalUnitPayloadIncluded'
+        facility:
+          $ref: '#/components/schemas/facilityPayloadIncluded'
+      title: directoryLinePayloadHistoryLegalUnitFacilityRoutingCode
+      type: object
+    addressingIdentifier:
+      description: Addressing identifier of the directory line.
+      example: dcsc456sdcsdcs556
+      maxLength: 125
+      type: string
+    directoryLineField:
+      description: Fields of the directory line resource
+      enum:
+      - addressingIdentifier
+      - siren
+      - siret
+      - routingIdentifier
+      - addressingSuffix
+      example: siren
+      type: string
+    containsOperator:
+      description: \"contains\" comparison operator
+      enum:
+      - contains
+      example: contains
+      type: string
+    containsOrStrictOperator:
+      description: \"contains\" or \"strict\" comparison operator
+      enum:
+      - contains
+      - strict
+      example: contains
+      type: string
+    strictOperator:
+      description: \"strict\" comparison operator
+      enum:
+      - strict
+      example: strict
+      type: string
+    strictOrStartWithOperator:
+      description: \"strict\" or \"startWith\" comparison operator
+      enum:
+      - startWith
+      - strict
+      example: startWith
+      type: string
+    sirenSearch:
+      description: SIREN number to search for.
+      example: "702042755"
+      maxLength: 9
+      pattern: "[0-9]*"
+      type: string
+    recipientBusinessName:
+      description: Business name
+      example: Boulangerie Pascale
+      maxLength: 150
+      type: string
+    entityType:
+      description: Business structure type
+      enum:
+      - Public
+      - PrivateVatRegistered
+      example: Public
+      maxLength: 20
+      type: string
+    legalUnitAdministrativeStatus:
+      description: "Refers to the administrative status of the legal unit [A - Active\
+        \ , C - Closed]"
+      enum:
+      - A
+      - C
+      example: A
+      maxLength: 1
+      type: string
+    sortingOrder:
+      description: Sorting order (ascending or descending)
+      enum:
+      - ascending
+      - descending
+      example: ascending
+      title: sortingOrder
+      type: string
+    limit:
+      description: Maximum number of results
+      example: 50
+      format: int32
+      type: integer
+    ignore:
+      description: Number of results to skip
+      example: 20
+      format: int32
+      type: integer
+    siren:
+      description: SIREN number
+      example: "702042755"
+      maxLength: 9
+      pattern: "^([0-9]{9})$"
+      type: string
+    siretSearch:
+      description: SIRET number to search for.
+      example: "70204275500000"
+      maxLength: 14
+      pattern: "[0-9]*"
+      type: string
+    facilityType:
+      description: "Indicates whether the facility is listed as the main facility\
+        \ or not [P - Main facility , S - Secondary facility]"
+      enum:
+      - P
+      - S
+      example: P
+      maxLength: 1
+      type: string
+    name:
+      description: business name
+      example: Boulangerie Pascale
+      maxLength: 100
+      type: string
+    addressLines:
+      description: address lines of the recipient structure having defined the directory
+        line(s).
+      example: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+      maxLength: 600
+      type: string
+    postalCode:
+      description: Service postal code
+      example: "38100"
+      maxLength: 5
+      pattern: "[0-9]*"
+      type: string
+    countrySubdivision:
+      description: Subdivision of the country
+      example: Bretagne
+      maxLength: 255
+      type: string
+    locality:
+      description: Municipality of the recipient structure having defined the directory
+        line(s).
+      example: Grenoble
+      maxLength: 100
+      type: string
+    facilityAdministrativeStatus:
+      description: "Facility administrative status [A - Active , C - Closed]"
+      enum:
+      - A
+      - C
+      example: A
+      maxLength: 1
+      type: string
+    addressRead:
+      description: Wrapper for postal addresses
+      example:
+        countryCode: FR
+        postalCode: "38100"
+        locality: Grenoble
+        addressLine1: 16 BIS RUE HENRI BARBUSSE
+        addressLine2: CEDEX 1
+        addressLine3: Bâtiment le Callipso
+        countryName: France
+        countrySubdivision: Bretagne
+      properties:
+        addressLine1:
+          description: Corresponds to the address of the recipient structure having
+            defined the directory line(s).
+          example: 16 BIS RUE HENRI BARBUSSE
+          maxLength: 255
+          type: string
+        addressLine2:
+          description: Corresponds to the address of the recipient structure having
+            defined the directory line(s).
+          example: CEDEX 1
+          maxLength: 255
+          type: string
+        addressLine3:
+          description: Corresponds to the address of the recipient structure having
+            defined the directory line(s).
+          example: Bâtiment le Callipso
+          maxLength: 255
+          type: string
+        postalCode:
+          description: Service postal code
+          example: "38100"
+          maxLength: 5
+          pattern: "[0-9]*"
+          type: string
+        countrySubdivision:
+          description: Subdivision of the country
+          example: Bretagne
+          maxLength: 255
+          type: string
+        locality:
+          description: Municipality of the recipient structure having defined the
+            directory line(s).
+          example: Grenoble
+          maxLength: 100
+          type: string
+        countryCode:
+          description: Corresponds to the country of the recipient structure.
+          example: FR
+          maxLength: 2
+          type: string
+        countryName:
+          description: Corresponds to the country of the recipient structure having
+            defined the directory line(s).
+          example: France
+          maxLength: 100
+          type: string
+      type: object
+    pmStatus:
+      description: Indicates whether the public structure acts as project manager
+        for work invoices in addition to receiving simple invoices. This attribute
+        is only returned if the directory line is defined for a public structure at
+        the SIREN / SIRET or SIREN / SIRET / Routing code level.
+      example: true
+      type: boolean
+    pmOnly:
+      description: "Indicates whether the public structure only acts as a project\
+        \ manager; if so, it can only receive invoices for work. This attribute is\
+        \ only returned if the directory line is defined for a public structure at\
+        \ the SIREN/SIRET or SIREN/SIRET/Routing code level."
+      example: true
+      type: boolean
+    managesPaymentStatus:
+      description: Indicates whether the public structure manages the payment status
+        of invoices. This attribute is only returned if the directory line is defined
+        for a public structure at the SIREN / SIRET or SIREN / SIRET / Routing code
+        level.
+      example: true
+      type: boolean
+    managesLegalCommitmentCode:
+      description: Indicates whether the public structure requires a legal commitment
+        number. This attribute is only returned if the directory line is defined for
+        a public structure at the SIREN / SIRET or SIREN / SIRET / Routing code level.
+      example: true
+      type: boolean
+    managesLegalCommitmentOrServiceCode:
+      description: Indicates whether the public structure requires a service code
+        or a commitment code in its exchanges. This attribute is only returned if
+        the directory line is defined for a public structure at the SIREN / SIRET
+        or SIREN / SIRET / Routing code level.
+      example: true
+      type: boolean
+    serviceCodeStatus:
+      description: Indicates whether the structure requires a service code. This attribute
+        is only returned if the directory line is defined for a public structure at
+        the SIREN / SIRET or SIREN / SIRET / Routing code level.
+      example: true
+      type: boolean
+    routingIdentifierType:
+      description: Routing Identifier type.
+      example: "0224"
+      maxLength: 4
+      pattern: ^(?!\s*$).+
+      type: string
+    recipientRoutingCodeName:
+      description: Name of the directory line routing code. This attribute is only
+        returned if the directory line is defined at the SIREN / SIRET / Routing code
+        mesh.
+      example: Libellé Code routage
+      maxLength: 100
+      pattern: ^(?!\s*$).+
+      type: string
+    routingCodeAdministrativeStatus:
+      description: "Administrative status of the routing code [A - Active , C - Closed]"
+      enum:
+      - A
+      - C
+      example: A
+      maxLength: 1
+      type: string
+    routingIdentifierSearch:
+      description: Routing identifier for a routing code.
+      example: dcsc456sdcsdcs556
+      maxLength: 100
+      pattern: ^$|^(?!\s*$).+
+      type: string
+    routingCodeNameSearch:
+      description: Name of the routing code.
+      example: Libellé Code routage
+      maxLength: 100
+      pattern: ^$|^(?!\s*$).+
+      type: string
+    legalUnitPayloadIncluded:
+      example:
+        siren: "702042755"
+        administrativeStatus: A
+        entityType: Public
+        businessName: Boulangerie Pascale
+      properties:
+        siren:
+          description: SIREN number
+          example: "702042755"
+          maxLength: 9
+          pattern: "^([0-9]{9})$"
+          type: string
+        businessName:
+          description: Business name
+          example: Boulangerie Pascale
+          maxLength: 150
+          type: string
+        entityType:
+          $ref: '#/components/schemas/entityType'
+        administrativeStatus:
+          $ref: '#/components/schemas/legalUnitAdministrativeStatus'
+      title: legalUnitPayloadIncluded
+      type: object
+    facilityPayloadIncluded:
+      example:
+        siren: "702042755"
+        address:
+          countryCode: FR
+          postalCode: "38100"
+          locality: Grenoble
+          addressLine1: 16 BIS RUE HENRI BARBUSSE
+          addressLine2: CEDEX 1
+          addressLine3: Bâtiment le Callipso
+          countryName: France
+          countrySubdivision: Bretagne
+        facilityType: P
+        administrativeStatus: A
+        b2gAdditionalData:
+          managesPaymentStatus: true
+          managesLegalCommitmentOrServiceCode: true
+          managesLegalCommitmentCode: true
+          pm: true
+          pmOnly: true
+          serviceCodeStatus: true
+        name: Boulangerie Pascale
+        siret: "70204275500240"
+      properties:
+        siret:
+          description: SIRET Number
+          example: "70204275500240"
+          maxLength: 14
+          pattern: "^([0-9]{14})$"
+          type: string
+        siren:
+          description: SIREN number
+          example: "702042755"
+          maxLength: 9
+          pattern: "^([0-9]{9})$"
+          type: string
+        name:
+          description: business name
+          example: Boulangerie Pascale
+          maxLength: 100
+          type: string
+        facilityType:
+          $ref: '#/components/schemas/facilityType'
+        administrativeStatus:
+          $ref: '#/components/schemas/facilityAdministrativeStatus'
+        address:
+          $ref: '#/components/schemas/addressRead'
+        b2gAdditionalData:
+          $ref: '#/components/schemas/facilityPayloadHistoryUleB2gAdditionalData'
+      title: facilityPayloadIncluded
+      type: object
+    addressingSuffix:
+      description: suffix of the directory line which defines an address mesh not
+        attached to a facility
+      example: dcsc456sdcsdcs556
+      maxLength: 100
+      type: string
+    recipientPlatformType:
+      description: |
+        The type of platform for document reception (from UNCL 3035 list) :
+          - WK : Value added network provider (PA)
+          - DFH : Government service requestor (PPF)
+      enum:
+      - WK
+      - DFH
+      example: WK
+      maxLength: 3
+      type: string
+    directoryLineStatus:
+      description: |
+        Line status of the platform.
+          - Enabled : Active line linked to a platform
+          - Disabled : No platform linked to the line
+          - Upcoming : Line associated with a platform, with an effective date in the future
+      enum:
+      - Enabled
+      - Disabled
+      - Upcoming
+      example: Enabled
+      maxLength: 7
+      type: string
+    recipientAddressLine1:
+      description: Corresponds to the address of the recipient structure having defined
+        the directory line(s).
+      example: 16 BIS RUE HENRI BARBUSSE
+      maxLength: 255
+      type: string
+    recipientAddressLine2:
+      description: Corresponds to the address of the recipient structure having defined
+        the directory line(s).
+      example: CEDEX 1
+      maxLength: 255
+      type: string
+    recipientAddressLine3:
+      description: Corresponds to the address of the recipient structure having defined
+        the directory line(s).
+      example: Bâtiment le Callipso
+      maxLength: 255
+      type: string
+    recipientCountryCode:
+      description: Corresponds to the country of the recipient structure.
+      example: FR
+      maxLength: 2
+      type: string
+    recipientCountryName:
+      description: Corresponds to the country of the recipient structure having defined
+        the directory line(s).
+      example: France
+      maxLength: 100
+      type: string
+    sirenSearchPost200Response:
+      example:
+        totalNumberOfResults: 1500
+        search:
+          sorting:
+          - field: siren
+            order: ascending
+          - field: administrativeStatus
+            order: descending
+          limit: 50
+          ignore: 20
+          filters:
+            siren:
+              op: strict
+              value: "702042755"
+            administrativeStatus:
+              op: strict
+              value: A
+            entityType:
+              op: strict
+              value: Public
+            businessName:
+              op: contains
+              value: Boulangerie Pascale
+          fields:
+          - siren
+          - businessName
+          - entityType
+          - administrativeStatus
+          - instructions
+        results:
+        - instructions:
+            isSalesProspectingForbidden: false
+          siren: "702042755"
+          administrativeStatus: A
+          entityType: Public
+          businessName: Boulangerie Pascale
+        - instructions:
+            isSalesProspectingForbidden: false
+          siren: "702042755"
+          administrativeStatus: A
+          entityType: Public
+          businessName: Boulangerie Pascale
+      properties:
+        search:
+          $ref: '#/components/schemas/searchSiren'
+        totalNumberOfResults:
+          description: The total number of results
+          example: 1500
+          format: int32
+          type: integer
+        results:
+          items:
+            $ref: '#/components/schemas/legalUnitPayloadHistory'
+          type: array
+      type: object
+    siretSearchPost200Response:
+      example:
+        totalNumberOfResults: 1500
+        search:
+          include:
+          - siren
+          sorting:
+          - field: siret
+            order: ascending
+          - field: name
+            order: descending
+          limit: 50
+          ignore: 20
+          filters:
+            siren:
+              op: strict
+              value: "702042755"
+            facilityType:
+              op: strict
+              value: P
+            administrativeStatus:
+              op: strict
+              value: A
+            postalCode:
+              op: startWith
+              value: "38100"
+            name:
+              op: contains
+              value: Boulangerie Pascale
+            locality:
+              op: contains
+              value: Grenoble
+            addressLines:
+              op: contains
+              value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+            siret:
+              op: strict
+              value: "70204275500000"
+            countrySubdivision:
+              op: strict
+              value: Bretagne
+          fields:
+          - siret
+          - siren
+          - name
+          - facilityType
+          - administrativeStatus
+          - siretInstructions
+          - address
+          - pmStatus
+          - pmOnly
+          - managesPaymentStatus
+          - managesLegalCommitment
+          - managesLegalCommitmentOrService
+          - serviceCodeStatus
+        results:
+        - siren: "702042755"
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          facilityType: P
+          administrativeStatus: A
+          b2gAdditionalData:
+            managesPaymentStatus: true
+            managesLegalCommitmentOrServiceCode: true
+            managesLegalCommitmentCode: true
+            pm: true
+            pmOnly: true
+            serviceCodeStatus: true
+          siretInstructions:
+            isSalesProspectingForbidden: false
+          name: Boulangerie Pascale
+          legalUnit:
+            siren: "702042755"
+            administrativeStatus: A
+            entityType: Public
+            businessName: Boulangerie Pascale
+          siret: "70204275500240"
+        - siren: "702042755"
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          facilityType: P
+          administrativeStatus: A
+          b2gAdditionalData:
+            managesPaymentStatus: true
+            managesLegalCommitmentOrServiceCode: true
+            managesLegalCommitmentCode: true
+            pm: true
+            pmOnly: true
+            serviceCodeStatus: true
+          siretInstructions:
+            isSalesProspectingForbidden: false
+          name: Boulangerie Pascale
+          legalUnit:
+            siren: "702042755"
+            administrativeStatus: A
+            entityType: Public
+            businessName: Boulangerie Pascale
+          siret: "70204275500240"
+      properties:
+        search:
+          $ref: '#/components/schemas/searchSiret'
+        totalNumberOfResults:
+          description: The total number of results
+          example: 1500
+          format: int32
+          type: integer
+        results:
+          items:
+            $ref: '#/components/schemas/facilityPayloadHistory'
+          type: array
+      type: object
+    routingCodeSearchPost200Response:
+      example:
+        totalNumberOfResults: 1500
+        search:
+          include:
+          - siren
+          - siret
+          sorting:
+          - field: siret
+            order: ascendant
+          - field: routingIdentifier
+            order: ascendant
+          limit: 50
+          ignore: 20
+          filters:
+            routingIdentifier:
+              op: contains
+              value: dcsc456sdcsdcs556
+            administrativeStatus:
+              op: strict
+              value: A
+            postalCode:
+              op: startWith
+              value: "38100"
+            locality:
+              op: contains
+              value: Grenoble
+            addressLines:
+              op: contains
+              value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+            siret:
+              op: strict
+              value: "70204275500000"
+            routingCodeName:
+              op: contains
+              value: Libellé Code routage
+          fields:
+          - siret
+          - routingIdentifierType
+          - routingCodeName
+          - routingIdentifier
+          - managesLegalCommitmentCode
+          - administrativeStatus
+          - address
+        results:
+        - routingIdentifier: dcsc456sdcsdcs556
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          administrativeStatus: A
+          managesLegalCommitmentCode: true
+          legalUnit:
+            siren: "702042755"
+            administrativeStatus: A
+            entityType: Public
+            businessName: Boulangerie Pascale
+          routingIdentifierType: "0224"
+          siret: "70204275500240"
+          facility:
+            siren: "702042755"
+            address:
+              countryCode: FR
+              postalCode: "38100"
+              locality: Grenoble
+              addressLine1: 16 BIS RUE HENRI BARBUSSE
+              addressLine2: CEDEX 1
+              addressLine3: Bâtiment le Callipso
+              countryName: France
+              countrySubdivision: Bretagne
+            facilityType: P
+            administrativeStatus: A
+            b2gAdditionalData:
+              managesPaymentStatus: true
+              managesLegalCommitmentOrServiceCode: true
+              managesLegalCommitmentCode: true
+              pm: true
+              pmOnly: true
+              serviceCodeStatus: true
+            name: Boulangerie Pascale
+            siret: "70204275500240"
+          routingCodeName: Libellé Code routage
+        - routingIdentifier: dcsc456sdcsdcs556
+          address:
+            countryCode: FR
+            postalCode: "38100"
+            locality: Grenoble
+            addressLine1: 16 BIS RUE HENRI BARBUSSE
+            addressLine2: CEDEX 1
+            addressLine3: Bâtiment le Callipso
+            countryName: France
+            countrySubdivision: Bretagne
+          administrativeStatus: A
+          managesLegalCommitmentCode: true
+          legalUnit:
+            siren: "702042755"
+            administrativeStatus: A
+            entityType: Public
+            businessName: Boulangerie Pascale
+          routingIdentifierType: "0224"
+          siret: "70204275500240"
+          facility:
+            siren: "702042755"
+            address:
+              countryCode: FR
+              postalCode: "38100"
+              locality: Grenoble
+              addressLine1: 16 BIS RUE HENRI BARBUSSE
+              addressLine2: CEDEX 1
+              addressLine3: Bâtiment le Callipso
+              countryName: France
+              countrySubdivision: Bretagne
+            facilityType: P
+            administrativeStatus: A
+            b2gAdditionalData:
+              managesPaymentStatus: true
+              managesLegalCommitmentOrServiceCode: true
+              managesLegalCommitmentCode: true
+              pm: true
+              pmOnly: true
+              serviceCodeStatus: true
+            name: Boulangerie Pascale
+            siret: "70204275500240"
+          routingCodeName: Libellé Code routage
+      properties:
+        search:
+          $ref: '#/components/schemas/routingCodeSearch'
+        totalNumberOfResults:
+          description: The total number of results
+          example: 1500
+          format: int32
+          type: integer
+        results:
+          items:
+            $ref: '#/components/schemas/routingCodePayloadHistoryLegalUnitFacility'
+          type: array
+      type: object
+    directoryLineSearchPost200Response:
+      example:
+        totalNumberOfResults: 1500
+        search:
+          sorting:
+          - field: addressingIdentifier
+            order: ascending
+          limit: 50
+          ignore: 20
+          filters:
+            addressingSuffix:
+              op: contains
+              value: dcsc456sdcsdcs556
+            siren:
+              op: strict
+              value: "702042755"
+            routingIdentifier:
+              op: contains
+              value: dcsc456sdcsdcs556
+            addressingIdentifier:
+              op: contains
+              value: dcsc456sdcsdcs556
+            siret:
+              op: strict
+              value: "70204275500000"
+          fields:
+          - addressingIdentifier
+          - siren
+          - siret
+          - addressingSuffix
+        results:
+        - addressingSuffix: dcsc456sdcsdcs556
+          siren: "702042755"
+          addressingIdentifier: dcsc456sdcsdcs556
+          platformType: WK
+          directoryLineStatus: Enabled
+          legalUnit:
+            siren: "702042755"
+            administrativeStatus: A
+            entityType: Public
+            businessName: Boulangerie Pascale
+          siret: "70204275500240"
+          facility:
+            siren: "702042755"
+            address:
+              countryCode: FR
+              postalCode: "38100"
+              locality: Grenoble
+              addressLine1: 16 BIS RUE HENRI BARBUSSE
+              addressLine2: CEDEX 1
+              addressLine3: Bâtiment le Callipso
+              countryName: France
+              countrySubdivision: Bretagne
+            facilityType: P
+            administrativeStatus: A
+            b2gAdditionalData:
+              managesPaymentStatus: true
+              managesLegalCommitmentOrServiceCode: true
+              managesLegalCommitmentCode: true
+              pm: true
+              pmOnly: true
+              serviceCodeStatus: true
+            name: Boulangerie Pascale
+            siret: "70204275500240"
+          routingCode:
+            managesLegalCommitment: true
+            routingIdentifier: dcsc456sdcsdcs556
+            address:
+              countryCode: FR
+              postalCode: "38100"
+              locality: Grenoble
+              addressLine1: 16 BIS RUE HENRI BARBUSSE
+              addressLine2: CEDEX 1
+              addressLine3: Bâtiment le Callipso
+              countryName: France
+              countrySubdivision: Bretagne
+            administrativeStatus: A
+            routingIdentifierType: "0224"
+            routingCodeName: Libellé Code routage
+        - addressingSuffix: dcsc456sdcsdcs556
+          siren: "702042755"
+          addressingIdentifier: dcsc456sdcsdcs556
+          platformType: WK
+          directoryLineStatus: Enabled
+          legalUnit:
+            siren: "702042755"
+            administrativeStatus: A
+            entityType: Public
+            businessName: Boulangerie Pascale
+          siret: "70204275500240"
+          facility:
+            siren: "702042755"
+            address:
+              countryCode: FR
+              postalCode: "38100"
+              locality: Grenoble
+              addressLine1: 16 BIS RUE HENRI BARBUSSE
+              addressLine2: CEDEX 1
+              addressLine3: Bâtiment le Callipso
+              countryName: France
+              countrySubdivision: Bretagne
+            facilityType: P
+            administrativeStatus: A
+            b2gAdditionalData:
+              managesPaymentStatus: true
+              managesLegalCommitmentOrServiceCode: true
+              managesLegalCommitmentCode: true
+              pm: true
+              pmOnly: true
+              serviceCodeStatus: true
+            name: Boulangerie Pascale
+            siret: "70204275500240"
+          routingCode:
+            managesLegalCommitment: true
+            routingIdentifier: dcsc456sdcsdcs556
+            address:
+              countryCode: FR
+              postalCode: "38100"
+              locality: Grenoble
+              addressLine1: 16 BIS RUE HENRI BARBUSSE
+              addressLine2: CEDEX 1
+              addressLine3: Bâtiment le Callipso
+              countryName: France
+              countrySubdivision: Bretagne
+            administrativeStatus: A
+            routingIdentifierType: "0224"
+            routingCodeName: Libellé Code routage
+      properties:
+        search:
+          $ref: '#/components/schemas/searchDirectoryLine'
+        totalNumberOfResults:
+          description: The total number of results
+          example: 1500
+          format: int32
+          type: integer
+        results:
+          items:
+            $ref: '#/components/schemas/directoryLinePayloadStatusLegalUnitFacilityRoutingCode'
+          type: array
+      type: object
+    searchSirenFiltersSiren:
+      example:
+        op: strict
+        value: "702042755"
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          description: SIREN number to search for.
+          example: "702042755"
+          maxLength: 9
+          pattern: "[0-9]*"
+          type: string
+      type: object
+    searchSirenFiltersBusinessName:
+      example:
+        op: contains
+        value: Boulangerie Pascale
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOrStrictOperator'
+        value:
+          description: Business name
+          example: Boulangerie Pascale
+          maxLength: 150
+          type: string
+      type: object
+    searchSirenFiltersEntityType:
+      example:
+        op: strict
+        value: Public
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          $ref: '#/components/schemas/entityType'
+      type: object
+    searchSirenFiltersAdministrativeStatus:
+      example:
+        op: strict
+        value: A
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          $ref: '#/components/schemas/legalUnitAdministrativeStatus'
+      type: object
+    searchSirenFilters:
+      example:
+        siren:
+          op: strict
+          value: "702042755"
+        administrativeStatus:
+          op: strict
+          value: A
+        entityType:
+          op: strict
+          value: Public
+        businessName:
+          op: contains
+          value: Boulangerie Pascale
+      properties:
+        siren:
+          $ref: '#/components/schemas/searchSirenFiltersSiren'
+        businessName:
+          $ref: '#/components/schemas/searchSirenFiltersBusinessName'
+        entityType:
+          $ref: '#/components/schemas/searchSirenFiltersEntityType'
+        administrativeStatus:
+          $ref: '#/components/schemas/searchSirenFiltersAdministrativeStatus'
+      type: object
+    searchSirenSortingInner:
+      description: A sorting criteria composed of a field and an order (ascending
+        or descending).
+      example:
+        field: siren
+        order: ascendant
+      properties:
+        field:
+          $ref: '#/components/schemas/sirenField'
+        sortingOrder:
+          $ref: '#/components/schemas/sortingOrder'
+      type: object
+    searchSiretFiltersSiret:
+      example:
+        op: strict
+        value: "70204275500000"
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          description: SIRET number to search for.
+          example: "70204275500000"
+          maxLength: 14
+          pattern: "[0-9]*"
+          type: string
+      type: object
+    searchSiretFiltersFacilityType:
+      example:
+        op: strict
+        value: P
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          $ref: '#/components/schemas/facilityType'
+      type: object
+    searchSiretFiltersName:
+      example:
+        op: contains
+        value: Boulangerie Pascale
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOrStrictOperator'
+        value:
+          description: business name
+          example: Boulangerie Pascale
+          maxLength: 100
+          type: string
+      type: object
+    searchSiretFiltersAddressLines:
+      example:
+        op: contains
+        value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOperator'
+        value:
+          description: address lines of the recipient structure having defined the
+            directory line(s).
+          example: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+          maxLength: 600
+          type: string
+      type: object
+    searchSiretFiltersPostalCode:
+      example:
+        op: startWith
+        value: "38100"
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOrStartWithOperator'
+        value:
+          description: Service postal code
+          example: "38100"
+          maxLength: 5
+          pattern: "[0-9]*"
+          type: string
+      type: object
+    searchSiretFiltersCountrySubdivision:
+      example:
+        op: strict
+        value: Bretagne
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          description: Subdivision of the country
+          example: Bretagne
+          maxLength: 255
+          type: string
+      type: object
+    searchSiretFiltersLocality:
+      example:
+        op: contains
+        value: Grenoble
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOrStrictOperator'
+        value:
+          description: Municipality of the recipient structure having defined the
+            directory line(s).
+          example: Grenoble
+          maxLength: 100
+          type: string
+      type: object
+    searchSiretFiltersAdministrativeStatus:
+      example:
+        op: strict
+        value: A
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          $ref: '#/components/schemas/facilityAdministrativeStatus'
+      type: object
+    searchSiretFilters:
+      example:
+        siren:
+          op: strict
+          value: "702042755"
+        facilityType:
+          op: strict
+          value: P
+        administrativeStatus:
+          op: strict
+          value: A
+        postalCode:
+          op: startWith
+          value: "38100"
+        name:
+          op: contains
+          value: Boulangerie Pascale
+        locality:
+          op: contains
+          value: Grenoble
+        addressLines:
+          op: contains
+          value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+        siret:
+          op: strict
+          value: "70204275500000"
+        countrySubdivision:
+          op: strict
+          value: Bretagne
+      properties:
+        siret:
+          $ref: '#/components/schemas/searchSiretFiltersSiret'
+        siren:
+          $ref: '#/components/schemas/searchSirenFiltersSiren'
+        facilityType:
+          $ref: '#/components/schemas/searchSiretFiltersFacilityType'
+        name:
+          $ref: '#/components/schemas/searchSiretFiltersName'
+        addressLines:
+          $ref: '#/components/schemas/searchSiretFiltersAddressLines'
+        postalCode:
+          $ref: '#/components/schemas/searchSiretFiltersPostalCode'
+        countrySubdivision:
+          $ref: '#/components/schemas/searchSiretFiltersCountrySubdivision'
+        locality:
+          $ref: '#/components/schemas/searchSiretFiltersLocality'
+        administrativeStatus:
+          $ref: '#/components/schemas/searchSiretFiltersAdministrativeStatus'
+      type: object
+    searchSiretSortingInner:
+      description: A sorting criteria composed of a field and an order (ascending
+        or descending).
+      example:
+        field: siret
+        sortingOrder: ascending
+      properties:
+        field:
+          $ref: '#/components/schemas/siretField'
+        sortingOrder:
+          $ref: '#/components/schemas/sortingOrder'
+      type: object
+    facilityPayloadHistoryUleB2gAdditionalData:
+      example:
+        managesPaymentStatus: true
+        managesLegalCommitmentOrServiceCode: true
+        managesLegalCommitmentCode: true
+        pm: true
+        pmOnly: true
+        serviceCodeStatus: true
+      properties:
+        pm:
+          description: Indicates whether the public structure acts as project manager
+            for work invoices in addition to receiving simple invoices. This attribute
+            is only returned if the directory line is defined for a public structure
+            at the SIREN / SIRET or SIREN / SIRET / Routing code level.
+          example: true
+          type: boolean
+        pmOnly:
+          description: "Indicates whether the public structure only acts as a project\
+            \ manager; if so, it can only receive invoices for work. This attribute\
+            \ is only returned if the directory line is defined for a public structure\
+            \ at the SIREN/SIRET or SIREN/SIRET/Routing code level."
+          example: true
+          type: boolean
+        managesPaymentStatus:
+          description: Indicates whether the public structure manages the payment
+            status of invoices. This attribute is only returned if the directory line
+            is defined for a public structure at the SIREN / SIRET or SIREN / SIRET
+            / Routing code level.
+          example: true
+          type: boolean
+        managesLegalCommitmentCode:
+          description: Indicates whether the public structure requires a legal commitment
+            number. This attribute is only returned if the directory line is defined
+            for a public structure at the SIREN / SIRET or SIREN / SIRET / Routing
+            code level.
+          example: true
+          type: boolean
+        managesLegalCommitmentOrServiceCode:
+          description: Indicates whether the public structure requires a service code
+            or a commitment code in its exchanges. This attribute is only returned
+            if the directory line is defined for a public structure at the SIREN /
+            SIRET or SIREN / SIRET / Routing code level.
+          example: true
+          type: boolean
+        serviceCodeStatus:
+          description: Indicates whether the structure requires a service code. This
+            attribute is only returned if the directory line is defined for a public
+            structure at the SIREN / SIRET or SIREN / SIRET / Routing code level.
+          example: true
+          type: boolean
+      type: object
+    routingCodeSearchFiltersRoutingIdentifier:
+      example:
+        op: contains
+        value: dcsc456sdcsdcs556
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOrStrictOperator'
+        value:
+          description: Routing identifier for a routing code.
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          pattern: ^$|^(?!\s*$).+
+          type: string
+      type: object
+    routingCodeSearchFiltersRoutingCodeName:
+      example:
+        op: contains
+        value: Libellé Code routage
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOrStrictOperator'
+        value:
+          description: Name of the routing code.
+          example: Libellé Code routage
+          maxLength: 100
+          pattern: ^$|^(?!\s*$).+
+          type: string
+      type: object
+    routingCodeSearchFiltersAdministrativeStatus:
+      example:
+        op: strict
+        value: A
+      properties:
+        op:
+          $ref: '#/components/schemas/strictOperator'
+        value:
+          $ref: '#/components/schemas/routingCodeAdministrativeStatus'
+      type: object
+    routingCodeSearchFilters:
+      example:
+        routingIdentifier:
+          op: contains
+          value: dcsc456sdcsdcs556
+        administrativeStatus:
+          op: strict
+          value: A
+        postalCode:
+          op: startWith
+          value: "38100"
+        locality:
+          op: contains
+          value: Grenoble
+        addressLines:
+          op: contains
+          value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
+        siret:
+          op: strict
+          value: "70204275500000"
+        routingCodeName:
+          op: contains
+          value: Libellé Code routage
+      properties:
+        routingIdentifier:
+          $ref: '#/components/schemas/routingCodeSearchFiltersRoutingIdentifier'
+        siret:
+          $ref: '#/components/schemas/searchSiretFiltersSiret'
+        routingCodeName:
+          $ref: '#/components/schemas/routingCodeSearchFiltersRoutingCodeName'
+        administrativeStatus:
+          $ref: '#/components/schemas/routingCodeSearchFiltersAdministrativeStatus'
+        addressLines:
+          $ref: '#/components/schemas/searchSiretFiltersAddressLines'
+        postalCode:
+          $ref: '#/components/schemas/searchSiretFiltersPostalCode'
+        locality:
+          $ref: '#/components/schemas/searchSiretFiltersLocality'
+      type: object
+    routingCodeSearchSortingInner:
+      description: A sort criteria composed of a field and an order (ascending or
+        descending).
+      example:
+        field: siret
+        order: descendant
+      properties:
+        field:
+          $ref: '#/components/schemas/routingCodeField'
+        order:
+          $ref: '#/components/schemas/sortingOrder'
+      type: object
+    searchDirectoryLineFiltersAddressingIdentifier:
+      example:
+        op: contains
+        value: dcsc456sdcsdcs556
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOrStrictOperator'
+        value:
+          description: Addressing identifier of the directory line.
+          example: dcsc456sdcsdcs556
+          maxLength: 125
+          type: string
+      type: object
+    searchDirectoryLineFiltersAddressingSuffix:
+      example:
+        op: contains
+        value: dcsc456sdcsdcs556
+      properties:
+        op:
+          $ref: '#/components/schemas/containsOrStrictOperator'
+        value:
+          description: suffix of the directory line which defines an address mesh
+            not attached to a facility
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          type: string
+      type: object
+    searchDirectoryLineFilters:
+      example:
+        addressingSuffix:
+          op: contains
+          value: dcsc456sdcsdcs556
+        siren:
+          op: strict
+          value: "702042755"
+        routingIdentifier:
+          op: contains
+          value: dcsc456sdcsdcs556
+        addressingIdentifier:
+          op: contains
+          value: dcsc456sdcsdcs556
+        siret:
+          op: strict
+          value: "70204275500000"
+      properties:
+        addressingIdentifier:
+          $ref: '#/components/schemas/searchDirectoryLineFiltersAddressingIdentifier'
+        siren:
+          $ref: '#/components/schemas/searchSirenFiltersSiren'
+        siret:
+          $ref: '#/components/schemas/searchSiretFiltersSiret'
+        routingIdentifier:
+          $ref: '#/components/schemas/routingCodeSearchFiltersRoutingIdentifier'
+        addressingSuffix:
+          $ref: '#/components/schemas/searchDirectoryLineFiltersAddressingSuffix'
+      type: object
+    searchDirectoryLineSortingInner:
+      description: A sort criteria composed of a field and an order (ascending or
+        descending).
+      example:
+        field: addressingIdentifier
+        order: ascending
+      properties:
+        field:
+          $ref: '#/components/schemas/directoryLineField'
+        sortingOrder:
+          $ref: '#/components/schemas/sortingOrder'
+      type: object
+    directoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode:
+      example:
+        managesLegalCommitment: true
+        routingIdentifier: dcsc456sdcsdcs556
+        address:
+          countryCode: FR
+          postalCode: "38100"
+          locality: Grenoble
+          addressLine1: 16 BIS RUE HENRI BARBUSSE
+          addressLine2: CEDEX 1
+          addressLine3: Bâtiment le Callipso
+          countryName: France
+          countrySubdivision: Bretagne
+        administrativeStatus: A
+        routingIdentifierType: "0224"
+        routingCodeName: Libellé Code routage
+      properties:
+        routingIdentifier:
+          description: Routing identifier od a routing code.
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          pattern: "^(?!\\s+$)[\\-_/a-zA-Z0-9]{1,100}$"
+          type: string
+        routingIdentifierType:
+          description: Routing Identifier type.
+          example: "0224"
+          maxLength: 4
+          pattern: ^(?!\s*$).+
+          type: string
+        routingCodeName:
+          description: Name of the directory line routing code. This attribute is
+            only returned if the directory line is defined at the SIREN / SIRET /
+            Routing code mesh.
+          example: Libellé Code routage
+          maxLength: 100
+          pattern: ^(?!\s*$).+
+          type: string
+        managesLegalCommitment:
+          description: Indicates whether the public structure requires a legal commitment
+            number. This attribute is only returned if the directory line is defined
+            for a public structure at the SIREN / SIRET or SIREN / SIRET / Routing
+            code level.
+          example: true
+          type: boolean
+        administrativeStatus:
+          $ref: '#/components/schemas/routingCodeAdministrativeStatus'
+        address:
+          $ref: '#/components/schemas/addressRead'
+      type: object
+    Error:
+      description: Error code
+      example:
+        instance: /chemin/url-de-reference#instance-du-contexte
+        errorMessage: Invalid request format
+        errorCode: MISSING_REQUIRED_FIELD
+        details: Error detailed description
+        type: /path/reference-url
+      properties:
+        errorCode:
+          description: Short numerical or alphanumerical code that identifies precisely
+            a unique error.
+          example: MISSING_REQUIRED_FIELD
+          type: string
+        errorMessage:
+          description: "Contains information on the error. Not intended to be displayed\
+            \ to an end user. For security reasons, a tradeoff between clarity & security\
+            \ shall be found."
+          example: Invalid request format
+          type: string
+        type:
+          default: about:blank
+          example: /path/reference-url
+          format: uri-reference
+          type: string
+        details:
+          example: Error detailed description
+          type: string
+        instance:
+          example: /chemin/url-de-reference#instance-du-contexte
+          format: uri-reference
+          type: string
+      required:
+      - errorCode
+      type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+    OAuth2:
+      description: Implements only OAuth2 Client Credentials workflow requiring a
+        client id/secret pair
+      flows:
+        clientCredentials:
+          scopes: {}
+          tokenUrl: "https://auth.company.com/auth-service/{custId}/token"
+      type: oauth2
+

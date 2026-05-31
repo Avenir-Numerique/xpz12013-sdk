@@ -5,9 +5,8 @@ norme (dans [`/spec`](../spec)) via [OpenAPI Generator](https://openapi-generato
 ([`/dotnet`](../dotnet)) reste l'implémentation de référence faite main ; ces clients couvrent le
 reste de l'écosystème e-invoicing.
 
-> ⚠️ **Statut : tuyauterie prête, génération en attente.** Les clients ne sont pas encore committés :
-> ils seront générés dès que les swaggers AFNOR seront déposés dans `/spec` (cf. **NEOTIMO-1417**,
-> point juridique). Tant que `/spec` est vide, le script et la CI sont des _no-op_.
+> **Statut : généré.** Les clients sont produits depuis les swaggers v1.2.0 de `/spec` et committés.
+> La CI régénère et vérifie l'absence de dérive à chaque modification de `/spec` ou de la config.
 
 ## Générer en local
 
