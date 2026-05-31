@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/dotnet/">
+    <Project Path="dotnet/XpZ12013.Sdk/XpZ12013.Sdk.csproj" />
+  </Folder>
+  <Folder Name="/examples/">
+    <Project Path="examples/XpZ12013.Sdk.Examples/XpZ12013.Sdk.Examples.csproj" />
+  </Folder>
+</Solution>

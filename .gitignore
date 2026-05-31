@@ -1,0 +1,15 @@
+## .NET
+bin/
+obj/
+*.user
+.vs/
+artifacts/
+*.nupkg
+
+## Rider / VS Code
+.idea/
+.vscode/
+
+## Local secrets
+appsettings.local.json
+*.local.json
