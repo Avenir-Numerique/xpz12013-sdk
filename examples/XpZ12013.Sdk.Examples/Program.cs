@@ -1,7 +1,7 @@
 using XpZ12013.Sdk;
 using XpZ12013.Sdk.Models;
 
-// Minimal runnable tour of the NeoTimo XP Z12-013 SDK.
+// Minimal runnable tour of the Neotimo XP Z12-013 SDK.
 //
 // Provide credentials via environment variables to hit a real (sandbox) PDP, otherwise the
 // program just prints how it would be called:
@@ -18,7 +18,7 @@ if (string.IsNullOrWhiteSpace(flowUrl) || string.IsNullOrWhiteSpace(directoryUrl
     string.IsNullOrWhiteSpace(tokenUrl))
 {
     Console.WriteLine("""
-        NeoTimo XP Z12-013 SDK — exemples
+        Neotimo XP Z12-013 SDK — exemples
         =================================
         Définissez ces variables d'environnement pour exécuter contre un PDP (sandbox) :
           XPZ_FLOW_URL, XPZ_DIRECTORY_URL, XPZ_CLIENT_ID, XPZ_CLIENT_SECRET, XPZ_TOKEN_URL

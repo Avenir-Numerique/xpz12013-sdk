@@ -21,7 +21,7 @@ Puis, depuis la racine du dépôt :
 
 ```powershell
 gh repo create avenir-numerique/xpz12013-sdk --public --source . --remote origin `
-  --description "SDK & implémentation de référence de la norme AFNOR XP Z12-013 (facturation électronique FR). Par NeoTimo." `
+  --description "SDK & implémentation de référence de la norme AFNOR XP Z12-013 (facturation électronique FR). Par Neotimo." `
   --push
 ```
 
@@ -63,7 +63,7 @@ Tant qu'ils sont absents, le job d'intégration s'exécute mais les tests sont *
 ### b) Secret `NUGET_API_KEY` (publication NuGet)
 
 1. Sur [nuget.org](https://www.nuget.org) → **API Keys** → créer une clé (scope push, globs
-   `NeoTimo.XpZ12013.*`).
+   `Neotimo.XpZ12013.*`).
 2. GitHub → **Settings → Secrets and variables → Actions → New repository secret** :
    `NUGET_API_KEY` = la clé.
 
@@ -79,7 +79,7 @@ gh secret set XPZ_FLOW_URL --env sandbox --body "<url>"   # idem pour les autres
 ## 3. Première publication NuGet (sur tag)
 
 Le workflow `release.yml` se déclenche sur un tag `v*` et publie les deux paquets
-(`NeoTimo.XpZ12013.Sdk` et `…​.DependencyInjection`) avec la version dérivée du tag.
+(`Neotimo.XpZ12013.Sdk` et `…​.DependencyInjection`) avec la version dérivée du tag.
 
 ```powershell
 git tag v1.2.0          # version alignée sur la norme XP Z12-013
@@ -94,7 +94,7 @@ git push origin v1.2.0
 
 - [ ] Onglet **Actions** : CI verte (build + tests unitaires), Generate clients verte (pas de dérive).
 - [ ] Job **Sandbox integration tests** : vert (si secrets posés) ou tests skippés (sinon).
-- [ ] [nuget.org](https://www.nuget.org/packages/NeoTimo.XpZ12013.Sdk) : paquets en ligne.
+- [ ] [nuget.org](https://www.nuget.org/packages/Neotimo.XpZ12013.Sdk) : paquets en ligne.
 - [ ] Badges du README au vert.
 - [ ] (Optionnel) **Settings → Branches** : protéger `main` (PR obligatoire + CI requise avant merge).
 

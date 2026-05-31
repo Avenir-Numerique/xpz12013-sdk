@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>NeoTimo.XpZ12013.Sdk.DependencyInjection</PackageId>
-    <Title>NeoTimo XP Z12-013 SDK — Dependency Injection</Title>
-    <Description>Enregistrement Microsoft.Extensions.DependencyInjection pour le SDK NeoTimo XP Z12-013. Paquet séparé pour garder le SDK cœur sans dépendance.</Description>
+    <PackageId>Neotimo.XpZ12013.Sdk.DependencyInjection</PackageId>
+    <Title>Neotimo XP Z12-013 SDK — Dependency Injection</Title>
+    <Description>Enregistrement Microsoft.Extensions.DependencyInjection pour le SDK Neotimo XP Z12-013. Paquet séparé pour garder le SDK cœur sans dépendance.</Description>
     <Authors>Avenir Numérique</Authors>
     <Company>Avenir Numérique</Company>
     <PackageTags>afnor;xpz12013;e-invoicing;sdk;dependency-injection</PackageTags>

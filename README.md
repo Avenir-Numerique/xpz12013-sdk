@@ -1,7 +1,7 @@
-# XP Z12-013 SDK &nbsp;·&nbsp; by NeoTimo
+# XP Z12-013 SDK &nbsp;·&nbsp; by Neotimo
 
 [![CI](https://github.com/avenir-numerique/xpz12013-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/avenir-numerique/xpz12013-sdk/actions/workflows/ci.yml)
-[![NuGet](https://img.shields.io/nuget/v/NeoTimo.XpZ12013.Sdk.svg)](https://www.nuget.org/packages/NeoTimo.XpZ12013.Sdk)
+[![NuGet](https://img.shields.io/nuget/v/Neotimo.XpZ12013.Sdk.svg)](https://www.nuget.org/packages/Neotimo.XpZ12013.Sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 > Implémentation de référence **.NET** — bientôt **Java / TypeScript / Python** — de la norme
@@ -9,11 +9,11 @@
 > électronique française** (échanges entre systèmes d'information et Plateformes de
 > Dématérialisation Partenaires).
 >
-> Offert gratuitement par **[NeoTimo](https://neotimo.fr)** / Avenir Numérique pour accélérer
+> Offert gratuitement par **[Neotimo](https://neotimo.fr)** / Avenir Numérique pour accélérer
 > l'intégration de la réforme par les éditeurs et intégrateurs. Licence **MIT**.
 
 ```xml
-<PackageReference Include="NeoTimo.XpZ12013.Sdk" />
+<PackageReference Include="Neotimo.XpZ12013.Sdk" />
 ```
 
 La norme couvre deux services, tous deux pilotés depuis un seul client :
@@ -64,7 +64,7 @@ if (result.IsSuccess)
 - **Résilience intégrée** — retries avec backoff exponentiel + jitter sur les erreurs transitoires.
 - **Cœur sans dépendance** — uniquement la BCL .NET (`HttpClient` + `System.Text.Json`).
   L'intégration `Microsoft.Extensions.DependencyInjection` est fournie dans un paquet séparé et
-  optionnel (`NeoTimo.XpZ12013.Sdk.DependencyInjection`).
+  optionnel (`Neotimo.XpZ12013.Sdk.DependencyInjection`).
 
 ## Authentification
 
@@ -79,7 +79,7 @@ if (result.IsSuccess)
 ## Injection de dépendances (optionnel)
 
 ```xml
-<PackageReference Include="NeoTimo.XpZ12013.Sdk.DependencyInjection" />
+<PackageReference Include="Neotimo.XpZ12013.Sdk.DependencyInjection" />
 ```
 
 ```csharp
@@ -132,4 +132,4 @@ de l'AFNOR comme source faisant foi.
 
 ## Licence
 
-[MIT](./LICENSE) © 2026 Avenir Numérique (NeoTimo).
+[MIT](./LICENSE) © 2026 Avenir Numérique (Neotimo).

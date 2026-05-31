@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>NeoTimo.XpZ12013.Sdk</PackageId>
-    <Title>NeoTimo XP Z12-013 SDK</Title>
-    <Description>.NET SDK / implémentation de référence de la norme AFNOR XP Z12-013 v1.2.0 (interopérabilité de la facturation électronique française — Flow Service &amp; Directory Service). Offert par NeoTimo / Avenir Numérique.</Description>
+    <PackageId>Neotimo.XpZ12013.Sdk</PackageId>
+    <Title>Neotimo XP Z12-013 SDK</Title>
+    <Description>.NET SDK / implémentation de référence de la norme AFNOR XP Z12-013 v1.2.0 (interopérabilité de la facturation électronique française — Flow Service &amp; Directory Service). Offert par Neotimo / Avenir Numérique.</Description>
     <Authors>Avenir Numérique</Authors>
     <Company>Avenir Numérique</Company>
-    <Product>NeoTimo XP Z12-013 SDK</Product>
+    <Product>Neotimo XP Z12-013 SDK</Product>
     <PackageTags>afnor;xpz12013;facturation-electronique;e-invoicing;factur-x;pdp;ppf;sdk</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/avenir-numerique/xpz12013-sdk</PackageProjectUrl>
