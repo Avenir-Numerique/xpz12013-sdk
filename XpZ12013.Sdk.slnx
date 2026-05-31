@@ -7,6 +7,7 @@
     <Project Path="examples/XpZ12013.Sdk.Examples/XpZ12013.Sdk.Examples.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/XpZ12013.Sdk.IntegrationTests/XpZ12013.Sdk.IntegrationTests.csproj" />
     <Project Path="tests/XpZ12013.Sdk.Tests/XpZ12013.Sdk.Tests.csproj" />
   </Folder>
 </Solution>

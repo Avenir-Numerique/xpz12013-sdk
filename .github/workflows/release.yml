@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Pack & publish to NuGet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Derive version from tag
+        id: ver
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Pack
+        run: |
+          dotnet pack dotnet/XpZ12013.Sdk/XpZ12013.Sdk.csproj -c Release -p:Version=${{ steps.ver.outputs.version }} -o artifacts
+          dotnet pack dotnet/XpZ12013.Sdk.DependencyInjection/XpZ12013.Sdk.DependencyInjection.csproj -c Release -p:Version=${{ steps.ver.outputs.version }} -o artifacts
+
+      - name: Push to NuGet
+        run: dotnet nuget push "artifacts/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
