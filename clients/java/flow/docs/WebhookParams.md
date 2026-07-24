@@ -7,8 +7,10 @@
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**callback** | [**CallbackParameters**](CallbackParameters.md) |  |  |
-|**metadata** | [**WebhookMetadata**](WebhookMetadata.md) |  |  |
+|**callbackUrl** | **URI** |  |  |
+|**flowTypes** | **List&lt;FlowType&gt;** |  |  [optional] |
+|**flowDirection** | **FlowDirection** |  |  [optional] |
+|**ackStatus** | **FlowAckStatus** |  |  [optional] |
 
 
 

@@ -5,7 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**webhook_ids** | **List[str]** |  | 
+**count** | **int** |  | 
+**webhooks** | [**List[Webhook]**](Webhook.md) |  | [optional] 
 
 ## Example
 

@@ -4,11 +4,11 @@
 # No-op (exit 0) when the specs are absent — generation is gated on the AFNOR licensing
 # decision (NEOTIMO-1417). Requires Node.js (npx) and a JRE (openapi-generator runs on the JVM).
 #
-# Usage: scripts/generate-clients.sh [version]   (version defaults to 1.2.0)
+# Usage: scripts/generate-clients.sh [version]   (version defaults to 2.0.0)
 
 set -euo pipefail
 
-VERSION="${1:-1.2.0}"
+VERSION="${1:-2.0.0}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SPEC_DIR="$ROOT/spec"
 CONFIG_DIR="$ROOT/clients/generator-config"

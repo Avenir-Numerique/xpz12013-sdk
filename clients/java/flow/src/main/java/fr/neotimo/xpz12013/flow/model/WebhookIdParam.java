@@ -1,8 +1,8 @@
 /*
  * AFNOR Flow Service
- * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation 
+ * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/flows/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /flows/webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation   - `1.3.0` :     - Increase NotOnlyUuid to 64 characters     - Update Webhook configuration:       - remove processingRule from Metadata       - remove any required metadata field (metadat can be empty)       - simplify configuration (remove headers, auth & signature block)       - enrich URL path flexibility     - Added missing required for : processingRule & flowProfile in Flow schema in responses     - Add base path and service name as variables in server URL     - Remove StateInvoice flow type     - Add new flowtypes related to e-reporting flows sent to DFH       - StateCustomerInvoice       - StateSupplierInvoice       - StateTransactionReport       - StateTransactionReportLC       - StatePaymentReport       - StatePaymentReportLC     - Use a cursor-based pagination, more efficient than using just dates       - cursor in request       - nextCursor in response     - Add Undefined values for ProfileType, FlowType & ProcessingRule       - These 3 properties may not be defined in Pending & Error states 
  *
- * The version of the OpenAPI document: 1.2.0
+ * The version of the OpenAPI document: 1.3.0
  * Contact: sg5@afnor.org
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -34,13 +35,23 @@ import fr.neotimo.xpz12013.flow.ApiClient;
  * WebhookIdParam
  */
 @JsonPropertyOrder({
-  WebhookIdParam.JSON_PROPERTY_WEBHOOK_ID
+  WebhookIdParam.JSON_PROPERTY_WEBHOOK_ID,
+  WebhookIdParam.JSON_PROPERTY_SIGNING_KEY,
+  WebhookIdParam.JSON_PROPERTY_CREATED_AT
 })
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.11.0")
 public class WebhookIdParam {
   public static final String JSON_PROPERTY_WEBHOOK_ID = "webhookId";
   @javax.annotation.Nullable
   private UUID webhookId;
+
+  public static final String JSON_PROPERTY_SIGNING_KEY = "signingKey";
+  @javax.annotation.Nullable
+  private byte[] signingKey;
+
+  public static final String JSON_PROPERTY_CREATED_AT = "createdAt";
+  @javax.annotation.Nullable
+  private OffsetDateTime createdAt;
 
   public WebhookIdParam() { 
   }
@@ -69,6 +80,54 @@ public class WebhookIdParam {
   }
 
 
+  public WebhookIdParam signingKey(@javax.annotation.Nullable byte[] signingKey) {
+    this.signingKey = signingKey;
+    return this;
+  }
+
+  /**
+   * Get signingKey
+   * @return signingKey
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_SIGNING_KEY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public byte[] getSigningKey() {
+    return signingKey;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_SIGNING_KEY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setSigningKey(@javax.annotation.Nullable byte[] signingKey) {
+    this.signingKey = signingKey;
+  }
+
+
+  public WebhookIdParam createdAt(@javax.annotation.Nullable OffsetDateTime createdAt) {
+    this.createdAt = createdAt;
+    return this;
+  }
+
+  /**
+   * Get createdAt
+   * @return createdAt
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_CREATED_AT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public OffsetDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_CREATED_AT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setCreatedAt(@javax.annotation.Nullable OffsetDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+
   /**
    * Return true if this WebhookIdParam object is equal to o.
    */
@@ -81,12 +140,14 @@ public class WebhookIdParam {
       return false;
     }
     WebhookIdParam webhookIdParam = (WebhookIdParam) o;
-    return Objects.equals(this.webhookId, webhookIdParam.webhookId);
+    return Objects.equals(this.webhookId, webhookIdParam.webhookId) &&
+        Arrays.equals(this.signingKey, webhookIdParam.signingKey) &&
+        Objects.equals(this.createdAt, webhookIdParam.createdAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(webhookId);
+    return Objects.hash(webhookId, Arrays.hashCode(signingKey), createdAt);
   }
 
   @Override
@@ -94,6 +155,8 @@ public class WebhookIdParam {
     StringBuilder sb = new StringBuilder();
     sb.append("class WebhookIdParam {\n");
     sb.append("    webhookId: ").append(toIndentedString(webhookId)).append("\n");
+    sb.append("    signingKey: ").append(toIndentedString(signingKey)).append("\n");
+    sb.append("    createdAt: ").append(toIndentedString(createdAt)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -144,6 +207,16 @@ public class WebhookIdParam {
     // add `webhookId` to the URL query string
     if (getWebhookId() != null) {
       joiner.add(String.format("%swebhookId%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getWebhookId()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    }
+
+    // add `signingKey` to the URL query string
+    if (getSigningKey() != null) {
+      joiner.add(String.format("%ssigningKey%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getSigningKey()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    }
+
+    // add `createdAt` to the URL query string
+    if (getCreatedAt() != null) {
+      joiner.add(String.format("%screatedAt%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getCreatedAt()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
     }
 
     return joiner.toString();

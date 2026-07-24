@@ -7,8 +7,9 @@ api/openapi.yaml
 build.gradle
 build.sbt
 docs/AddressRead.md
-docs/ContainsOperator.md
+docs/ContainsOrStartWithOperator.md
 docs/ContainsOrStrictOperator.md
+docs/ContainsOrStrictOrStartWithOperator.md
 docs/DirectoryLineApi.md
 docs/DirectoryLineField.md
 docs/DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode.md
@@ -73,6 +74,7 @@ docs/SortingOrder.md
 docs/StrictOperator.md
 docs/StrictOrStartWithOperator.md
 docs/SupervisorApi.md
+docs/UniqueDirectoryLineStatus.md
 git_push.sh
 gradle.properties
 gradle/wrapper/gradle-wrapper.jar
@@ -98,8 +100,9 @@ src/main/java/fr/neotimo/xpz12013/directory/api/SiretApi.java
 src/main/java/fr/neotimo/xpz12013/directory/api/SupervisorApi.java
 src/main/java/fr/neotimo/xpz12013/directory/model/AbstractOpenApiSchema.java
 src/main/java/fr/neotimo/xpz12013/directory/model/AddressRead.java
-src/main/java/fr/neotimo/xpz12013/directory/model/ContainsOperator.java
+src/main/java/fr/neotimo/xpz12013/directory/model/ContainsOrStartWithOperator.java
 src/main/java/fr/neotimo/xpz12013/directory/model/ContainsOrStrictOperator.java
+src/main/java/fr/neotimo/xpz12013/directory/model/ContainsOrStrictOrStartWithOperator.java
 src/main/java/fr/neotimo/xpz12013/directory/model/DirectoryLineField.java
 src/main/java/fr/neotimo/xpz12013/directory/model/DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode.java
 src/main/java/fr/neotimo/xpz12013/directory/model/DirectoryLinePayloadLegalUnitFacilityRoutingCode.java
@@ -159,14 +162,16 @@ src/main/java/fr/neotimo/xpz12013/directory/model/SiretSearchPost200Response.jav
 src/main/java/fr/neotimo/xpz12013/directory/model/SortingOrder.java
 src/main/java/fr/neotimo/xpz12013/directory/model/StrictOperator.java
 src/main/java/fr/neotimo/xpz12013/directory/model/StrictOrStartWithOperator.java
+src/main/java/fr/neotimo/xpz12013/directory/model/UniqueDirectoryLineStatus.java
 src/test/java/fr/neotimo/xpz12013/directory/api/DirectoryLineApiTest.java
 src/test/java/fr/neotimo/xpz12013/directory/api/RoutingCodeApiTest.java
 src/test/java/fr/neotimo/xpz12013/directory/api/SirenApiTest.java
 src/test/java/fr/neotimo/xpz12013/directory/api/SiretApiTest.java
 src/test/java/fr/neotimo/xpz12013/directory/api/SupervisorApiTest.java
 src/test/java/fr/neotimo/xpz12013/directory/model/AddressReadTest.java
-src/test/java/fr/neotimo/xpz12013/directory/model/ContainsOperatorTest.java
+src/test/java/fr/neotimo/xpz12013/directory/model/ContainsOrStartWithOperatorTest.java
 src/test/java/fr/neotimo/xpz12013/directory/model/ContainsOrStrictOperatorTest.java
+src/test/java/fr/neotimo/xpz12013/directory/model/ContainsOrStrictOrStartWithOperatorTest.java
 src/test/java/fr/neotimo/xpz12013/directory/model/DirectoryLineFieldTest.java
 src/test/java/fr/neotimo/xpz12013/directory/model/DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCodeTest.java
 src/test/java/fr/neotimo/xpz12013/directory/model/DirectoryLinePayloadLegalUnitFacilityRoutingCodeTest.java
@@ -226,3 +231,4 @@ src/test/java/fr/neotimo/xpz12013/directory/model/SiretSearchPost200ResponseTest
 src/test/java/fr/neotimo/xpz12013/directory/model/SortingOrderTest.java
 src/test/java/fr/neotimo/xpz12013/directory/model/StrictOperatorTest.java
 src/test/java/fr/neotimo/xpz12013/directory/model/StrictOrStartWithOperatorTest.java
+src/test/java/fr/neotimo/xpz12013/directory/model/UniqueDirectoryLineStatusTest.java

@@ -9,7 +9,7 @@ A sorting criteria composed of a field and an order (ascending or descending).
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**field** | **SirenField** |  |  [optional] |
-|**sortingOrder** | **SortingOrder** |  |  [optional] |
+|**order** | **SortingOrder** |  |  [optional] |
 
 
 

@@ -5,8 +5,9 @@
 .travis.yml
 README.md
 docs/AddressRead.md
-docs/ContainsOperator.md
+docs/ContainsOrStartWithOperator.md
 docs/ContainsOrStrictOperator.md
+docs/ContainsOrStrictOrStartWithOperator.md
 docs/DirectoryLineApi.md
 docs/DirectoryLineField.md
 docs/DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode.md
@@ -71,6 +72,7 @@ docs/SortingOrder.md
 docs/StrictOperator.md
 docs/StrictOrStartWithOperator.md
 docs/SupervisorApi.md
+docs/UniqueDirectoryLineStatus.md
 git_push.sh
 neotimo_xpz12013_directory/__init__.py
 neotimo_xpz12013_directory/api/__init__.py
@@ -85,8 +87,9 @@ neotimo_xpz12013_directory/configuration.py
 neotimo_xpz12013_directory/exceptions.py
 neotimo_xpz12013_directory/models/__init__.py
 neotimo_xpz12013_directory/models/address_read.py
-neotimo_xpz12013_directory/models/contains_operator.py
+neotimo_xpz12013_directory/models/contains_or_start_with_operator.py
 neotimo_xpz12013_directory/models/contains_or_strict_operator.py
+neotimo_xpz12013_directory/models/contains_or_strict_or_start_with_operator.py
 neotimo_xpz12013_directory/models/directory_line_field.py
 neotimo_xpz12013_directory/models/directory_line_payload_history_legal_unit_facility_routing_code_routing_code.py
 neotimo_xpz12013_directory/models/directory_line_payload_legal_unit_facility_routing_code.py
@@ -146,6 +149,7 @@ neotimo_xpz12013_directory/models/siret_search_post200_response.py
 neotimo_xpz12013_directory/models/sorting_order.py
 neotimo_xpz12013_directory/models/strict_operator.py
 neotimo_xpz12013_directory/models/strict_or_start_with_operator.py
+neotimo_xpz12013_directory/models/unique_directory_line_status.py
 neotimo_xpz12013_directory/py.typed
 neotimo_xpz12013_directory/rest.py
 pyproject.toml
@@ -155,8 +159,9 @@ setup.py
 test-requirements.txt
 test/__init__.py
 test/test_address_read.py
-test/test_contains_operator.py
+test/test_contains_or_start_with_operator.py
 test/test_contains_or_strict_operator.py
+test/test_contains_or_strict_or_start_with_operator.py
 test/test_directory_line_api.py
 test/test_directory_line_field.py
 test/test_directory_line_payload_history_legal_unit_facility_routing_code_routing_code.py
@@ -221,4 +226,5 @@ test/test_sorting_order.py
 test/test_strict_operator.py
 test/test_strict_or_start_with_operator.py
 test/test_supervisor_api.py
+test/test_unique_directory_line_status.py
 tox.ini

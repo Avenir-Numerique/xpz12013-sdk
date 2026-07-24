@@ -42,7 +42,11 @@ public sealed class XpZ12013ClientOptions
     /// <summary>OAuth2 token endpoint, e.g. "https://auth.mon-pdp.fr/auth-service/{custId}/token".</summary>
     public string TokenUrl { get; set; } = string.Empty;
 
-    /// <summary>Optional OAuth2 scope(s), space-separated.</summary>
+    /// <summary>
+    /// Optional OAuth2 scope(s), space-separated. The AFNOR specs declare no scopes by default,
+    /// except the Directory Service healthcheck which requires "health.read" (norm v1.3.0);
+    /// include it here if the target platform enforces that scope.
+    /// </summary>
     public string? Scopes { get; set; }
 
     /// <summary>Static Bearer JWT, used when <see cref="UseOAuth2"/> is <c>false</c>.</summary>

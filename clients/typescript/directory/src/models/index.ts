@@ -1,8 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './AddressRead';
-export * from './ContainsOperator';
+export * from './ContainsOrStartWithOperator';
 export * from './ContainsOrStrictOperator';
+export * from './ContainsOrStrictOrStartWithOperator';
 export * from './DirectoryLineField';
 export * from './DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode';
 export * from './DirectoryLinePayloadLegalUnitFacilityRoutingCode';
@@ -62,3 +63,4 @@ export * from './SiretSearchPost200Response';
 export * from './SortingOrder';
 export * from './StrictOperator';
 export * from './StrictOrStartWithOperator';
+export * from './UniqueDirectoryLineStatus';

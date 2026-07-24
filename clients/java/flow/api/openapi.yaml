@@ -6,14 +6,14 @@ info:
   description: "The __Flow Service API__ allows to:\n  - Upload a flow.\n  - Retrieve\
     \ information related to a set of flows.\n  - Download a flow given its identifier\n\
     \nThe resources of the API are :\n  - `/flows` : with creation and retrieval methods.\n\
-    \  - `/webhooks` : creation, update, delete, list\n\nWorflow example:\n  - `POST\
-    \ /flows` : provide the flow information & content\n  - `POST /flows/search` :\
-    \ retrieve flows given multiple criterias.\n  - `GET /flows/{id}` : download a\
-    \ flow based on its id.\n  - `POST /webhooks` : subscribe to a channel of event\n\
-    \ \nHistory:\n  - `1.0.0` : First release\n  - `1.0.1` : Fixes following 2025/04/15\
-    \ SG5 plenary meeting\n    - Remove AcknowledgementXXX enumerates from FlowType\n\
-    \    - Acknowledgement is now based upon details (level, item, reason)\n    -\
-    \ Add the attachment number in the flow information\n    - Add query parameters\
+    \  - `/flows/webhooks` : creation, update, delete, list\n\nWorflow example:\n\
+    \  - `POST /flows` : provide the flow information & content\n  - `POST /flows/search`\
+    \ : retrieve flows given multiple criterias.\n  - `GET /flows/{id}` : download\
+    \ a flow based on its id.\n  - `POST /flows/webhooks` : subscribe to a channel\
+    \ of event\n \nHistory:\n  - `1.0.0` : First release\n  - `1.0.1` : Fixes following\
+    \ 2025/04/15 SG5 plenary meeting\n    - Remove AcknowledgementXXX enumerates from\
+    \ FlowType\n    - Acknowledgement is now based upon details (level, item, reason)\n\
+    \    - Add the attachment number in the flow information\n    - Add query parameters\
     \ docType & docIndex to aim a specific download\n    - Change pagination method,\
     \ from cursors to offsets\n  - `1.0.2` : Fixes following 2025/05/06 SG5 plenary\
     \ meeting\n    - FlowId & TrackingId as not only UUID for more flexibility\n \
@@ -33,12 +33,25 @@ info:
     \ flow types: B2G, B2GInt, B2GOutOfScope\n    - Add new client credentials OAuth2\
     \ workflow\n    - Optimized FlowInfo/FullFlowInfo/Flow schemas\n    - Add name\
     \ in Flow schema\n    - Add OAuth2 securityScheme\n    - Add Header parameter\
-    \ Organization-Id to ease delegation\n"
+    \ Organization-Id to ease delegation\n  - `1.3.0` :\n    - Increase NotOnlyUuid\
+    \ to 64 characters\n    - Update Webhook configuration:\n      - remove processingRule\
+    \ from Metadata\n      - remove any required metadata field (metadat can be empty)\n\
+    \      - simplify configuration (remove headers, auth & signature block)\n   \
+    \   - enrich URL path flexibility\n    - Added missing required for : processingRule\
+    \ & flowProfile in Flow schema in responses\n    - Add base path and service name\
+    \ as variables in server URL\n    - Remove StateInvoice flow type\n    - Add new\
+    \ flowtypes related to e-reporting flows sent to DFH\n      - StateCustomerInvoice\n\
+    \      - StateSupplierInvoice\n      - StateTransactionReport\n      - StateTransactionReportLC\n\
+    \      - StatePaymentReport\n      - StatePaymentReportLC\n    - Use a cursor-based\
+    \ pagination, more efficient than using just dates\n      - cursor in request\n\
+    \      - nextCursor in response\n    - Add Undefined values for ProfileType, FlowType\
+    \ & ProcessingRule\n      - These 3 properties may not be defined in Pending &\
+    \ Error states\n"
   title: AFNOR Flow Service
-  version: 1.2.0
+  version: 1.3.0
 servers:
 - description: Prod public URLs
-  url: "https://{sub-domain}.{domain}/flow-service"
+  url: "https://{sub-domain}.{domain}{base-path}/{service-name}"
   variables:
     sub-domain:
       default: api.flow
@@ -46,6 +59,12 @@ servers:
     domain:
       default: company.com
       description: Domain name
+    base-path:
+      default: ""
+      description: "Custom path that may be used for routing, customer, PA, API"
+    service-name:
+      default: flow-service
+      description: If service name is not the default one
 security:
 - BearerAuth: []
 - OAuth2: []
@@ -179,8 +198,12 @@ paths:
           - Assuming a logical AND when combining criteria
           - Assuming a logical OR for criteria allowing a list of values
 
-        Pagination works with the updatedAfter property
-        The comparison with current date is strict : updatedAt > updatedAfter
+        Pagination works with 2 different ways:
+          - with dates and the updatedAfter property
+            - the comparison with current date is strict : updatedAt > updatedAfter
+          - with cursors (more secure)
+            - in case of pagination a nextCursor will be returned
+            - next pagination call shall set cursor value to nextCursor value of last call
       operationId: searchFlows
       parameters:
       - description: Header parameter used to correlate logs from several components
@@ -435,7 +458,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/listWebhooks_200_response'
-          description: OK - Webhook Id List Response
+          description: OK - Webhook List Response
         "400":
           content:
             application/json:
@@ -490,10 +513,22 @@ paths:
       callbacks:
         WebhookCallback:
           $ref: '#/components/callbacks/WebhookCallback'
-      description: |
-        - Create a new webhook
-        - With technical & security parameters
-        - With metadata to filter on subsets
+      description: "This operation creates and configures a new webhook, providing:\n\
+        - The callback URL\n- The metadata to filter on subsets of events\n\nThe webhook\
+        \ belongs to the owner of the token and cannot be seen from others:\n- It\
+        \ returns an id and a signing key (256 or 512 bits) that should be kept\n\
+        - The signing key allows to validate the signature of each received event.\n\
+        \nHow the signature is managed:\n- At webhook creation a signing Key is randomly\
+        \ generated in a secure way\n  - 256 bits are enough if the random generator\
+        \ is secure \n  - 512 bits are necessary if the generator is not secure\n\
+        - Each time an event is sent:\n  - a SHA-256 fingerprint is generated based\
+        \ on the concatenation of:\n    - the JSON payload of the response (as is,\
+        \ no canonical format)\n    - a separator : @\n    - the current epoch time\
+        \ in seconds\n  - a HMAC signature is computed over the fingerprint with the\
+        \ callback signing key\n  - the signature is base64 encoded for the transport\n\
+        \  \nThe signature and the timestamp are returned in the following headers\
+        \ of the callback:\n  - Afnor-Signature is the signature (base64)\n  - Afnor-Signature-Timestamp\
+        \ is the epoch timestamp in seconds\n"
       operationId: createWebhook
       parameters:
       - description: Header parameter used to correlate logs from several components
@@ -667,199 +702,6 @@ paths:
       - Webhook
       x-accepts:
       - application/json
-    get:
-      description: |
-        - Get a subscription owned by the owner of the token
-        - The operation is allowed only buy the owner of the token
-      operationId: getWebhook
-      parameters:
-      - description: Header parameter used to correlate logs from several components
-        explode: false
-        in: header
-        name: Request-Id
-        required: false
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      - description: The webhook unique ID
-        explode: false
-        in: path
-        name: webhookUid
-        required: true
-        schema:
-          $ref: '#/components/schemas/WebhookId'
-        style: simple
-      - description: The organization that is aimed in a multi tenancy context
-        explode: false
-        in: header
-        name: Organization-Id
-        required: false
-        schema:
-          type: string
-        style: simple
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Webhook'
-          description: OK - Webhook Retrieved
-        "400":
-          content:
-            application/json:
-              example:
-                errorCode: MISSING_REQUIRED_FIELD
-                errorMessage: Invalid request format
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 400 : Bad request."
-        "401":
-          content:
-            application/json:
-              example:
-                errorCode: MISSING_TOKEN
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 401 : Authentication error."
-        "403":
-          content:
-            application/json:
-              example:
-                errorCode: FORBIDDEN_ACCESS
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 403 : Forbidden."
-        "404":
-          content:
-            application/json:
-              example:
-                errorCode: MISSING_RESOURCE
-                errorMessage: Requested resource is Not Found
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 404 : Resource Not Found."
-        "500":
-          content:
-            application/json:
-              example:
-                errorCode: INTERNAL_ERROR
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 500 : Server Internal Error."
-        "503":
-          content:
-            application/json:
-              example:
-                errorCode: RESOURCE_ERROR
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 503 : Unavailable Resource."
-      summary: Get a webhook content
-      tags:
-      - Webhook
-      x-accepts:
-      - application/json
-    patch:
-      description: |
-        - Update the technical configuration of a webhook, keeping the same Metadata
-        - The operation is allowed only buy the owner of the token
-      operationId: updateWebhook
-      parameters:
-      - description: Header parameter used to correlate logs from several components
-        explode: false
-        in: header
-        name: Request-Id
-        required: false
-        schema:
-          format: uuid
-          type: string
-        style: simple
-      - description: The webhook unique ID
-        explode: false
-        in: path
-        name: webhookUid
-        required: true
-        schema:
-          $ref: '#/components/schemas/WebhookId'
-        style: simple
-      - description: The organization that is aimed in a multi tenancy context
-        explode: false
-        in: header
-        name: Organization-Id
-        required: false
-        schema:
-          type: string
-        style: simple
-      requestBody:
-        $ref: '#/components/requestBodies/WebhookPatchRequest'
-      responses:
-        "204":
-          description: No Content - No content expected
-        "400":
-          content:
-            application/json:
-              example:
-                errorCode: MISSING_REQUIRED_FIELD
-                errorMessage: Invalid request format
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 400 : Bad request."
-        "401":
-          content:
-            application/json:
-              example:
-                errorCode: MISSING_TOKEN
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 401 : Authentication error."
-        "403":
-          content:
-            application/json:
-              example:
-                errorCode: FORBIDDEN_ACCESS
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 403 : Forbidden."
-        "404":
-          content:
-            application/json:
-              example:
-                errorCode: MISSING_RESOURCE
-                errorMessage: Requested resource is Not Found
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 404 : Resource Not Found."
-        "500":
-          content:
-            application/json:
-              example:
-                errorCode: INTERNAL_ERROR
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 500 : Server Internal Error."
-        "503":
-          content:
-            application/json:
-              example:
-                errorCode: RESOURCE_ERROR
-                errorMessage: null
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: "Error 503 : Unavailable Resource."
-      summary: Update a webhook subscription
-      tags:
-      - Webhook
-      x-content-type: application/json
-      x-accepts:
-      - application/json
   /v1/healthcheck:
     get:
       operationId: getHealth
@@ -914,17 +756,25 @@ components:
         post:
           parameters:
           - description: |
-              The signature field is required whenever the callback properties hold a signature block
-              - what content is considered into the signature ? body, headers, timestamp
-              - how is the signed content serialized ? Do we need a canonical form ?
+              The HMAC-SHA-256 signature payload
             explode: false
             in: header
-            name: Signature
+            name: Afnor-Signature
             required: false
             schema:
               description: Base 64 encoded string
               format: byte
               type: string
+            style: simple
+          - description: "The timestamp is an epoch time in seconds \nEncoded as a\
+              \ 64 bit integer to avoid the limitation reached in 2038\n"
+            explode: false
+            in: header
+            name: Afnor-Signature-Timestamp
+            required: true
+            schema:
+              format: int64
+              type: integer
             style: simple
           requestBody:
             content:
@@ -972,7 +822,7 @@ components:
                     $ref: '#/components/schemas/Error'
               description: "Error 500 : Server Internal Error."
   parameters:
-    webhookUidPathParam:
+    WebhookUidPathParam:
       description: The webhook unique ID
       explode: false
       in: path
@@ -981,7 +831,7 @@ components:
       schema:
         $ref: '#/components/schemas/WebhookId'
       style: simple
-    organizationIdHeaderParam:
+    OrganizationIdHeaderParam:
       description: The organization that is aimed in a multi tenancy context
       explode: false
       in: header
@@ -1024,12 +874,6 @@ components:
           schema:
             $ref: '#/components/schemas/WebhookParams'
       description: Create a webhook
-    WebhookPatchRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/WebhookPatchPayload'
-      description: Update a webhook's technical parameters
   responses:
     FlowSearchResponse:
       content:
@@ -1066,18 +910,12 @@ components:
           schema:
             $ref: '#/components/schemas/WebhookIdParam'
       description: OK - Webhook Created
-    WebhookFullResponse:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Webhook'
-      description: OK - Webhook Retrieved
     WebhookListResponse:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/listWebhooks_200_response'
-      description: OK - Webhook Id List Response
+      description: OK - Webhook List Response
     Error400Response:
       content:
         application/json:
@@ -1167,8 +1005,18 @@ components:
     NotOnlyUuid:
       description: "Unique identifier supporting UUID but not only, for flexibility\
         \ purpose"
-      maxLength: 36
+      maxLength: 64
       type: string
+    Cursor:
+      description: "Pagination, Opaque cursor for pagination management, acts as a\
+        \ bookmark"
+      example: eyJjcmVhdGVkX2F0IjoiMjAyNS0wNi0wOVQxMDowMDowMFoiLCJpZCI6MTIzNH0=
+      type: string
+    Limit:
+      default: 25
+      description: "Pagination, Maximum number of results that may be returned"
+      maximum: 100
+      type: integer
     ProcessingRule:
       description: |
         - B2B                 : e-invoicing
@@ -1180,6 +1028,7 @@ components:
         - B2GOutOfScope
         - ArchiveOnly         : Archive only, no transmission
         - NotApplicable       : Not Applicable
+        - Undefined           : Not yet defined when in Pending state or unable to define when in Error state
       enum:
       - B2B
       - B2BInt
@@ -1190,6 +1039,7 @@ components:
       - B2GOutOfScope
       - ArchiveOnly
       - NotApplicable
+      - Undefined
       type: string
     FlowSyntax:
       description: Syntax of the original file belonging to a flow
@@ -1206,26 +1056,32 @@ components:
       - Basic
       - CIUS
       - Extended-CTC-FR
+      - Undefined
       type: string
     FlowType:
       description: |
         - `CustomerInvoice`: a non-self-billed outgoing invoice or a self-billed incoming invoice
         - `SupplierInvoice`: a non-self-billed incoming invoice or self-billed outgoing invoice
-        - `StateInvoice`: an invoice Flow sent to DFH
         - `CustomerInvoiceLC`: a lifecycle (CDAR) related to a customer invoice
         - `SupplierInvoiceLC`: a lifecycle (CDAR) related to supplier invoice
         - `StateCustomerInvoiceLC`: a customer invoice LC sent to DFH
         - `StateSupplierInvoiceLC`: a supplier invoice LC sent to DFH
-        - `AggregatedCustomerTransactionReport` : a transaction E-Reporting flow containing aggregated B2C sales (FRR 10.3)
-        - `IndividualCustomerTransactionReport`: a transaction E-Reporting flow containing international B2B sales or a B2C transaction flow reported individually (FRR 10.1)
-        - `AggregatedCustomerPaymentReport` : a E-Reporting of collections flow containing collections linked to B2C sales (FRR 10.4)
-        - `UnitaryCustomerPaymentReport` : an E-Reporting of collections flow containing collections linked to unit international B2B sales or B2C sales (FRR 10.2)
-        - `UnitarySupplierTransactionReport`: a transaction E-Reporting flow containing international B2B purchases (FRR 10.1)
-        - `MultiFlowReport`: an E-Reporting flow which contains at least 2 different flow types (FRR 10)
+        - `AggregatedCustomerTransactionReport` : a transaction e-reporting flow containing aggregated B2C sales (FRR 10.3)
+        - `UnitaryCustomerTransactionReport`: a transaction e-reporting flow containing international B2B sales or a B2C transaction flow reported individually (FRR 10.1)
+        - `AggregatedCustomerPaymentReport` : an e-reporting of collections flow containing collections linked to B2C sales (FRR 10.4)
+        - `UnitaryCustomerPaymentReport` : an e-reporting of collections flow containing collections linked to unit international B2B sales or B2C sales (FRR 10.2)
+        - `UnitarySupplierTransactionReport`: a transaction e-reporting flow containing international B2B purchases (FRR 10.1)
+        - `MultiFlowReport`: an e-reporting flow which contains at least 2 different flow types (FRR 10)
+        - `StateCustomerInvoice` : a reporting flow 1 sent to DFH related to an invoice of type ‘CustomerInvoice’
+        - `StateSupplierInvoice` : a reporting flow 1 sent to DFH related to an invoice of type ‘SupplierInvoice’ for self-billing
+        - `StateTransactionReport` : a transaction e-reporting flow 10.1 or 10.3 sent to the DFH
+        - `StateTransactionReportLC` : a lifecycle for a StateTransactionReport flow
+        - `StatePaymentReport` : a payment e-reporting flow 10.2 or 10.4 sent to DFH
+        - `StatePaymentReportLC` : a lifecycle for a StatePaymentReport flow
+        - `Undefined`            : Not yet defined when in Pending state or unable to define when in Error state
       enum:
       - CustomerInvoice
       - SupplierInvoice
-      - StateInvoice
       - CustomerInvoiceLC
       - SupplierInvoiceLC
       - StateCustomerInvoiceLC
@@ -1236,6 +1092,13 @@ components:
       - UnitaryCustomerPaymentReport
       - UnitarySupplierTransactionReport
       - MultiFlowReport
+      - StateCustomerInvoice
+      - StateSupplierInvoice
+      - StateTransactionReport
+      - StateTransactionReportLC
+      - StatePaymentReport
+      - StatePaymentReportLC
+      - Undefined
       example: SupplierInvoice
       type: string
     FlowDirection:
@@ -1302,16 +1165,6 @@ components:
       - InvoiceLCAccessDenied
       - InvoiceLCAmountError
       type: string
-    Algorithm:
-      enum:
-      - RS256
-      - HS256
-      - ECDSA
-      - EDDSA_25519
-      - RSA_PSS
-      - EDDSA_448
-      - null
-      type: string
     CoreFlowInfo:
       description: "Core schema to build FlowInfo, FullFlowInfo, Flow schemas"
       properties:
@@ -1353,6 +1206,7 @@ components:
       description: Signaling of the flow
     SearchFlowParams:
       example:
+        cursor: ""
         limit: 8
         where:
           updatedBefore: 2000-01-23T04:56:07.000+00:00
@@ -1371,9 +1225,14 @@ components:
       properties:
         limit:
           default: 25
-          description: Maximum number of results that may be returned
+          description: "Pagination, Maximum number of results that may be returned"
           maximum: 100
           type: integer
+        cursor:
+          allOf:
+          - $ref: '#/components/schemas/Cursor'
+          description: "If cursor is provided, then start search starting from that\
+            \ cursor"
         where:
           $ref: '#/components/schemas/SearchFlowFilters'
       required:
@@ -1418,18 +1277,18 @@ components:
         trackingId:
           description: "Unique identifier supporting UUID but not only, for flexibility\
             \ purpose"
-          maxLength: 36
+          maxLength: 64
           type: string
         ackStatus:
           $ref: '#/components/schemas/FlowAckStatus'
       type: object
     FullFlowInfoExtension:
-      description: "Extension schema to build FFullFlowInfo, Flow schemas"
+      description: "Extension schema to build FullFlowInfo, Flow schemas"
       properties:
         flowId:
           description: "Unique identifier supporting UUID but not only, for flexibility\
             \ purpose"
-          maxLength: 36
+          maxLength: 64
           type: string
         submittedAt:
           description: |
@@ -1566,10 +1425,14 @@ components:
         trackingId: ""
         updatedAt: 2000-01-23T04:56:07.000+00:00
         flowType: SupplierInvoice
+      required:
+      - flowProfile
+      - processingRule
     SearchFlowContent:
       description: "A set of flows matching criterias, provided into the request"
       example:
-        limit: 0
+        nextCursor: ""
+        limit: 8
         filters:
           updatedBefore: 2000-01-23T04:56:07.000+00:00
           updatedAfter: 2000-01-23T04:56:07.000+00:00
@@ -1631,7 +1494,17 @@ components:
           flowType: SupplierInvoice
       properties:
         limit:
+          default: 25
+          description: "Pagination, Maximum number of results that may be returned"
+          maximum: 100
           type: integer
+        nextCursor:
+          allOf:
+          - $ref: '#/components/schemas/Cursor'
+          description: |
+            Pagination management:
+            - If present, says where to start for next page, set nextCursor as the cursor in the next request
+            - If omitted, says that pagination is finished
         filters:
           $ref: '#/components/schemas/SearchFlowFilters'
         results:
@@ -1639,160 +1512,46 @@ components:
             $ref: '#/components/schemas/Flow'
           type: array
       type: object
-    CallbackParameters:
+    WebhookParams:
       example:
-        headers:
-        - headerName: headerName
-          headerValue: headerValue
-        - headerName: headerName
-          headerValue: headerValue
-        signature:
-          algo: RS256
-          key: key
-        url: https://openapi-generator.tech
-        authentication:
-          authType: BASIC
-      properties:
-        url:
-          format: uri
-          type: string
-        headers:
-          items:
-            $ref: '#/components/schemas/CallbackHeader'
-          type: array
-        authentication:
-          $ref: '#/components/schemas/CallbackAuthentication'
-        signature:
-          $ref: '#/components/schemas/CallbackSignature'
-      required:
-      - url
-      type: object
-    CallbackHeader:
-      example:
-        headerName: headerName
-        headerValue: headerValue
-      properties:
-        headerName:
-          type: string
-        headerValue:
-          type: string
-      required:
-      - headerName
-      - headerValue
-      type: object
-    OAuth2Authentication:
-      properties:
-        tokenUrl:
-          format: uri
-          type: string
-        clientId:
-          type: string
-        clientSecret:
-          format: password
-          type: string
-      required:
-      - clientId
-      - clientSecret
-      - tokenUrl
-      type: object
-    BasicAuthentication:
-      properties:
-        userId:
-          type: string
-        userPassword:
-          format: password
-          type: string
-      required:
-      - userId
-      - userPassword
-      type: object
-    CallbackAuthentication:
-      description: The authentication mode required for the callback call
-      example:
-        authType: BASIC
-      oneOf:
-      - $ref: '#/components/schemas/BasicAuthentication'
-      - $ref: '#/components/schemas/OAuth2Authentication'
-      properties:
-        authType:
-          enum:
-          - BASIC
-          - OAUTH2
-          type: string
-      required:
-      - authType
-      type: object
-    CallbackSignature:
-      example:
-        algo: RS256
-        key: key
-      properties:
-        algo:
-          $ref: '#/components/schemas/Algorithm'
-        key:
-          description: Base 64 encoded string
-          format: byte
-          type: string
-      required:
-      - algo
-      - key
-      type: object
-    WebhookMetadata:
-      example:
-        processingRule: B2B
+        flowTypes:
+        - SupplierInvoice
+        - SupplierInvoice
         flowDirection: Out
         ackStatus: Pending
-        flowType: SupplierInvoice
+        callbackUrl: https://openapi-generator.tech
       properties:
-        processingRule:
-          $ref: '#/components/schemas/ProcessingRule'
-        flowType:
-          $ref: '#/components/schemas/FlowType'
+        callbackUrl:
+          format: uri
+          type: string
+        flowTypes:
+          items:
+            $ref: '#/components/schemas/FlowType'
+          type: array
         flowDirection:
           $ref: '#/components/schemas/FlowDirection'
         ackStatus:
           $ref: '#/components/schemas/FlowAckStatus'
       required:
-      - flowDirection
-      - flowType
-      type: object
-    WebhookParams:
-      example:
-        metadata:
-          processingRule: B2B
-          flowDirection: Out
-          ackStatus: Pending
-          flowType: SupplierInvoice
-        callback:
-          headers:
-          - headerName: headerName
-            headerValue: headerValue
-          - headerName: headerName
-            headerValue: headerValue
-          signature:
-            algo: RS256
-            key: key
-          url: https://openapi-generator.tech
-          authentication:
-            authType: BASIC
-      properties:
-        callback:
-          $ref: '#/components/schemas/CallbackParameters'
-        metadata:
-          $ref: '#/components/schemas/WebhookMetadata'
-      required:
-      - callback
-      - metadata
+      - callbackUrl
       type: object
     WebhookId:
       format: uuid
       type: string
     WebhookIdParam:
       example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
         webhookId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        signingKey: signingKey
       properties:
         webhookId:
           format: uuid
+          type: string
+        signingKey:
+          format: byte
+          type: string
+        createdAt:
+          format: date-time
           type: string
       type: object
     Webhook:
@@ -1800,46 +1559,15 @@ components:
       - $ref: '#/components/schemas/WebhookIdParam'
       - $ref: '#/components/schemas/WebhookParams'
       example:
-        metadata:
-          processingRule: B2B
-          flowDirection: Out
-          ackStatus: Pending
-          flowType: SupplierInvoice
+        createdAt: 2000-01-23T04:56:07.000+00:00
         webhookId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        callback:
-          headers:
-          - headerName: headerName
-            headerValue: headerValue
-          - headerName: headerName
-            headerValue: headerValue
-          signature:
-            algo: RS256
-            key: key
-          url: https://openapi-generator.tech
-          authentication:
-            authType: BASIC
-    WebhookPatchPayload:
-      example:
-        headers:
-        - headerName: headerName
-          headerValue: headerValue
-        - headerName: headerName
-          headerValue: headerValue
-        signature:
-          algo: RS256
-          key: key
-        authentication:
-          authType: BASIC
-      properties:
-        headers:
-          items:
-            $ref: '#/components/schemas/CallbackHeader'
-          type: array
-        authentication:
-          $ref: '#/components/schemas/CallbackAuthentication'
-        signature:
-          $ref: '#/components/schemas/CallbackSignature'
-      type: object
+        flowTypes:
+        - SupplierInvoice
+        - SupplierInvoice
+        flowDirection: Out
+        ackStatus: Pending
+        signingKey: signingKey
+        callbackUrl: https://openapi-generator.tech
     Error:
       description: Error code
       example:
@@ -1889,15 +1617,35 @@ components:
       type: object
     listWebhooks_200_response:
       example:
-        webhookIds:
-        - null
-        - null
+        webhooks:
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          webhookId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          flowTypes:
+          - SupplierInvoice
+          - SupplierInvoice
+          flowDirection: Out
+          ackStatus: Pending
+          signingKey: signingKey
+          callbackUrl: https://openapi-generator.tech
+        - createdAt: 2000-01-23T04:56:07.000+00:00
+          webhookId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          flowTypes:
+          - SupplierInvoice
+          - SupplierInvoice
+          flowDirection: Out
+          ackStatus: Pending
+          signingKey: signingKey
+          callbackUrl: https://openapi-generator.tech
+        count: 0
       properties:
-        webhookIds:
+        count:
+          type: integer
+        webhooks:
           items:
-            $ref: '#/components/schemas/WebhookId'
+            $ref: '#/components/schemas/Webhook'
           type: array
       required:
+      - count
       - webhookIds
       type: object
   securitySchemes:

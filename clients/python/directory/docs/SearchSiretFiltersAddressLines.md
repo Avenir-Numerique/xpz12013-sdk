@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**op** | [**ContainsOperator**](ContainsOperator.md) |  | [optional] 
+**op** | [**ContainsOrStartWithOperator**](ContainsOrStartWithOperator.md) |  | [optional] 
 **value** | **str** | address lines of the recipient structure having defined the directory line(s). | [optional] 
 
 ## Example

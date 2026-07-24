@@ -375,7 +375,7 @@ ApiResponse<Void>
 
 Select flows upon criteria
 
-Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with the updatedAfter property The comparison with current date is strict : updatedAt &gt; updatedAfter 
+Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with 2 different ways:   - with dates and the updatedAfter property     - the comparison with current date is strict : updatedAt &gt; updatedAfter   - with cursors (more secure)     - in case of pagination a nextCursor will be returned     - next pagination call shall set cursor value to nextCursor value of last call 
 
 ### Example
 
@@ -459,7 +459,7 @@ public class Example {
 
 Select flows upon criteria
 
-Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with the updatedAfter property The comparison with current date is strict : updatedAt &gt; updatedAfter 
+Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with 2 different ways:   - with dates and the updatedAfter property     - the comparison with current date is strict : updatedAt &gt; updatedAfter   - with cursors (more secure)     - in case of pagination a nextCursor will be returned     - next pagination call shall set cursor value to nextCursor value of last call 
 
 ### Example
 

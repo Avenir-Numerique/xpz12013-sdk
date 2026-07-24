@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **business_name** | **str** | Business name | [optional] 
 **entity_type** | [**EntityType**](EntityType.md) |  | [optional] 
 **administrative_status** | [**LegalUnitAdministrativeStatus**](LegalUnitAdministrativeStatus.md) |  | [optional] 
+**instructions** | [**SirenInstructions**](SirenInstructions.md) |  | [optional] 
 
 ## Example
 

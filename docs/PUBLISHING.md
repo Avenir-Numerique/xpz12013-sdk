@@ -82,11 +82,14 @@ Le workflow `release.yml` se déclenche sur un tag `v*` et publie les deux paque
 (`Neotimo.XpZ12013.Sdk` et `…​.DependencyInjection`) avec la version dérivée du tag.
 
 ```powershell
-git tag v1.2.0          # version alignée sur la norme XP Z12-013
-git push origin v1.2.0
+git tag v2.0.0          # release SDK (voir note SemVer ci-dessous)
+git push origin v2.0.0
 ```
 
-> Convention suggérée : versionner le SDK sur la version de norme couverte (1.2.0).
+> **Versionnage** : le SDK suit le **SemVer** de son API publique, pas le numéro de la norme.
+> La v2.0.0 couvre la norme XP Z12-013 **v1.3.0** ; le bump majeur (1.x → 2.0.0) traduit les
+> ruptures d'API de cette version (webhooks aplatis, opérations webhook retirées, valeurs
+> d'enum modifiées). Voir `CHANGELOG.md` pour le guide de migration.
 
 ---
 

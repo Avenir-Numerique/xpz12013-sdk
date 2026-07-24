@@ -98,9 +98,16 @@ info:
     \    - Add Upcoming as a directoryLineStatus option \n    - Add OAuth2 security\
     \ scheme\n    - Remove Accept-language and Content-Language from the header\n\
     \    - Change diffusible into salesProspectingForbidden\n    - Add 204 response\
-    \ for search routes\n"
+    \ for search routes\n  - `1.3.0` : Fixes following SG5 meeting\n    - Add directoryLineStatus\
+    \ to the GET /v1/directory-line/code:{addressing-identifier} response\n    - Remove\
+    \ 206 response for search route\n    - Add include to the POST /v1/directory-line/search\n\
+    \    - Add base path in server URL\n    - Add instructions to included legalUnit\
+    \ and facility\n    - Change behavior for nb of returned results (-1 if not managed)\n\
+    \    - Remove 204 error codes for search routes\n    - Set default ignore to 0\n\
+    \    - Add startWith operator to businessName, name, addressLines and postalCode\n\
+    \    - Match exemple and schema for order (sorting)\n"
   title: AFNOR Directory Service
-  version: 1.2.0
+  version: 1.3.0
   x-audience: external-public
   x-api-id: 3230c8a1-f7df-4fa1-8506-24ce034670ce
 externalDocs:
@@ -108,7 +115,7 @@ externalDocs:
   url: https://www.impots.gouv.fr
 servers:
 - description: Prod public URLs
-  url: "https://{sub-domain}.{domain}/directory-service"
+  url: "https://{sub-domain}.{domain}{base-path}/directory-service"
   variables:
     sub-domain:
       default: api.directory
@@ -116,6 +123,9 @@ servers:
     domain:
       default: company.com
       description: Domain name
+    base-path:
+      default: ""
+      description: "Custom path that may be used for routing, customer, PA, API"
 security:
 - bearerAuth: []
 - OAuth2: []
@@ -124,7 +134,7 @@ tags:
   name: Siren
 - description: Facility by Siret number
   name: Siret
-- description: routing Code
+- description: Routing Code
   name: Routing Code
 - description: Directory Line
   name: Directory Line
@@ -147,15 +157,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/sirenSearchPost200Response'
           description: Returns one or more companies.
-        "204":
-          description: No Content - No content expected
-        "206":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/sirenSearchPost200Response'
-          description: "Request processed without error, but the volume of information\
-            \ returned has been reduced."
         "400":
           content:
             application/json:
@@ -421,15 +422,6 @@ paths:
           description: Returns an establishment as defined on a given observation
             date or as defined on the current date if the observation date is not
             specified.
-        "204":
-          description: No Content - No content expected
-        "206":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/siretSearchPost200Response'
-          description: "Request processed without error, but the volume of information\
-            \ returned has been reduced."
         "400":
           content:
             application/json:
@@ -716,15 +708,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/routingCodeSearchPost200Response'
           description: Returns the routing code(s) matching the search criteria.
-        "204":
-          description: No Content - No content expected
-        "206":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/routingCodeSearchPost200Response'
-          description: "Request processed without error, but the volume of information\
-            \ returned has been reduced."
         "400":
           content:
             application/json:
@@ -1017,15 +1000,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/directoryLineSearchPost200Response'
           description: returns the directory line(s) matching the search criteria.
-        "204":
-          description: No Content - No content expected
-        "206":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/directoryLineSearchPost200Response'
-          description: "Request processed without error, but the volume of information\
-            \ returned has been reduced."
         "400":
           content:
             application/json:
@@ -1487,8 +1461,6 @@ components:
         type: array
       style: form
   responses:
-    Ok204EmptyResponse:
-      description: No Content - No content expected
     Error400Response:
       content:
         application/json:
@@ -1588,7 +1560,7 @@ components:
         - field: administrativeStatus
           order: descending
         limit: 50
-        ignore: 20
+        ignore: 0
         filters:
           siren:
             op: strict
@@ -1639,13 +1611,15 @@ components:
           type: integer
         ignore:
           description: Number of results to skip
-          example: 20
+          example: 0
           format: int32
           type: integer
       title: searchSiren
       type: object
     totalNumberOfResults:
-      description: The total number of results
+      default: -1
+      description: "The total number of results, if -1 is returned then this value\
+        \ is not managed due to performance issue"
       example: 1500
       format: int32
       type: integer
@@ -1697,7 +1671,7 @@ components:
         - field: name
           order: descending
         limit: 50
-        ignore: 20
+        ignore: 0
         filters:
           siren:
             op: strict
@@ -1787,7 +1761,7 @@ components:
           type: integer
         ignore:
           description: Number of results to skip
-          example: 20
+          example: 0
           format: int32
           type: integer
       title: searchSiret
@@ -1817,6 +1791,8 @@ components:
           isSalesProspectingForbidden: false
         name: Boulangerie Pascale
         legalUnit:
+          instructions:
+            isSalesProspectingForbidden: false
           siren: "702042755"
           administrativeStatus: A
           entityType: Public
@@ -1918,11 +1894,11 @@ components:
         - siret
         sorting:
         - field: siret
-          order: ascendant
+          order: ascending
         - field: routingIdentifier
-          order: ascendant
+          order: ascending
         limit: 50
-        ignore: 20
+        ignore: 0
         filters:
           routingIdentifier:
             op: contains
@@ -1960,9 +1936,9 @@ components:
           description: Sorting criteria on a field and an order (ascending or descending).
           example:
           - field: siret
-            order: ascendant
+            order: ascending
           - field: routingIdentifier
-            order: ascendant
+            order: ascending
           items:
             $ref: '#/components/schemas/routingCodeSearchSortingInner'
           type: array
@@ -1996,7 +1972,7 @@ components:
           type: integer
         ignore:
           description: Number of results to skip
-          example: 20
+          example: 0
           format: int32
           type: integer
       title: routingCodeSearch
@@ -2016,6 +1992,8 @@ components:
         administrativeStatus: A
         managesLegalCommitmentCode: true
         legalUnit:
+          instructions:
+            isSalesProspectingForbidden: false
           siren: "702042755"
           administrativeStatus: A
           entityType: Public
@@ -2023,6 +2001,8 @@ components:
         routingIdentifierType: "0224"
         siret: "70204275500240"
         facility:
+          instructions:
+            isSalesProspectingForbidden: false
           siren: "702042755"
           address:
             countryCode: FR
@@ -2103,11 +2083,15 @@ components:
       type: string
     searchDirectoryLine:
       example:
+        include:
+        - siren
+        - siret
+        - routingCode
         sorting:
         - field: addressingIdentifier
           order: ascending
         limit: 50
-        ignore: 20
+        ignore: 0
         filters:
           addressingSuffix:
             op: contains
@@ -2129,6 +2113,7 @@ components:
         - siren
         - siret
         - addressingSuffix
+        - routingIdentifier
       properties:
         filters:
           $ref: '#/components/schemas/searchDirectoryLineFilters'
@@ -2147,8 +2132,21 @@ components:
           - siren
           - siret
           - addressingSuffix
+          - routingIdentifier
           items:
             $ref: '#/components/schemas/directoryLineField'
+          type: array
+        include:
+          example:
+          - siren
+          - siret
+          - routingCode
+          items:
+            enum:
+            - siren
+            - siret
+            - routingCode
+            type: string
           type: array
         limit:
           description: Maximum number of results
@@ -2157,7 +2155,7 @@ components:
           type: integer
         ignore:
           description: Number of results to skip
-          example: 20
+          example: 0
           format: int32
           type: integer
       title: searchDirectoryLine
@@ -2166,16 +2164,21 @@ components:
       example:
         addressingSuffix: dcsc456sdcsdcs556
         siren: "702042755"
+        routingIdentifier: dcsc456sdcsdcs556
         addressingIdentifier: dcsc456sdcsdcs556
         platformType: WK
         directoryLineStatus: Enabled
         legalUnit:
+          instructions:
+            isSalesProspectingForbidden: false
           siren: "702042755"
           administrativeStatus: A
           entityType: Public
           businessName: Boulangerie Pascale
         siret: "70204275500240"
         facility:
+          instructions:
+            isSalesProspectingForbidden: false
           siren: "702042755"
           address:
             countryCode: FR
@@ -2234,6 +2237,12 @@ components:
           maxLength: 14
           pattern: "^([0-9]{14})$"
           type: string
+        routingIdentifier:
+          description: Routing identifier od a routing code.
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          pattern: "^(?!\\s+$)[\\-_/a-zA-Z0-9]{1,100}$"
+          type: string
         addressingSuffix:
           description: suffix of the directory line which defines an address mesh
             not attached to a facility
@@ -2252,15 +2261,21 @@ components:
       example:
         addressingSuffix: dcsc456sdcsdcs556
         siren: "702042755"
+        routingIdentifier: dcsc456sdcsdcs556
         addressingIdentifier: dcsc456sdcsdcs556
         platformType: WK
+        directoryLineStatus: Enabled
         legalUnit:
+          instructions:
+            isSalesProspectingForbidden: false
           siren: "702042755"
           administrativeStatus: A
           entityType: Public
           businessName: Boulangerie Pascale
         siret: "70204275500240"
         facility:
+          instructions:
+            isSalesProspectingForbidden: false
           siren: "702042755"
           address:
             countryCode: FR
@@ -2305,6 +2320,8 @@ components:
           type: string
         platformType:
           $ref: '#/components/schemas/recipientPlatformType'
+        directoryLineStatus:
+          $ref: '#/components/schemas/uniqueDirectoryLineStatus'
         siren:
           description: SIREN number
           example: "702042755"
@@ -2316,6 +2333,12 @@ components:
           example: "70204275500240"
           maxLength: 14
           pattern: "^([0-9]{14})$"
+          type: string
+        routingIdentifier:
+          description: Routing identifier od a routing code.
+          example: dcsc456sdcsdcs556
+          maxLength: 100
+          pattern: "^(?!\\s+$)[\\-_/a-zA-Z0-9]{1,100}$"
           type: string
         addressingSuffix:
           description: suffix of the directory line which defines an address mesh
@@ -2346,17 +2369,27 @@ components:
       - addressingSuffix
       example: siren
       type: string
-    containsOperator:
-      description: \"contains\" comparison operator
-      enum:
-      - contains
-      example: contains
-      type: string
     containsOrStrictOperator:
       description: \"contains\" or \"strict\" comparison operator
       enum:
       - contains
       - strict
+      example: contains
+      type: string
+    containsOrStartWithOperator:
+      description: \"contains\" or \"startWith\" comparison operator
+      enum:
+      - contains
+      - startWith
+      example: contains
+      type: string
+    containsOrStrictOrStartWithOperator:
+      description: "\\\"contains\\\", \\\"strict\\\" or \\\"startWith\\\" comparison\
+        \ operator"
+      enum:
+      - contains
+      - strict
+      - startWith
       example: contains
       type: string
     strictOperator:
@@ -2406,7 +2439,6 @@ components:
       - ascending
       - descending
       example: ascending
-      title: sortingOrder
       type: string
     limit:
       description: Maximum number of results
@@ -2415,7 +2447,7 @@ components:
       type: integer
     ignore:
       description: Number of results to skip
-      example: 20
+      example: 0
       format: int32
       type: integer
     siren:
@@ -2610,6 +2642,8 @@ components:
       type: string
     legalUnitPayloadIncluded:
       example:
+        instructions:
+          isSalesProspectingForbidden: false
         siren: "702042755"
         administrativeStatus: A
         entityType: Public
@@ -2630,10 +2664,14 @@ components:
           $ref: '#/components/schemas/entityType'
         administrativeStatus:
           $ref: '#/components/schemas/legalUnitAdministrativeStatus'
+        instructions:
+          $ref: '#/components/schemas/sirenInstructions'
       title: legalUnitPayloadIncluded
       type: object
     facilityPayloadIncluded:
       example:
+        instructions:
+          isSalesProspectingForbidden: false
         siren: "702042755"
         address:
           countryCode: FR
@@ -2677,6 +2715,8 @@ components:
           $ref: '#/components/schemas/facilityType'
         administrativeStatus:
           $ref: '#/components/schemas/facilityAdministrativeStatus'
+        instructions:
+          $ref: '#/components/schemas/siretInstructions'
         address:
           $ref: '#/components/schemas/addressRead'
         b2gAdditionalData:
@@ -2710,6 +2750,17 @@ components:
       - Enabled
       - Disabled
       - Upcoming
+      example: Enabled
+      maxLength: 7
+      type: string
+    uniqueDirectoryLineStatus:
+      description: |
+        Current line status of the platform.
+          - Enabled : Active line linked to a platform
+          - Disabled : No platform linked to the line
+      enum:
+      - Enabled
+      - Disabled
       example: Enabled
       maxLength: 7
       type: string
@@ -2752,7 +2803,7 @@ components:
           - field: administrativeStatus
             order: descending
           limit: 50
-          ignore: 20
+          ignore: 0
           filters:
             siren:
               op: strict
@@ -2789,7 +2840,9 @@ components:
         search:
           $ref: '#/components/schemas/searchSiren'
         totalNumberOfResults:
-          description: The total number of results
+          default: -1
+          description: "The total number of results, if -1 is returned then this value\
+            \ is not managed due to performance issue"
           example: 1500
           format: int32
           type: integer
@@ -2810,7 +2863,7 @@ components:
           - field: name
             order: descending
           limit: 50
-          ignore: 20
+          ignore: 0
           filters:
             siren:
               op: strict
@@ -2877,6 +2930,8 @@ components:
             isSalesProspectingForbidden: false
           name: Boulangerie Pascale
           legalUnit:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             administrativeStatus: A
             entityType: Public
@@ -2905,6 +2960,8 @@ components:
             isSalesProspectingForbidden: false
           name: Boulangerie Pascale
           legalUnit:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             administrativeStatus: A
             entityType: Public
@@ -2914,7 +2971,9 @@ components:
         search:
           $ref: '#/components/schemas/searchSiret'
         totalNumberOfResults:
-          description: The total number of results
+          default: -1
+          description: "The total number of results, if -1 is returned then this value\
+            \ is not managed due to performance issue"
           example: 1500
           format: int32
           type: integer
@@ -2932,11 +2991,11 @@ components:
           - siret
           sorting:
           - field: siret
-            order: ascendant
+            order: ascending
           - field: routingIdentifier
-            order: ascendant
+            order: ascending
           limit: 50
-          ignore: 20
+          ignore: 0
           filters:
             routingIdentifier:
               op: contains
@@ -2981,6 +3040,8 @@ components:
           administrativeStatus: A
           managesLegalCommitmentCode: true
           legalUnit:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             administrativeStatus: A
             entityType: Public
@@ -2988,6 +3049,8 @@ components:
           routingIdentifierType: "0224"
           siret: "70204275500240"
           facility:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             address:
               countryCode: FR
@@ -3023,6 +3086,8 @@ components:
           administrativeStatus: A
           managesLegalCommitmentCode: true
           legalUnit:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             administrativeStatus: A
             entityType: Public
@@ -3030,6 +3095,8 @@ components:
           routingIdentifierType: "0224"
           siret: "70204275500240"
           facility:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             address:
               countryCode: FR
@@ -3056,7 +3123,9 @@ components:
         search:
           $ref: '#/components/schemas/routingCodeSearch'
         totalNumberOfResults:
-          description: The total number of results
+          default: -1
+          description: "The total number of results, if -1 is returned then this value\
+            \ is not managed due to performance issue"
           example: 1500
           format: int32
           type: integer
@@ -3069,11 +3138,15 @@ components:
       example:
         totalNumberOfResults: 1500
         search:
+          include:
+          - siren
+          - siret
+          - routingCode
           sorting:
           - field: addressingIdentifier
             order: ascending
           limit: 50
-          ignore: 20
+          ignore: 0
           filters:
             addressingSuffix:
               op: contains
@@ -3095,19 +3168,25 @@ components:
           - siren
           - siret
           - addressingSuffix
+          - routingIdentifier
         results:
         - addressingSuffix: dcsc456sdcsdcs556
           siren: "702042755"
+          routingIdentifier: dcsc456sdcsdcs556
           addressingIdentifier: dcsc456sdcsdcs556
           platformType: WK
           directoryLineStatus: Enabled
           legalUnit:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             administrativeStatus: A
             entityType: Public
             businessName: Boulangerie Pascale
           siret: "70204275500240"
           facility:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             address:
               countryCode: FR
@@ -3146,16 +3225,21 @@ components:
             routingCodeName: Libellé Code routage
         - addressingSuffix: dcsc456sdcsdcs556
           siren: "702042755"
+          routingIdentifier: dcsc456sdcsdcs556
           addressingIdentifier: dcsc456sdcsdcs556
           platformType: WK
           directoryLineStatus: Enabled
           legalUnit:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             administrativeStatus: A
             entityType: Public
             businessName: Boulangerie Pascale
           siret: "70204275500240"
           facility:
+            instructions:
+              isSalesProspectingForbidden: false
             siren: "702042755"
             address:
               countryCode: FR
@@ -3196,7 +3280,9 @@ components:
         search:
           $ref: '#/components/schemas/searchDirectoryLine'
         totalNumberOfResults:
-          description: The total number of results
+          default: -1
+          description: "The total number of results, if -1 is returned then this value\
+            \ is not managed due to performance issue"
           example: 1500
           format: int32
           type: integer
@@ -3225,7 +3311,7 @@ components:
         value: Boulangerie Pascale
       properties:
         op:
-          $ref: '#/components/schemas/containsOrStrictOperator'
+          $ref: '#/components/schemas/containsOrStrictOrStartWithOperator'
         value:
           description: Business name
           example: Boulangerie Pascale
@@ -3281,11 +3367,11 @@ components:
         or descending).
       example:
         field: siren
-        order: ascendant
+        order: ascending
       properties:
         field:
           $ref: '#/components/schemas/sirenField'
-        sortingOrder:
+        order:
           $ref: '#/components/schemas/sortingOrder'
       type: object
     searchSiretFiltersSiret:
@@ -3318,7 +3404,7 @@ components:
         value: Boulangerie Pascale
       properties:
         op:
-          $ref: '#/components/schemas/containsOrStrictOperator'
+          $ref: '#/components/schemas/containsOrStrictOrStartWithOperator'
         value:
           description: business name
           example: Boulangerie Pascale
@@ -3331,7 +3417,7 @@ components:
         value: 16 BIS RUE HENRI BARBUSSE - CEDEX 1 - Bâtiment le Callipso
       properties:
         op:
-          $ref: '#/components/schemas/containsOperator'
+          $ref: '#/components/schemas/containsOrStartWithOperator'
         value:
           description: address lines of the recipient structure having defined the
             directory line(s).
@@ -3372,7 +3458,7 @@ components:
         value: Grenoble
       properties:
         op:
-          $ref: '#/components/schemas/containsOrStrictOperator'
+          $ref: '#/components/schemas/containsOrStrictOrStartWithOperator'
         value:
           description: Municipality of the recipient structure having defined the
             directory line(s).
@@ -3444,11 +3530,11 @@ components:
         or descending).
       example:
         field: siret
-        sortingOrder: ascending
+        order: ascending
       properties:
         field:
           $ref: '#/components/schemas/siretField'
-        sortingOrder:
+        order:
           $ref: '#/components/schemas/sortingOrder'
       type: object
     facilityPayloadHistoryUleB2gAdditionalData:
@@ -3584,7 +3670,7 @@ components:
         descending).
       example:
         field: siret
-        order: descendant
+        order: descending
       properties:
         field:
           $ref: '#/components/schemas/routingCodeField'
@@ -3656,7 +3742,7 @@ components:
       properties:
         field:
           $ref: '#/components/schemas/directoryLineField'
-        sortingOrder:
+        order:
           $ref: '#/components/schemas/sortingOrder'
       type: object
     directoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode:

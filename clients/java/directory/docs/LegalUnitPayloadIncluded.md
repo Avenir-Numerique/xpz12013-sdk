@@ -11,6 +11,7 @@
 |**businessName** | **String** | Business name |  [optional] |
 |**entityType** | **EntityType** |  |  [optional] |
 |**administrativeStatus** | **LegalUnitAdministrativeStatus** |  |  [optional] |
+|**instructions** | [**SirenInstructions**](SirenInstructions.md) |  |  [optional] |
 
 
 

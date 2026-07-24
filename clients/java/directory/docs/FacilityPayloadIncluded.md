@@ -12,6 +12,7 @@
 |**name** | **String** | business name |  [optional] |
 |**facilityType** | **FacilityType** |  |  [optional] |
 |**administrativeStatus** | **FacilityAdministrativeStatus** |  |  [optional] |
+|**instructions** | [**SiretInstructions**](SiretInstructions.md) |  |  [optional] |
 |**address** | [**AddressRead**](AddressRead.md) |  |  [optional] |
 |**b2gAdditionalData** | [**FacilityPayloadHistoryUleB2gAdditionalData**](FacilityPayloadHistoryUleB2gAdditionalData.md) |  |  [optional] |
 

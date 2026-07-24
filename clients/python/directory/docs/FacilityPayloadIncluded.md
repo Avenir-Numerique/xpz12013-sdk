@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **name** | **str** | business name | [optional] 
 **facility_type** | [**FacilityType**](FacilityType.md) |  | [optional] 
 **administrative_status** | [**FacilityAdministrativeStatus**](FacilityAdministrativeStatus.md) |  | [optional] 
+**instructions** | [**SiretInstructions**](SiretInstructions.md) |  | [optional] 
 **address** | [**AddressRead**](AddressRead.md) |  | [optional] 
 **b2g_additional_data** | [**FacilityPayloadHistoryUleB2gAdditionalData**](FacilityPayloadHistoryUleB2gAdditionalData.md) |  | [optional] 
 

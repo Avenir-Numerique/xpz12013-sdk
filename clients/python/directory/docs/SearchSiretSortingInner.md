@@ -7,7 +7,7 @@ A sorting criteria composed of a field and an order (ascending or descending).
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **var_field** | [**SiretField**](SiretField.md) |  | [optional] 
-**sorting_order** | [**SortingOrder**](SortingOrder.md) |  | [optional] 
+**order** | [**SortingOrder**](SortingOrder.md) |  | [optional] 
 
 ## Example
 

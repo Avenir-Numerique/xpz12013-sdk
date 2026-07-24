@@ -11,8 +11,9 @@ src/apis/SupervisorApi.ts
 src/apis/index.ts
 src/index.ts
 src/models/AddressRead.ts
-src/models/ContainsOperator.ts
+src/models/ContainsOrStartWithOperator.ts
 src/models/ContainsOrStrictOperator.ts
+src/models/ContainsOrStrictOrStartWithOperator.ts
 src/models/DirectoryLineField.ts
 src/models/DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode.ts
 src/models/DirectoryLinePayloadLegalUnitFacilityRoutingCode.ts
@@ -72,6 +73,7 @@ src/models/SiretSearchPost200Response.ts
 src/models/SortingOrder.ts
 src/models/StrictOperator.ts
 src/models/StrictOrStartWithOperator.ts
+src/models/UniqueDirectoryLineStatus.ts
 src/models/index.ts
 src/runtime.ts
 tsconfig.esm.json

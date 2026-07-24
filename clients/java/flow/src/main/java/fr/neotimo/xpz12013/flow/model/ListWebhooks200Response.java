@@ -1,8 +1,8 @@
 /*
  * AFNOR Flow Service
- * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation 
+ * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/flows/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /flows/webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation   - `1.3.0` :     - Increase NotOnlyUuid to 64 characters     - Update Webhook configuration:       - remove processingRule from Metadata       - remove any required metadata field (metadat can be empty)       - simplify configuration (remove headers, auth & signature block)       - enrich URL path flexibility     - Added missing required for : processingRule & flowProfile in Flow schema in responses     - Add base path and service name as variables in server URL     - Remove StateInvoice flow type     - Add new flowtypes related to e-reporting flows sent to DFH       - StateCustomerInvoice       - StateSupplierInvoice       - StateTransactionReport       - StateTransactionReportLC       - StatePaymentReport       - StatePaymentReportLC     - Use a cursor-based pagination, more efficient than using just dates       - cursor in request       - nextCursor in response     - Add Undefined values for ProfileType, FlowType & ProcessingRule       - These 3 properties may not be defined in Pending & Error states 
  *
- * The version of the OpenAPI document: 1.2.0
+ * The version of the OpenAPI document: 1.3.0
  * Contact: sg5@afnor.org
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -24,10 +24,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
+import fr.neotimo.xpz12013.flow.model.Webhook;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
@@ -36,46 +36,75 @@ import fr.neotimo.xpz12013.flow.ApiClient;
  * ListWebhooks200Response
  */
 @JsonPropertyOrder({
-  ListWebhooks200Response.JSON_PROPERTY_WEBHOOK_IDS
+  ListWebhooks200Response.JSON_PROPERTY_COUNT,
+  ListWebhooks200Response.JSON_PROPERTY_WEBHOOKS
 })
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.11.0")
 public class ListWebhooks200Response {
-  public static final String JSON_PROPERTY_WEBHOOK_IDS = "webhookIds";
+  public static final String JSON_PROPERTY_COUNT = "count";
   @javax.annotation.Nonnull
-  private List<UUID> webhookIds = new ArrayList<>();
+  private Integer count;
+
+  public static final String JSON_PROPERTY_WEBHOOKS = "webhooks";
+  @javax.annotation.Nullable
+  private List<Webhook> webhooks = new ArrayList<>();
 
   public ListWebhooks200Response() { 
   }
 
-  public ListWebhooks200Response webhookIds(@javax.annotation.Nonnull List<UUID> webhookIds) {
-    this.webhookIds = webhookIds;
-    return this;
-  }
-
-  public ListWebhooks200Response addWebhookIdsItem(UUID webhookIdsItem) {
-    if (this.webhookIds == null) {
-      this.webhookIds = new ArrayList<>();
-    }
-    this.webhookIds.add(webhookIdsItem);
+  public ListWebhooks200Response count(@javax.annotation.Nonnull Integer count) {
+    this.count = count;
     return this;
   }
 
   /**
-   * Get webhookIds
-   * @return webhookIds
+   * Get count
+   * @return count
    */
   @javax.annotation.Nonnull
-  @JsonProperty(JSON_PROPERTY_WEBHOOK_IDS)
+  @JsonProperty(JSON_PROPERTY_COUNT)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<UUID> getWebhookIds() {
-    return webhookIds;
+  public Integer getCount() {
+    return count;
   }
 
 
-  @JsonProperty(JSON_PROPERTY_WEBHOOK_IDS)
+  @JsonProperty(JSON_PROPERTY_COUNT)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setWebhookIds(@javax.annotation.Nonnull List<UUID> webhookIds) {
-    this.webhookIds = webhookIds;
+  public void setCount(@javax.annotation.Nonnull Integer count) {
+    this.count = count;
+  }
+
+
+  public ListWebhooks200Response webhooks(@javax.annotation.Nullable List<Webhook> webhooks) {
+    this.webhooks = webhooks;
+    return this;
+  }
+
+  public ListWebhooks200Response addWebhooksItem(Webhook webhooksItem) {
+    if (this.webhooks == null) {
+      this.webhooks = new ArrayList<>();
+    }
+    this.webhooks.add(webhooksItem);
+    return this;
+  }
+
+  /**
+   * Get webhooks
+   * @return webhooks
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_WEBHOOKS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public List<Webhook> getWebhooks() {
+    return webhooks;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_WEBHOOKS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setWebhooks(@javax.annotation.Nullable List<Webhook> webhooks) {
+    this.webhooks = webhooks;
   }
 
 
@@ -91,19 +120,21 @@ public class ListWebhooks200Response {
       return false;
     }
     ListWebhooks200Response listWebhooks200Response = (ListWebhooks200Response) o;
-    return Objects.equals(this.webhookIds, listWebhooks200Response.webhookIds);
+    return Objects.equals(this.count, listWebhooks200Response.count) &&
+        Objects.equals(this.webhooks, listWebhooks200Response.webhooks);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(webhookIds);
+    return Objects.hash(count, webhooks);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ListWebhooks200Response {\n");
-    sb.append("    webhookIds: ").append(toIndentedString(webhookIds)).append("\n");
+    sb.append("    count: ").append(toIndentedString(count)).append("\n");
+    sb.append("    webhooks: ").append(toIndentedString(webhooks)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -151,13 +182,17 @@ public class ListWebhooks200Response {
 
     StringJoiner joiner = new StringJoiner("&");
 
-    // add `webhookIds` to the URL query string
-    if (getWebhookIds() != null) {
-      for (int i = 0; i < getWebhookIds().size(); i++) {
-        if (getWebhookIds().get(i) != null) {
-          joiner.add(String.format("%swebhookIds%s%s=%s", prefix, suffix,
-              "".equals(suffix) ? "" : String.format("%s%d%s", containerPrefix, i, containerSuffix),
-              URLEncoder.encode(ApiClient.valueToString(getWebhookIds().get(i)), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    // add `count` to the URL query string
+    if (getCount() != null) {
+      joiner.add(String.format("%scount%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getCount()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    }
+
+    // add `webhooks` to the URL query string
+    if (getWebhooks() != null) {
+      for (int i = 0; i < getWebhooks().size(); i++) {
+        if (getWebhooks().get(i) != null) {
+          joiner.add(getWebhooks().get(i).toUrlQueryString(String.format("%swebhooks%s%s", prefix, suffix,
+          "".equals(suffix) ? "" : String.format("%s%d%s", containerPrefix, i, containerSuffix))));
         }
       }
     }

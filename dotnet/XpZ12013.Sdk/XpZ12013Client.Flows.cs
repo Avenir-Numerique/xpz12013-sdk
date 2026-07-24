@@ -35,8 +35,9 @@ public sealed partial class XpZ12013Client
     }
 
     /// <summary>
-    /// Searches flows matching the provided criteria. Pagination is driven by the
-    /// <c>updatedAfter</c> filter (strict comparison <c>updatedAt &gt; updatedAfter</c>).
+    /// Searches flows matching the provided criteria. Pagination is cursor-based: while the
+    /// response carries a <c>nextCursor</c>, pass it back as <see cref="Models.SearchFlowParams.Cursor"/>
+    /// to fetch the next page; its absence signals the end.
     /// </summary>
     public async Task<ApiResult<SearchFlowContent>> SearchFlowsAsync(
         SearchFlowParams search,

@@ -7,7 +7,7 @@
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**op** | **ContainsOrStrictOperator** |  |  [optional] |
+|**op** | **ContainsOrStrictOrStartWithOperator** |  |  [optional] |
 |**value** | **String** | Business name |  [optional] |
 
 

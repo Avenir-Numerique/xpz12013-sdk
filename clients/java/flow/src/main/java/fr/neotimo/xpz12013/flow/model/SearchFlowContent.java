@@ -1,8 +1,8 @@
 /*
  * AFNOR Flow Service
- * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation 
+ * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/flows/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /flows/webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation   - `1.3.0` :     - Increase NotOnlyUuid to 64 characters     - Update Webhook configuration:       - remove processingRule from Metadata       - remove any required metadata field (metadat can be empty)       - simplify configuration (remove headers, auth & signature block)       - enrich URL path flexibility     - Added missing required for : processingRule & flowProfile in Flow schema in responses     - Add base path and service name as variables in server URL     - Remove StateInvoice flow type     - Add new flowtypes related to e-reporting flows sent to DFH       - StateCustomerInvoice       - StateSupplierInvoice       - StateTransactionReport       - StateTransactionReportLC       - StatePaymentReport       - StatePaymentReportLC     - Use a cursor-based pagination, more efficient than using just dates       - cursor in request       - nextCursor in response     - Add Undefined values for ProfileType, FlowType & ProcessingRule       - These 3 properties may not be defined in Pending & Error states 
  *
- * The version of the OpenAPI document: 1.2.0
+ * The version of the OpenAPI document: 1.3.0
  * Contact: sg5@afnor.org
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -38,6 +38,7 @@ import fr.neotimo.xpz12013.flow.ApiClient;
  */
 @JsonPropertyOrder({
   SearchFlowContent.JSON_PROPERTY_LIMIT,
+  SearchFlowContent.JSON_PROPERTY_NEXT_CURSOR,
   SearchFlowContent.JSON_PROPERTY_FILTERS,
   SearchFlowContent.JSON_PROPERTY_RESULTS
 })
@@ -45,7 +46,11 @@ import fr.neotimo.xpz12013.flow.ApiClient;
 public class SearchFlowContent {
   public static final String JSON_PROPERTY_LIMIT = "limit";
   @javax.annotation.Nullable
-  private Integer limit;
+  private Integer limit = 25;
+
+  public static final String JSON_PROPERTY_NEXT_CURSOR = "nextCursor";
+  @javax.annotation.Nullable
+  private String nextCursor;
 
   public static final String JSON_PROPERTY_FILTERS = "filters";
   @javax.annotation.Nullable
@@ -64,7 +69,8 @@ public class SearchFlowContent {
   }
 
   /**
-   * Get limit
+   * Pagination, Maximum number of results that may be returned
+   * maximum: 100
    * @return limit
    */
   @javax.annotation.Nullable
@@ -79,6 +85,30 @@ public class SearchFlowContent {
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   public void setLimit(@javax.annotation.Nullable Integer limit) {
     this.limit = limit;
+  }
+
+
+  public SearchFlowContent nextCursor(@javax.annotation.Nullable String nextCursor) {
+    this.nextCursor = nextCursor;
+    return this;
+  }
+
+  /**
+   * Pagination management: - If present, says where to start for next page, set nextCursor as the cursor in the next request - If omitted, says that pagination is finished 
+   * @return nextCursor
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_NEXT_CURSOR)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public String getNextCursor() {
+    return nextCursor;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_NEXT_CURSOR)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setNextCursor(@javax.annotation.Nullable String nextCursor) {
+    this.nextCursor = nextCursor;
   }
 
 
@@ -151,13 +181,14 @@ public class SearchFlowContent {
     }
     SearchFlowContent searchFlowContent = (SearchFlowContent) o;
     return Objects.equals(this.limit, searchFlowContent.limit) &&
+        Objects.equals(this.nextCursor, searchFlowContent.nextCursor) &&
         Objects.equals(this.filters, searchFlowContent.filters) &&
         Objects.equals(this.results, searchFlowContent.results);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(limit, filters, results);
+    return Objects.hash(limit, nextCursor, filters, results);
   }
 
   @Override
@@ -165,6 +196,7 @@ public class SearchFlowContent {
     StringBuilder sb = new StringBuilder();
     sb.append("class SearchFlowContent {\n");
     sb.append("    limit: ").append(toIndentedString(limit)).append("\n");
+    sb.append("    nextCursor: ").append(toIndentedString(nextCursor)).append("\n");
     sb.append("    filters: ").append(toIndentedString(filters)).append("\n");
     sb.append("    results: ").append(toIndentedString(results)).append("\n");
     sb.append("}");
@@ -217,6 +249,11 @@ public class SearchFlowContent {
     // add `limit` to the URL query string
     if (getLimit() != null) {
       joiner.add(String.format("%slimit%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getLimit()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    }
+
+    // add `nextCursor` to the URL query string
+    if (getNextCursor() != null) {
+      joiner.add(String.format("%snextCursor%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getNextCursor()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
     }
 
     // add `filters` to the URL query string

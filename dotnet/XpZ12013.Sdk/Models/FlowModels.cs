@@ -26,7 +26,10 @@ public enum FlowProfile
     CIUS,
 
     [JsonEnumValue("Extended-CTC-FR")]
-    ExtendedCtcFr
+    ExtendedCtcFr,
+
+    /// <summary>Not yet defined (Pending state) or unable to define (Error state).</summary>
+    Undefined
 }
 
 /// <summary>Type of a flow (invoice, lifecycle, e-reporting...).</summary>
@@ -35,7 +38,6 @@ public enum FlowType
 {
     CustomerInvoice,
     SupplierInvoice,
-    StateInvoice,
     CustomerInvoiceLC,
     SupplierInvoiceLC,
     StateCustomerInvoiceLC,
@@ -45,7 +47,28 @@ public enum FlowType
     AggregatedCustomerPaymentReport,
     UnitaryCustomerPaymentReport,
     UnitarySupplierTransactionReport,
-    MultiFlowReport
+    MultiFlowReport,
+
+    /// <summary>Reporting flow 1 sent to DFH related to a CustomerInvoice.</summary>
+    StateCustomerInvoice,
+
+    /// <summary>Reporting flow 1 sent to DFH related to a SupplierInvoice (self-billing).</summary>
+    StateSupplierInvoice,
+
+    /// <summary>Transaction e-reporting flow 10.1 or 10.3 sent to the DFH.</summary>
+    StateTransactionReport,
+
+    /// <summary>Lifecycle for a StateTransactionReport flow.</summary>
+    StateTransactionReportLC,
+
+    /// <summary>Payment e-reporting flow 10.2 or 10.4 sent to DFH.</summary>
+    StatePaymentReport,
+
+    /// <summary>Lifecycle for a StatePaymentReport flow.</summary>
+    StatePaymentReportLC,
+
+    /// <summary>Not yet defined (Pending state) or unable to define (Error state).</summary>
+    Undefined
 }
 
 /// <summary>Direction of a flow: In (PDP → OD) or Out (OD → PDP).</summary>
@@ -77,7 +100,10 @@ public enum ProcessingRule
     OutOfScope,
     B2GOutOfScope,
     ArchiveOnly,
-    NotApplicable
+    NotApplicable,
+
+    /// <summary>Not yet defined (Pending state) or unable to define (Error state).</summary>
+    Undefined
 }
 
 /// <summary>File flavor to download for a flow.</summary>
@@ -239,6 +265,14 @@ public class SearchFlowParams
     [JsonPropertyName("limit")]
     public int Limit { get; set; } = 25;
 
+    /// <summary>
+    /// Opaque pagination cursor: pass the <see cref="SearchFlowContent.NextCursor"/> of the
+    /// previous page to resume the search from that bookmark.
+    /// </summary>
+    [JsonPropertyName("cursor")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Cursor { get; set; }
+
     /// <summary>Filtering criteria; at least one is required.</summary>
     [JsonPropertyName("where")]
     public required SearchFlowFilters Where { get; set; }
@@ -247,7 +281,7 @@ public class SearchFlowParams
 /// <summary>Flow search filters (logical AND across criteria, OR within a list).</summary>
 public class SearchFlowFilters
 {
-    /// <summary>Strict comparison: updatedAt &gt; updatedAfter (also used for pagination).</summary>
+    /// <summary>Strict comparison: updatedAt &gt; updatedAfter.</summary>
     [JsonPropertyName("updatedAfter")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public DateTimeOffset? UpdatedAfter { get; set; }
@@ -282,6 +316,13 @@ public class SearchFlowContent
 {
     [JsonPropertyName("limit")]
     public int? Limit { get; set; }
+
+    /// <summary>
+    /// Pagination: when present, pass it as <see cref="SearchFlowParams.Cursor"/> to fetch the
+    /// next page; when absent, pagination is finished.
+    /// </summary>
+    [JsonPropertyName("nextCursor")]
+    public string? NextCursor { get; set; }
 
     [JsonPropertyName("filters")]
     public SearchFlowFilters? Filters { get; set; }

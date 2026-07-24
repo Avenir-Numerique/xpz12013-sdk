@@ -6,8 +6,12 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **webhook_id** | **str** |  | [optional] 
-**callback** | [**CallbackParameters**](CallbackParameters.md) |  | 
-**metadata** | [**WebhookMetadata**](WebhookMetadata.md) |  | 
+**signing_key** | **bytearray** |  | [optional] 
+**created_at** | **datetime** |  | [optional] 
+**callback_url** | **str** |  | 
+**flow_types** | [**List[FlowType]**](FlowType.md) |  | [optional] 
+**flow_direction** | [**FlowDirection**](FlowDirection.md) |  | [optional] 
+**ack_status** | [**FlowAckStatus**](FlowAckStatus.md) |  | [optional] 
 
 ## Example
 

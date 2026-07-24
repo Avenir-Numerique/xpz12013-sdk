@@ -5,9 +5,9 @@
   No-op si les specs sont absentes (génération conditionnée au juridique AFNOR — NEOTIMO-1417).
   Requiert Node.js (npx) et un JRE (openapi-generator tourne sur la JVM).
 .EXAMPLE
-  pwsh scripts/generate-clients.ps1 -Version 1.2.0
+  pwsh scripts/generate-clients.ps1 -Version 2.0.0
 #>
-param([string]$Version = "1.2.0")
+param([string]$Version = "2.0.0")
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot

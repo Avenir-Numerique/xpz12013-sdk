@@ -266,8 +266,6 @@ public class Example {
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Returns an establishment as defined on a given observation date or as defined on the current date if the observation date is not specified. |  -  |
-| **204** | No Content - No content expected |  -  |
-| **206** | Request processed without error, but the volume of information returned has been reduced. |  -  |
 | **400** | Error 400 : Bad request. |  -  |
 | **401** | Error 401 : Authentication error. |  -  |
 | **403** | Error 403 : Forbidden. |  -  |
@@ -356,8 +354,6 @@ ApiResponse<[**SiretSearchPost200Response**](SiretSearchPost200Response.md)>
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Returns an establishment as defined on a given observation date or as defined on the current date if the observation date is not specified. |  -  |
-| **204** | No Content - No content expected |  -  |
-| **206** | Request processed without error, but the volume of information returned has been reduced. |  -  |
 | **400** | Error 400 : Bad request. |  -  |
 | **401** | Error 401 : Authentication error. |  -  |
 | **403** | Error 403 : Forbidden. |  -  |

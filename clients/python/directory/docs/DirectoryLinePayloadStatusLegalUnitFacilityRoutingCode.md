@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **directory_line_status** | [**DirectoryLineStatus**](DirectoryLineStatus.md) |  | [optional] 
 **siren** | **str** | SIREN number | [optional] 
 **siret** | **str** | SIRET Number | [optional] 
+**routing_identifier** | **str** | Routing identifier od a routing code. | [optional] 
 **addressing_suffix** | **str** | suffix of the directory line which defines an address mesh not attached to a facility | [optional] 
 **routing_code** | [**DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode**](DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode.md) |  | [optional] 
 **legal_unit** | [**LegalUnitPayloadIncluded**](LegalUnitPayloadIncluded.md) |  | [optional] 

@@ -7,7 +7,8 @@
 
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
-|**webhookIds** | **List&lt;UUID&gt;** |  |  |
+|**count** | **Integer** |  |  |
+|**webhooks** | [**List&lt;Webhook&gt;**](Webhook.md) |  |  [optional] |
 
 
 

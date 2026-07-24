@@ -2,7 +2,7 @@
 
 AFNOR Directory Service
 
-- API version: 1.2.0
+- API version: 1.3.0
 
 - Generator version: 7.11.0
 
@@ -162,6 +162,17 @@ History:
     - Remove Accept-language and Content-Language from the header
     - Change diffusible into salesProspectingForbidden
     - Add 204 response for search routes
+  - `1.3.0` : Fixes following SG5 meeting
+    - Add directoryLineStatus to the GET /v1/directory-line/code:{addressing-identifier} response
+    - Remove 206 response for search route
+    - Add include to the POST /v1/directory-line/search
+    - Add base path in server URL
+    - Add instructions to included legalUnit and facility
+    - Change behavior for nb of returned results (-1 if not managed)
+    - Remove 204 error codes for search routes
+    - Set default ignore to 0
+    - Add startWith operator to businessName, name, addressLines and postalCode
+    - Match exemple and schema for order (sorting)
 
 
 
@@ -198,7 +209,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fr.neotimo</groupId>
   <artifactId>xpz12013-directory</artifactId>
-  <version>1.2.0</version>
+  <version>2.0.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -208,7 +219,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "fr.neotimo:xpz12013-directory:1.2.0"
+compile "fr.neotimo:xpz12013-directory:2.0.0"
 ```
 
 ### Others
@@ -221,7 +232,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/xpz12013-directory-1.2.0.jar`
+- `target/xpz12013-directory-2.0.0.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -288,8 +299,9 @@ Class | Method | HTTP request | Description
 ## Documentation for Models
 
  - [AddressRead](docs/AddressRead.md)
- - [ContainsOperator](docs/ContainsOperator.md)
+ - [ContainsOrStartWithOperator](docs/ContainsOrStartWithOperator.md)
  - [ContainsOrStrictOperator](docs/ContainsOrStrictOperator.md)
+ - [ContainsOrStrictOrStartWithOperator](docs/ContainsOrStrictOrStartWithOperator.md)
  - [DirectoryLineField](docs/DirectoryLineField.md)
  - [DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode](docs/DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode.md)
  - [DirectoryLinePayloadLegalUnitFacilityRoutingCode](docs/DirectoryLinePayloadLegalUnitFacilityRoutingCode.md)
@@ -349,6 +361,7 @@ Class | Method | HTTP request | Description
  - [SortingOrder](docs/SortingOrder.md)
  - [StrictOperator](docs/StrictOperator.md)
  - [StrictOrStartWithOperator](docs/StrictOrStartWithOperator.md)
+ - [UniqueDirectoryLineStatus](docs/UniqueDirectoryLineStatus.md)
 
 
 <a id="documentation-for-authorization"></a>

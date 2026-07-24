@@ -11,5 +11,7 @@
 
 * `EXTENDED_CTC_FR` (value: `"Extended-CTC-FR"`)
 
+* `UNDEFINED` (value: `"Undefined"`)
+
 
 

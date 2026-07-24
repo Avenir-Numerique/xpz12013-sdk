@@ -2,9 +2,9 @@
 /* eslint-disable */
 /**
  * AFNOR Flow Service
- * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation 
+ * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/flows/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /flows/webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation   - `1.3.0` :     - Increase NotOnlyUuid to 64 characters     - Update Webhook configuration:       - remove processingRule from Metadata       - remove any required metadata field (metadat can be empty)       - simplify configuration (remove headers, auth & signature block)       - enrich URL path flexibility     - Added missing required for : processingRule & flowProfile in Flow schema in responses     - Add base path and service name as variables in server URL     - Remove StateInvoice flow type     - Add new flowtypes related to e-reporting flows sent to DFH       - StateCustomerInvoice       - StateSupplierInvoice       - StateTransactionReport       - StateTransactionReportLC       - StatePaymentReport       - StatePaymentReportLC     - Use a cursor-based pagination, more efficient than using just dates       - cursor in request       - nextCursor in response     - Add Undefined values for ProfileType, FlowType & ProcessingRule       - These 3 properties may not be defined in Pending & Error states 
  *
- * The version of the OpenAPI document: 1.2.0
+ * The version of the OpenAPI document: 1.3.0
  * Contact: sg5@afnor.org
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -16,22 +16,16 @@
 import * as runtime from '../runtime';
 import type {
   ListWebhooks200Response,
-  Webhook,
   WebhookIdParam,
   WebhookParams,
-  WebhookPatchPayload,
 } from '../models/index';
 import {
     ListWebhooks200ResponseFromJSON,
     ListWebhooks200ResponseToJSON,
-    WebhookFromJSON,
-    WebhookToJSON,
     WebhookIdParamFromJSON,
     WebhookIdParamToJSON,
     WebhookParamsFromJSON,
     WebhookParamsToJSON,
-    WebhookPatchPayloadFromJSON,
-    WebhookPatchPayloadToJSON,
 } from '../models/index';
 
 export interface CreateWebhookRequest {
@@ -46,22 +40,9 @@ export interface DeleteWebhookRequest {
     organizationId?: string;
 }
 
-export interface GetWebhookRequest {
-    webhookUid: string;
-    requestId?: string;
-    organizationId?: string;
-}
-
 export interface ListWebhooksRequest {
     requestId?: string;
     organizationId?: string;
-}
-
-export interface UpdateWebhookRequest {
-    webhookUid: string;
-    requestId?: string;
-    organizationId?: string;
-    webhookPatchPayload?: WebhookPatchPayload;
 }
 
 /**
@@ -70,7 +51,7 @@ export interface UpdateWebhookRequest {
 export class WebhookApi extends runtime.BaseAPI {
 
     /**
-     * - Create a new webhook - With technical & security parameters - With metadata to filter on subsets 
+     * This operation creates and configures a new webhook, providing: - The callback URL - The metadata to filter on subsets of events  The webhook belongs to the owner of the token and cannot be seen from others: - It returns an id and a signing key (256 or 512 bits) that should be kept - The signing key allows to validate the signature of each received event.  How the signature is managed: - At webhook creation a signing Key is randomly generated in a secure way   - 256 bits are enough if the random generator is secure    - 512 bits are necessary if the generator is not secure - Each time an event is sent:   - a SHA-256 fingerprint is generated based on the concatenation of:     - the JSON payload of the response (as is, no canonical format)     - a separator : @     - the current epoch time in seconds   - a HMAC signature is computed over the fingerprint with the callback signing key   - the signature is base64 encoded for the transport    The signature and the timestamp are returned in the following headers of the callback:   - Afnor-Signature is the signature (base64)   - Afnor-Signature-Timestamp is the epoch timestamp in seconds 
      * Subscribe to a webhook
      */
     async createWebhookRaw(requestParameters: CreateWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<WebhookIdParam>> {
@@ -113,7 +94,7 @@ export class WebhookApi extends runtime.BaseAPI {
     }
 
     /**
-     * - Create a new webhook - With technical & security parameters - With metadata to filter on subsets 
+     * This operation creates and configures a new webhook, providing: - The callback URL - The metadata to filter on subsets of events  The webhook belongs to the owner of the token and cannot be seen from others: - It returns an id and a signing key (256 or 512 bits) that should be kept - The signing key allows to validate the signature of each received event.  How the signature is managed: - At webhook creation a signing Key is randomly generated in a secure way   - 256 bits are enough if the random generator is secure    - 512 bits are necessary if the generator is not secure - Each time an event is sent:   - a SHA-256 fingerprint is generated based on the concatenation of:     - the JSON payload of the response (as is, no canonical format)     - a separator : @     - the current epoch time in seconds   - a HMAC signature is computed over the fingerprint with the callback signing key   - the signature is base64 encoded for the transport    The signature and the timestamp are returned in the following headers of the callback:   - Afnor-Signature is the signature (base64)   - Afnor-Signature-Timestamp is the epoch timestamp in seconds 
      * Subscribe to a webhook
      */
     async createWebhook(requestParameters: CreateWebhookRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<WebhookIdParam> {
@@ -177,62 +158,6 @@ export class WebhookApi extends runtime.BaseAPI {
     }
 
     /**
-     * - Get a subscription owned by the owner of the token - The operation is allowed only buy the owner of the token 
-     * Get a webhook content
-     */
-    async getWebhookRaw(requestParameters: GetWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Webhook>> {
-        if (requestParameters['webhookUid'] == null) {
-            throw new runtime.RequiredError(
-                'webhookUid',
-                'Required parameter "webhookUid" was null or undefined when calling getWebhook().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (requestParameters['requestId'] != null) {
-            headerParameters['Request-Id'] = String(requestParameters['requestId']);
-        }
-
-        if (requestParameters['organizationId'] != null) {
-            headerParameters['Organization-Id'] = String(requestParameters['organizationId']);
-        }
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2", []);
-        }
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/webhooks/{webhookUid}`.replace(`{${"webhookUid"}}`, encodeURIComponent(String(requestParameters['webhookUid']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => WebhookFromJSON(jsonValue));
-    }
-
-    /**
-     * - Get a subscription owned by the owner of the token - The operation is allowed only buy the owner of the token 
-     * Get a webhook content
-     */
-    async getWebhook(requestParameters: GetWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Webhook> {
-        const response = await this.getWebhookRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Retrieve the list of webhooks created by the owner of the token
      */
     async listWebhooksRaw(requestParameters: ListWebhooksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ListWebhooks200Response>> {
@@ -277,64 +202,6 @@ export class WebhookApi extends runtime.BaseAPI {
     async listWebhooks(requestParameters: ListWebhooksRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ListWebhooks200Response> {
         const response = await this.listWebhooksRaw(requestParameters, initOverrides);
         return await response.value();
-    }
-
-    /**
-     * - Update the technical configuration of a webhook, keeping the same Metadata - The operation is allowed only buy the owner of the token 
-     * Update a webhook subscription
-     */
-    async updateWebhookRaw(requestParameters: UpdateWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['webhookUid'] == null) {
-            throw new runtime.RequiredError(
-                'webhookUid',
-                'Required parameter "webhookUid" was null or undefined when calling updateWebhook().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters['requestId'] != null) {
-            headerParameters['Request-Id'] = String(requestParameters['requestId']);
-        }
-
-        if (requestParameters['organizationId'] != null) {
-            headerParameters['Organization-Id'] = String(requestParameters['organizationId']);
-        }
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            headerParameters["Authorization"] = await this.configuration.accessToken("OAuth2", []);
-        }
-
-        if (this.configuration && this.configuration.accessToken) {
-            const token = this.configuration.accessToken;
-            const tokenString = await token("BearerAuth", []);
-
-            if (tokenString) {
-                headerParameters["Authorization"] = `Bearer ${tokenString}`;
-            }
-        }
-        const response = await this.request({
-            path: `/v1/webhooks/{webhookUid}`.replace(`{${"webhookUid"}}`, encodeURIComponent(String(requestParameters['webhookUid']))),
-            method: 'PATCH',
-            headers: headerParameters,
-            query: queryParameters,
-            body: WebhookPatchPayloadToJSON(requestParameters['webhookPatchPayload']),
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * - Update the technical configuration of a webhook, keeping the same Metadata - The operation is allowed only buy the owner of the token 
-     * Update a webhook subscription
-     */
-    async updateWebhook(requestParameters: UpdateWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.updateWebhookRaw(requestParameters, initOverrides);
     }
 
 }

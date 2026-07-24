@@ -1,8 +1,8 @@
 /*
  * AFNOR Flow Service
- * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation 
+ * The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/flows/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /flows/webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation   - `1.3.0` :     - Increase NotOnlyUuid to 64 characters     - Update Webhook configuration:       - remove processingRule from Metadata       - remove any required metadata field (metadat can be empty)       - simplify configuration (remove headers, auth & signature block)       - enrich URL path flexibility     - Added missing required for : processingRule & flowProfile in Flow schema in responses     - Add base path and service name as variables in server URL     - Remove StateInvoice flow type     - Add new flowtypes related to e-reporting flows sent to DFH       - StateCustomerInvoice       - StateSupplierInvoice       - StateTransactionReport       - StateTransactionReportLC       - StatePaymentReport       - StatePaymentReportLC     - Use a cursor-based pagination, more efficient than using just dates       - cursor in request       - nextCursor in response     - Add Undefined values for ProfileType, FlowType & ProcessingRule       - These 3 properties may not be defined in Pending & Error states 
  *
- * The version of the OpenAPI document: 1.2.0
+ * The version of the OpenAPI document: 1.3.0
  * Contact: sg5@afnor.org
  *
  * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
@@ -24,9 +24,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import fr.neotimo.xpz12013.flow.model.CallbackParameters;
-import fr.neotimo.xpz12013.flow.model.WebhookMetadata;
+import fr.neotimo.xpz12013.flow.model.FlowAckStatus;
+import fr.neotimo.xpz12013.flow.model.FlowDirection;
+import fr.neotimo.xpz12013.flow.model.FlowType;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -37,8 +42,12 @@ import fr.neotimo.xpz12013.flow.ApiClient;
  */
 @JsonPropertyOrder({
   Webhook.JSON_PROPERTY_WEBHOOK_ID,
-  Webhook.JSON_PROPERTY_CALLBACK,
-  Webhook.JSON_PROPERTY_METADATA
+  Webhook.JSON_PROPERTY_SIGNING_KEY,
+  Webhook.JSON_PROPERTY_CREATED_AT,
+  Webhook.JSON_PROPERTY_CALLBACK_URL,
+  Webhook.JSON_PROPERTY_FLOW_TYPES,
+  Webhook.JSON_PROPERTY_FLOW_DIRECTION,
+  Webhook.JSON_PROPERTY_ACK_STATUS
 })
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.11.0")
 public class Webhook {
@@ -46,13 +55,29 @@ public class Webhook {
   @javax.annotation.Nullable
   private UUID webhookId;
 
-  public static final String JSON_PROPERTY_CALLBACK = "callback";
-  @javax.annotation.Nonnull
-  private CallbackParameters callback;
+  public static final String JSON_PROPERTY_SIGNING_KEY = "signingKey";
+  @javax.annotation.Nullable
+  private byte[] signingKey;
 
-  public static final String JSON_PROPERTY_METADATA = "metadata";
+  public static final String JSON_PROPERTY_CREATED_AT = "createdAt";
+  @javax.annotation.Nullable
+  private OffsetDateTime createdAt;
+
+  public static final String JSON_PROPERTY_CALLBACK_URL = "callbackUrl";
   @javax.annotation.Nonnull
-  private WebhookMetadata metadata;
+  private URI callbackUrl;
+
+  public static final String JSON_PROPERTY_FLOW_TYPES = "flowTypes";
+  @javax.annotation.Nullable
+  private List<FlowType> flowTypes = new ArrayList<>();
+
+  public static final String JSON_PROPERTY_FLOW_DIRECTION = "flowDirection";
+  @javax.annotation.Nullable
+  private FlowDirection flowDirection;
+
+  public static final String JSON_PROPERTY_ACK_STATUS = "ackStatus";
+  @javax.annotation.Nullable
+  private FlowAckStatus ackStatus;
 
   public Webhook() { 
   }
@@ -81,51 +106,155 @@ public class Webhook {
   }
 
 
-  public Webhook callback(@javax.annotation.Nonnull CallbackParameters callback) {
-    this.callback = callback;
+  public Webhook signingKey(@javax.annotation.Nullable byte[] signingKey) {
+    this.signingKey = signingKey;
     return this;
   }
 
   /**
-   * Get callback
-   * @return callback
+   * Get signingKey
+   * @return signingKey
    */
-  @javax.annotation.Nonnull
-  @JsonProperty(JSON_PROPERTY_CALLBACK)
-  @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public CallbackParameters getCallback() {
-    return callback;
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_SIGNING_KEY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public byte[] getSigningKey() {
+    return signingKey;
   }
 
 
-  @JsonProperty(JSON_PROPERTY_CALLBACK)
-  @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setCallback(@javax.annotation.Nonnull CallbackParameters callback) {
-    this.callback = callback;
+  @JsonProperty(JSON_PROPERTY_SIGNING_KEY)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setSigningKey(@javax.annotation.Nullable byte[] signingKey) {
+    this.signingKey = signingKey;
   }
 
 
-  public Webhook metadata(@javax.annotation.Nonnull WebhookMetadata metadata) {
-    this.metadata = metadata;
+  public Webhook createdAt(@javax.annotation.Nullable OffsetDateTime createdAt) {
+    this.createdAt = createdAt;
     return this;
   }
 
   /**
-   * Get metadata
-   * @return metadata
+   * Get createdAt
+   * @return createdAt
    */
-  @javax.annotation.Nonnull
-  @JsonProperty(JSON_PROPERTY_METADATA)
-  @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public WebhookMetadata getMetadata() {
-    return metadata;
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_CREATED_AT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public OffsetDateTime getCreatedAt() {
+    return createdAt;
   }
 
 
-  @JsonProperty(JSON_PROPERTY_METADATA)
+  @JsonProperty(JSON_PROPERTY_CREATED_AT)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setCreatedAt(@javax.annotation.Nullable OffsetDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+
+  public Webhook callbackUrl(@javax.annotation.Nonnull URI callbackUrl) {
+    this.callbackUrl = callbackUrl;
+    return this;
+  }
+
+  /**
+   * Get callbackUrl
+   * @return callbackUrl
+   */
+  @javax.annotation.Nonnull
+  @JsonProperty(JSON_PROPERTY_CALLBACK_URL)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setMetadata(@javax.annotation.Nonnull WebhookMetadata metadata) {
-    this.metadata = metadata;
+  public URI getCallbackUrl() {
+    return callbackUrl;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_CALLBACK_URL)
+  @JsonInclude(value = JsonInclude.Include.ALWAYS)
+  public void setCallbackUrl(@javax.annotation.Nonnull URI callbackUrl) {
+    this.callbackUrl = callbackUrl;
+  }
+
+
+  public Webhook flowTypes(@javax.annotation.Nullable List<FlowType> flowTypes) {
+    this.flowTypes = flowTypes;
+    return this;
+  }
+
+  public Webhook addFlowTypesItem(FlowType flowTypesItem) {
+    if (this.flowTypes == null) {
+      this.flowTypes = new ArrayList<>();
+    }
+    this.flowTypes.add(flowTypesItem);
+    return this;
+  }
+
+  /**
+   * Get flowTypes
+   * @return flowTypes
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_FLOW_TYPES)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public List<FlowType> getFlowTypes() {
+    return flowTypes;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_FLOW_TYPES)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setFlowTypes(@javax.annotation.Nullable List<FlowType> flowTypes) {
+    this.flowTypes = flowTypes;
+  }
+
+
+  public Webhook flowDirection(@javax.annotation.Nullable FlowDirection flowDirection) {
+    this.flowDirection = flowDirection;
+    return this;
+  }
+
+  /**
+   * Get flowDirection
+   * @return flowDirection
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_FLOW_DIRECTION)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public FlowDirection getFlowDirection() {
+    return flowDirection;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_FLOW_DIRECTION)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setFlowDirection(@javax.annotation.Nullable FlowDirection flowDirection) {
+    this.flowDirection = flowDirection;
+  }
+
+
+  public Webhook ackStatus(@javax.annotation.Nullable FlowAckStatus ackStatus) {
+    this.ackStatus = ackStatus;
+    return this;
+  }
+
+  /**
+   * Get ackStatus
+   * @return ackStatus
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_ACK_STATUS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public FlowAckStatus getAckStatus() {
+    return ackStatus;
+  }
+
+
+  @JsonProperty(JSON_PROPERTY_ACK_STATUS)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setAckStatus(@javax.annotation.Nullable FlowAckStatus ackStatus) {
+    this.ackStatus = ackStatus;
   }
 
 
@@ -142,13 +271,17 @@ public class Webhook {
     }
     Webhook webhook = (Webhook) o;
     return Objects.equals(this.webhookId, webhook.webhookId) &&
-        Objects.equals(this.callback, webhook.callback) &&
-        Objects.equals(this.metadata, webhook.metadata);
+        Arrays.equals(this.signingKey, webhook.signingKey) &&
+        Objects.equals(this.createdAt, webhook.createdAt) &&
+        Objects.equals(this.callbackUrl, webhook.callbackUrl) &&
+        Objects.equals(this.flowTypes, webhook.flowTypes) &&
+        Objects.equals(this.flowDirection, webhook.flowDirection) &&
+        Objects.equals(this.ackStatus, webhook.ackStatus);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(webhookId, callback, metadata);
+    return Objects.hash(webhookId, Arrays.hashCode(signingKey), createdAt, callbackUrl, flowTypes, flowDirection, ackStatus);
   }
 
   @Override
@@ -156,8 +289,12 @@ public class Webhook {
     StringBuilder sb = new StringBuilder();
     sb.append("class Webhook {\n");
     sb.append("    webhookId: ").append(toIndentedString(webhookId)).append("\n");
-    sb.append("    callback: ").append(toIndentedString(callback)).append("\n");
-    sb.append("    metadata: ").append(toIndentedString(metadata)).append("\n");
+    sb.append("    signingKey: ").append(toIndentedString(signingKey)).append("\n");
+    sb.append("    createdAt: ").append(toIndentedString(createdAt)).append("\n");
+    sb.append("    callbackUrl: ").append(toIndentedString(callbackUrl)).append("\n");
+    sb.append("    flowTypes: ").append(toIndentedString(flowTypes)).append("\n");
+    sb.append("    flowDirection: ").append(toIndentedString(flowDirection)).append("\n");
+    sb.append("    ackStatus: ").append(toIndentedString(ackStatus)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -210,14 +347,40 @@ public class Webhook {
       joiner.add(String.format("%swebhookId%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getWebhookId()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
     }
 
-    // add `callback` to the URL query string
-    if (getCallback() != null) {
-      joiner.add(getCallback().toUrlQueryString(prefix + "callback" + suffix));
+    // add `signingKey` to the URL query string
+    if (getSigningKey() != null) {
+      joiner.add(String.format("%ssigningKey%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getSigningKey()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
     }
 
-    // add `metadata` to the URL query string
-    if (getMetadata() != null) {
-      joiner.add(getMetadata().toUrlQueryString(prefix + "metadata" + suffix));
+    // add `createdAt` to the URL query string
+    if (getCreatedAt() != null) {
+      joiner.add(String.format("%screatedAt%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getCreatedAt()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    }
+
+    // add `callbackUrl` to the URL query string
+    if (getCallbackUrl() != null) {
+      joiner.add(String.format("%scallbackUrl%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getCallbackUrl()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    }
+
+    // add `flowTypes` to the URL query string
+    if (getFlowTypes() != null) {
+      for (int i = 0; i < getFlowTypes().size(); i++) {
+        if (getFlowTypes().get(i) != null) {
+          joiner.add(String.format("%sflowTypes%s%s=%s", prefix, suffix,
+              "".equals(suffix) ? "" : String.format("%s%d%s", containerPrefix, i, containerSuffix),
+              URLEncoder.encode(ApiClient.valueToString(getFlowTypes().get(i)), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+        }
+      }
+    }
+
+    // add `flowDirection` to the URL query string
+    if (getFlowDirection() != null) {
+      joiner.add(String.format("%sflowDirection%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getFlowDirection()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
+    }
+
+    // add `ackStatus` to the URL query string
+    if (getAckStatus() != null) {
+      joiner.add(String.format("%sackStatus%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getAckStatus()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
     }
 
     return joiner.toString();

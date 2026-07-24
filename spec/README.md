@@ -1,12 +1,12 @@
 # `/spec` — Contrats OpenAPI AFNOR XP Z12-013
 
-Contrats **OpenAPI 3.0.3 v1.2.0** officiels de la norme, source de génération des clients
+Contrats **OpenAPI 3.0.3 v1.3.0** officiels de la norme, source de génération des clients
 multi-langues ([`/clients`](../clients)) :
 
 | Fichier | Service | Source AFNOR |
 |---------|---------|--------------|
-| `flow-service.json` | Flow Service (Annexe A) | `ANNEXE A - XP Z12-013 - Flow_Service-1.2.0-swagger-resolved.json` |
-| `directory-service.json` | Directory Service (Annexe B) | `ANNEXE B - XP Z12-013 - Directory_Service-1.2.0-swagger-resolved.json` |
+| `flow-service.json` | Flow Service (Annexe A) | `ANNEXE A - XP Z12-013 - Flow_Service-1.3.0-swagger.json` |
+| `directory-service.json` | Directory Service (Annexe B) | `ANNEXE B - XP Z12-013 - Directory_Service-1.3.0-swagger.json` |
 
 Ce sont les versions `-resolved` (références `$ref` aplaties), directement consommables par
 OpenAPI Generator.

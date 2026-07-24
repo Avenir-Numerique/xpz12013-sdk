@@ -5,7 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**op** | [**ContainsOrStrictOperator**](ContainsOrStrictOperator.md) |  | [optional] 
+**op** | [**ContainsOrStrictOrStartWithOperator**](ContainsOrStrictOrStartWithOperator.md) |  | [optional] 
 **value** | **str** | business name | [optional] 
 
 ## Example

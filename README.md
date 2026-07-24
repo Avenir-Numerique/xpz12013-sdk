@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 > Implémentation de référence **.NET** — bientôt **Java / TypeScript / Python** — de la norme
-> **AFNOR XP Z12-013 v1.2.0**, l'API standardisée d'interopérabilité de la **facturation
+> **AFNOR XP Z12-013 v1.3.0**, l'API standardisée d'interopérabilité de la **facturation
 > électronique française** (échanges entre systèmes d'information et Plateformes de
 > Dématérialisation Partenaires).
 >
@@ -100,7 +100,7 @@ services.AddXpZ12013Client(options =>
 ## Surface couverte
 
 **Flow Service** — `CreateFlowAsync`, `SearchFlowsAsync`, `GetFlowMetadataAsync`, `DownloadFlowAsync`,
-`ListWebhooksAsync`, `GetWebhookAsync`, `CreateWebhookAsync`, `UpdateWebhookAsync`, `DeleteWebhookAsync`.
+`ListWebhooksAsync`, `CreateWebhookAsync`, `DeleteWebhookAsync`.
 
 **Directory Service** — `SearchCompaniesAsync` / `GetCompanyAsync` (SIREN),
 `SearchFacilitiesAsync` / `GetFacilityAsync` (SIRET), `SearchRoutingCodesAsync` / `GetRoutingCodeAsync`,
@@ -108,8 +108,8 @@ services.AddXpZ12013Client(options =>
 
 **Supervision** — `CheckFlowHealthAsync`, `CheckDirectoryHealthAsync`.
 
-> Pagination des flux : itérez en réutilisant `UpdatedAfter` avec l'`updatedAt` du dernier flux reçu
-> (comparaison stricte `updatedAt > updatedAfter`).
+> Pagination des flux par curseur : tant que la réponse contient `NextCursor`, repassez-le dans
+> `SearchFlowParams.Cursor` pour obtenir la page suivante ; son absence signale la fin.
 
 ## Multi-langue
 

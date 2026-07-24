@@ -23,5 +23,7 @@
 
 * `NOT_APPLICABLE` (value: `"NotApplicable"`)
 
+* `UNDEFINED` (value: `"Undefined"`)
+
 
 

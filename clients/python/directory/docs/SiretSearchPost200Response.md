@@ -6,7 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **search** | [**SearchSiret**](SearchSiret.md) |  | [optional] 
-**total_number_of_results** | **int** | The total number of results | [optional] 
+**total_number_of_results** | **int** | The total number of results, if -1 is returned then this value is not managed due to performance issue | [optional] [default to -1]
 **results** | [**List[FacilityPayloadHistory]**](FacilityPayloadHistory.md) |  | [optional] 
 
 ## Example

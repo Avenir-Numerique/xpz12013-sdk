@@ -2,12 +2,6 @@
 /* eslint-disable */
 export * from './Acknowledgement';
 export * from './AcknowledgementDetail';
-export * from './Algorithm';
-export * from './BasicAuthentication';
-export * from './CallbackAuthentication';
-export * from './CallbackHeader';
-export * from './CallbackParameters';
-export * from './CallbackSignature';
 export * from './CoreFlowInfo';
 export * from './Flow';
 export * from './FlowAckStatus';
@@ -22,7 +16,6 @@ export * from './FullFlowInfo';
 export * from './FullFlowInfoExtension';
 export * from './ListWebhooks200Response';
 export * from './ModelError';
-export * from './OAuth2Authentication';
 export * from './ProcessingRule';
 export * from './ReasonCode';
 export * from './ReasonCodeEnum';
@@ -31,6 +24,4 @@ export * from './SearchFlowFilters';
 export * from './SearchFlowParams';
 export * from './Webhook';
 export * from './WebhookIdParam';
-export * from './WebhookMetadata';
 export * from './WebhookParams';
-export * from './WebhookPatchPayload';

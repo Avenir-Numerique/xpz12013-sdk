@@ -5,7 +5,7 @@
     <artifactId>xpz12013-directory</artifactId>
     <packaging>jar</packaging>
     <name>xpz12013-directory</name>
-    <version>1.2.0</version>
+    <version>2.0.0</version>
     <url>https://github.com/openapitools/openapi-generator</url>
     <description>OpenAPI Java</description>
     <scm>

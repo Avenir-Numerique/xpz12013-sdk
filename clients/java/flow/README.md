@@ -2,7 +2,7 @@
 
 AFNOR Flow Service
 
-- API version: 1.2.0
+- API version: 1.3.0
 
 - Generator version: 7.11.0
 
@@ -13,13 +13,13 @@ The __Flow Service API__ allows to:
 
 The resources of the API are :
   - `/flows` : with creation and retrieval methods.
-  - `/webhooks` : creation, update, delete, list
+  - `/flows/webhooks` : creation, update, delete, list
 
 Worflow example:
   - `POST /flows` : provide the flow information & content
   - `POST /flows/search` : retrieve flows given multiple criterias.
   - `GET /flows/{id}` : download a flow based on its id.
-  - `POST /webhooks` : subscribe to a channel of event
+  - `POST /flows/webhooks` : subscribe to a channel of event
  
 History:
   - `1.0.0` : First release
@@ -56,6 +56,28 @@ History:
     - Add name in Flow schema
     - Add OAuth2 securityScheme
     - Add Header parameter Organization-Id to ease delegation
+  - `1.3.0` :
+    - Increase NotOnlyUuid to 64 characters
+    - Update Webhook configuration:
+      - remove processingRule from Metadata
+      - remove any required metadata field (metadat can be empty)
+      - simplify configuration (remove headers, auth & signature block)
+      - enrich URL path flexibility
+    - Added missing required for : processingRule & flowProfile in Flow schema in responses
+    - Add base path and service name as variables in server URL
+    - Remove StateInvoice flow type
+    - Add new flowtypes related to e-reporting flows sent to DFH
+      - StateCustomerInvoice
+      - StateSupplierInvoice
+      - StateTransactionReport
+      - StateTransactionReportLC
+      - StatePaymentReport
+      - StatePaymentReportLC
+    - Use a cursor-based pagination, more efficient than using just dates
+      - cursor in request
+      - nextCursor in response
+    - Add Undefined values for ProfileType, FlowType & ProcessingRule
+      - These 3 properties may not be defined in Pending & Error states
 
 
 
@@ -92,7 +114,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fr.neotimo</groupId>
   <artifactId>xpz12013-flow</artifactId>
-  <version>1.2.0</version>
+  <version>2.0.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -102,7 +124,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "fr.neotimo:xpz12013-flow:1.2.0"
+compile "fr.neotimo:xpz12013-flow:2.0.0"
 ```
 
 ### Others
@@ -115,7 +137,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/xpz12013-flow-1.2.0.jar`
+- `target/xpz12013-flow-2.0.0.jar`
 - `target/lib/*.jar`
 
 ## Getting Started
@@ -172,24 +194,14 @@ Class | Method | HTTP request | Description
 *WebhookApi* | [**createWebhookWithHttpInfo**](docs/WebhookApi.md#createWebhookWithHttpInfo) | **POST** /v1/webhooks | Subscribe to a webhook
 *WebhookApi* | [**deleteWebhook**](docs/WebhookApi.md#deleteWebhook) | **DELETE** /v1/webhooks/{webhookUid} | Unsubscribe to a webhook
 *WebhookApi* | [**deleteWebhookWithHttpInfo**](docs/WebhookApi.md#deleteWebhookWithHttpInfo) | **DELETE** /v1/webhooks/{webhookUid} | Unsubscribe to a webhook
-*WebhookApi* | [**getWebhook**](docs/WebhookApi.md#getWebhook) | **GET** /v1/webhooks/{webhookUid} | Get a webhook content
-*WebhookApi* | [**getWebhookWithHttpInfo**](docs/WebhookApi.md#getWebhookWithHttpInfo) | **GET** /v1/webhooks/{webhookUid} | Get a webhook content
 *WebhookApi* | [**listWebhooks**](docs/WebhookApi.md#listWebhooks) | **GET** /v1/webhooks | Retrieve the list of webhooks created by the owner of the token
 *WebhookApi* | [**listWebhooksWithHttpInfo**](docs/WebhookApi.md#listWebhooksWithHttpInfo) | **GET** /v1/webhooks | Retrieve the list of webhooks created by the owner of the token
-*WebhookApi* | [**updateWebhook**](docs/WebhookApi.md#updateWebhook) | **PATCH** /v1/webhooks/{webhookUid} | Update a webhook subscription
-*WebhookApi* | [**updateWebhookWithHttpInfo**](docs/WebhookApi.md#updateWebhookWithHttpInfo) | **PATCH** /v1/webhooks/{webhookUid} | Update a webhook subscription
 
 
 ## Documentation for Models
 
  - [Acknowledgement](docs/Acknowledgement.md)
  - [AcknowledgementDetail](docs/AcknowledgementDetail.md)
- - [Algorithm](docs/Algorithm.md)
- - [BasicAuthentication](docs/BasicAuthentication.md)
- - [CallbackAuthentication](docs/CallbackAuthentication.md)
- - [CallbackHeader](docs/CallbackHeader.md)
- - [CallbackParameters](docs/CallbackParameters.md)
- - [CallbackSignature](docs/CallbackSignature.md)
  - [CoreFlowInfo](docs/CoreFlowInfo.md)
  - [Error](docs/Error.md)
  - [Flow](docs/Flow.md)
@@ -204,7 +216,6 @@ Class | Method | HTTP request | Description
  - [FullFlowInfo](docs/FullFlowInfo.md)
  - [FullFlowInfoExtension](docs/FullFlowInfoExtension.md)
  - [ListWebhooks200Response](docs/ListWebhooks200Response.md)
- - [OAuth2Authentication](docs/OAuth2Authentication.md)
  - [ProcessingRule](docs/ProcessingRule.md)
  - [ReasonCode](docs/ReasonCode.md)
  - [ReasonCodeEnum](docs/ReasonCodeEnum.md)
@@ -213,9 +224,7 @@ Class | Method | HTTP request | Description
  - [SearchFlowParams](docs/SearchFlowParams.md)
  - [Webhook](docs/Webhook.md)
  - [WebhookIdParam](docs/WebhookIdParam.md)
- - [WebhookMetadata](docs/WebhookMetadata.md)
  - [WebhookParams](docs/WebhookParams.md)
- - [WebhookPatchPayload](docs/WebhookPatchPayload.md)
 
 
 <a id="documentation-for-authorization"></a>

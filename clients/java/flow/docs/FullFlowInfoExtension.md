@@ -2,7 +2,7 @@
 
 # FullFlowInfoExtension
 
-Extension schema to build FFullFlowInfo, Flow schemas
+Extension schema to build FullFlowInfo, Flow schemas
 
 ## Properties
 

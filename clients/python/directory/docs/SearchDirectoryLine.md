@@ -8,6 +8,7 @@ Name | Type | Description | Notes
 **filters** | [**SearchDirectoryLineFilters**](SearchDirectoryLineFilters.md) |  | [optional] 
 **sorting** | [**List[SearchDirectoryLineSortingInner]**](SearchDirectoryLineSortingInner.md) | Sorting criteria on a field and an order (ascending or descending). | [optional] 
 **fields** | [**List[DirectoryLineField]**](DirectoryLineField.md) | Allows you to filter the desired fields in the response. | [optional] 
+**include** | **List[str]** |  | [optional] 
 **limit** | **int** | Maximum number of results | [optional] 
 **ignore** | **int** | Number of results to skip | [optional] 
 

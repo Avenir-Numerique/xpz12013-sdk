@@ -184,8 +184,16 @@ public class FacilityPayload
     [JsonPropertyName("administrativeStatus")]
     public AdministrativeStatus? AdministrativeStatus { get; set; }
 
+    /// <summary>Instructions, as serialized on the root facility payload (siretInstructions).</summary>
     [JsonPropertyName("siretInstructions")]
     public DirectoryInstructions? SiretInstructions { get; set; }
+
+    /// <summary>
+    /// Instructions, as serialized when the facility is embedded in a routing code or
+    /// directory line payload (facilityPayloadIncluded.instructions, norm v1.3.0).
+    /// </summary>
+    [JsonPropertyName("instructions")]
+    public DirectoryInstructions? Instructions { get; set; }
 
     [JsonPropertyName("address")]
     public AddressRead? Address { get; set; }
@@ -471,6 +479,11 @@ public class SearchDirectoryLine
     [JsonPropertyName("fields")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<string>? Fields { get; set; }
+
+    /// <summary>Related resources to embed in the response: "siren", "siret", "routingCode".</summary>
+    [JsonPropertyName("include")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<string>? Include { get; set; }
 
     [JsonPropertyName("limit")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

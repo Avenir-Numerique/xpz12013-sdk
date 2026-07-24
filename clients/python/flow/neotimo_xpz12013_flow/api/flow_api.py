@@ -3,9 +3,9 @@
 """
     AFNOR Flow Service
 
-    The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation 
+    The __Flow Service API__ allows to:   - Upload a flow.   - Retrieve information related to a set of flows.   - Download a flow given its identifier  The resources of the API are :   - `/flows` : with creation and retrieval methods.   - `/flows/webhooks` : creation, update, delete, list  Worflow example:   - `POST /flows` : provide the flow information & content   - `POST /flows/search` : retrieve flows given multiple criterias.   - `GET /flows/{id}` : download a flow based on its id.   - `POST /flows/webhooks` : subscribe to a channel of event   History:   - `1.0.0` : First release   - `1.0.1` : Fixes following 2025/04/15 SG5 plenary meeting     - Remove AcknowledgementXXX enumerates from FlowType     - Acknowledgement is now based upon details (level, item, reason)     - Add the attachment number in the flow information     - Add query parameters docType & docIndex to aim a specific download     - Change pagination method, from cursors to offsets   - `1.0.2` : Fixes following 2025/05/06 SG5 plenary meeting     - FlowId & TrackingId as not only UUID for more flexibility     - Add sha256 fingerprint to allow integrity check     - Add trackingId as a filter criteria and in the Flow object     - Add full FlowInfo object + submission date in POST response     - Add comments   - `1.1.0` : Fixes following 2025/05/20 SG5 meeting     - Get operation: allows also to return the flow data when docType is set to Metadata     - Search operation: flowId is no longer a criteria, prefer too use the Get by Id operation     - Remove any reference to any attached document to the flow     - Refactor FullFlowInfo schema     - FlowType update (FRR 10.*) for reporting     - AcknowledgementDetail update to add a message and a code     - offset removal, do pagination using updatedAfter     - remove 206 status code     - Add StateInvoice & associated LC in FlowType enum     - Add extensible reason codes related to Life cycle errors     - Add ProcessingRule to the flow object & criteria     - Add webhooks callback contents   - `1.2.0` :      - Webhook management, create, update, list, delete, get     - Add new flow types: B2G, B2GInt, B2GOutOfScope     - Add new client credentials OAuth2 workflow     - Optimized FlowInfo/FullFlowInfo/Flow schemas     - Add name in Flow schema     - Add OAuth2 securityScheme     - Add Header parameter Organization-Id to ease delegation   - `1.3.0` :     - Increase NotOnlyUuid to 64 characters     - Update Webhook configuration:       - remove processingRule from Metadata       - remove any required metadata field (metadat can be empty)       - simplify configuration (remove headers, auth & signature block)       - enrich URL path flexibility     - Added missing required for : processingRule & flowProfile in Flow schema in responses     - Add base path and service name as variables in server URL     - Remove StateInvoice flow type     - Add new flowtypes related to e-reporting flows sent to DFH       - StateCustomerInvoice       - StateSupplierInvoice       - StateTransactionReport       - StateTransactionReportLC       - StatePaymentReport       - StatePaymentReportLC     - Use a cursor-based pagination, more efficient than using just dates       - cursor in request       - nextCursor in response     - Add Undefined values for ProfileType, FlowType & ProcessingRule       - These 3 properties may not be defined in Pending & Error states 
 
-    The version of the OpenAPI document: 1.2.0
+    The version of the OpenAPI document: 1.3.0
     Contact: sg5@afnor.org
     Generated by OpenAPI Generator (https://openapi-generator.tech)
 
@@ -390,7 +390,7 @@ class FlowApi:
     @validate_call
     def get_flow(
         self,
-        flow_id: Annotated[str, Field(strict=True, max_length=36, description="Flow identifier")],
+        flow_id: Annotated[str, Field(strict=True, max_length=64, description="Flow identifier")],
         request_id: Annotated[Optional[StrictStr], Field(description="Header parameter used to correlate logs from several components")] = None,
         organization_id: Annotated[Optional[StrictStr], Field(description="The organization that is aimed in a multi tenancy context")] = None,
         doc_type: Annotated[Optional[StrictStr], Field(description="This parameter allows to provide the type of file to be downloaded, can be either one:   - Metadata [Default]: provides the flow metadata as a JSON payload, no download   - Original: the document that has been initially sent/provided by the emitter   - Converted: the document that has been optionally converted by the system   - ReadableView: the document that has been optionally generated as the readable file ")] = None,
@@ -476,7 +476,7 @@ class FlowApi:
     @validate_call
     def get_flow_with_http_info(
         self,
-        flow_id: Annotated[str, Field(strict=True, max_length=36, description="Flow identifier")],
+        flow_id: Annotated[str, Field(strict=True, max_length=64, description="Flow identifier")],
         request_id: Annotated[Optional[StrictStr], Field(description="Header parameter used to correlate logs from several components")] = None,
         organization_id: Annotated[Optional[StrictStr], Field(description="The organization that is aimed in a multi tenancy context")] = None,
         doc_type: Annotated[Optional[StrictStr], Field(description="This parameter allows to provide the type of file to be downloaded, can be either one:   - Metadata [Default]: provides the flow metadata as a JSON payload, no download   - Original: the document that has been initially sent/provided by the emitter   - Converted: the document that has been optionally converted by the system   - ReadableView: the document that has been optionally generated as the readable file ")] = None,
@@ -562,7 +562,7 @@ class FlowApi:
     @validate_call
     def get_flow_without_preload_content(
         self,
-        flow_id: Annotated[str, Field(strict=True, max_length=36, description="Flow identifier")],
+        flow_id: Annotated[str, Field(strict=True, max_length=64, description="Flow identifier")],
         request_id: Annotated[Optional[StrictStr], Field(description="Header parameter used to correlate logs from several components")] = None,
         organization_id: Annotated[Optional[StrictStr], Field(description="The organization that is aimed in a multi tenancy context")] = None,
         doc_type: Annotated[Optional[StrictStr], Field(description="This parameter allows to provide the type of file to be downloaded, can be either one:   - Metadata [Default]: provides the flow metadata as a JSON payload, no download   - Original: the document that has been initially sent/provided by the emitter   - Converted: the document that has been optionally converted by the system   - ReadableView: the document that has been optionally generated as the readable file ")] = None,
@@ -739,7 +739,7 @@ class FlowApi:
     ) -> SearchFlowContent:
         """Select flows upon criteria
 
-        Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with the updatedAfter property The comparison with current date is strict : updatedAt > updatedAfter 
+        Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with 2 different ways:   - with dates and the updatedAfter property     - the comparison with current date is strict : updatedAt > updatedAfter   - with cursors (more secure)     - in case of pagination a nextCursor will be returned     - next pagination call shall set cursor value to nextCursor value of last call 
 
         :param request_id: Header parameter used to correlate logs from several components
         :type request_id: str
@@ -820,7 +820,7 @@ class FlowApi:
     ) -> ApiResponse[SearchFlowContent]:
         """Select flows upon criteria
 
-        Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with the updatedAfter property The comparison with current date is strict : updatedAt > updatedAfter 
+        Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with 2 different ways:   - with dates and the updatedAfter property     - the comparison with current date is strict : updatedAt > updatedAfter   - with cursors (more secure)     - in case of pagination a nextCursor will be returned     - next pagination call shall set cursor value to nextCursor value of last call 
 
         :param request_id: Header parameter used to correlate logs from several components
         :type request_id: str
@@ -901,7 +901,7 @@ class FlowApi:
     ) -> RESTResponseType:
         """Select flows upon criteria
 
-        Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with the updatedAfter property The comparison with current date is strict : updatedAt > updatedAfter 
+        Retrieves a set of flows matching the provided search criteria:   - Need at least one criterion to be specified   - Assuming a logical AND when combining criteria   - Assuming a logical OR for criteria allowing a list of values  Pagination works with 2 different ways:   - with dates and the updatedAfter property     - the comparison with current date is strict : updatedAt > updatedAfter   - with cursors (more secure)     - in case of pagination a nextCursor will be returned     - next pagination call shall set cursor value to nextCursor value of last call 
 
         :param request_id: Header parameter used to correlate logs from several components
         :type request_id: str

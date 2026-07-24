@@ -5,8 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**callback** | [**CallbackParameters**](CallbackParameters.md) |  | 
-**metadata** | [**WebhookMetadata**](WebhookMetadata.md) |  | 
+**callback_url** | **str** |  | 
+**flow_types** | [**List[FlowType]**](FlowType.md) |  | [optional] 
+**flow_direction** | [**FlowDirection**](FlowDirection.md) |  | [optional] 
+**ack_status** | [**FlowAckStatus**](FlowAckStatus.md) |  | [optional] 
 
 ## Example
 

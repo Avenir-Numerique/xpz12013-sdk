@@ -50,7 +50,7 @@ public readonly partial record struct Siret
     public override string ToString() => Value;
 }
 
-/// <summary>Flow identifier (UUID or any string up to 36 chars).</summary>
+/// <summary>Flow identifier (UUID or any string up to 64 chars).</summary>
 public readonly record struct FlowId
 {
     /// <summary>The raw flow identifier value.</summary>
@@ -59,7 +59,7 @@ public readonly record struct FlowId
     public FlowId(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Flow ID is required.", nameof(value));
-        if (value.Length > 36) throw new ArgumentException("Flow ID must be 36 characters or less.", nameof(value));
+        if (value.Length > 64) throw new ArgumentException("Flow ID must be 64 characters or less.", nameof(value));
         Value = value;
     }
 
@@ -68,7 +68,7 @@ public readonly record struct FlowId
     public override string ToString() => Value;
 }
 
-/// <summary>External tracking identifier set by the sender (max 36 chars).</summary>
+/// <summary>External tracking identifier set by the sender (max 64 chars).</summary>
 public readonly record struct TrackingId
 {
     /// <summary>The raw tracking identifier value.</summary>
@@ -77,7 +77,7 @@ public readonly record struct TrackingId
     public TrackingId(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Tracking ID is required.", nameof(value));
-        if (value.Length > 36) throw new ArgumentException("Tracking ID must be 36 characters or less.", nameof(value));
+        if (value.Length > 64) throw new ArgumentException("Tracking ID must be 64 characters or less.", nameof(value));
         Value = value;
     }
 

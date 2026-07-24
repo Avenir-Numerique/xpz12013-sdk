@@ -9,8 +9,10 @@
 |------------ | ------------- | ------------- | -------------|
 |**addressingIdentifier** | **String** | Addressing identifier of the directory line. |  [optional] |
 |**platformType** | **RecipientPlatformType** |  |  [optional] |
+|**directoryLineStatus** | **UniqueDirectoryLineStatus** |  |  [optional] |
 |**siren** | **String** | SIREN number |  [optional] |
 |**siret** | **String** | SIRET Number |  [optional] |
+|**routingIdentifier** | **String** | Routing identifier od a routing code. |  [optional] |
 |**addressingSuffix** | **String** | suffix of the directory line which defines an address mesh not attached to a facility |  [optional] |
 |**routingCode** | [**DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode**](DirectoryLinePayloadHistoryLegalUnitFacilityRoutingCodeRoutingCode.md) |  |  [optional] |
 |**legalUnit** | [**LegalUnitPayloadIncluded**](LegalUnitPayloadIncluded.md) |  |  [optional] |

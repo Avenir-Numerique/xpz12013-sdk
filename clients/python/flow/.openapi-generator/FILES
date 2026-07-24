@@ -6,12 +6,6 @@
 README.md
 docs/Acknowledgement.md
 docs/AcknowledgementDetail.md
-docs/Algorithm.md
-docs/BasicAuthentication.md
-docs/CallbackAuthentication.md
-docs/CallbackHeader.md
-docs/CallbackParameters.md
-docs/CallbackSignature.md
 docs/CoreFlowInfo.md
 docs/Error.md
 docs/Flow.md
@@ -27,7 +21,6 @@ docs/FlowType.md
 docs/FullFlowInfo.md
 docs/FullFlowInfoExtension.md
 docs/ListWebhooks200Response.md
-docs/OAuth2Authentication.md
 docs/ProcessingRule.md
 docs/ReasonCode.md
 docs/ReasonCodeEnum.md
@@ -38,9 +31,7 @@ docs/SupervisorApi.md
 docs/Webhook.md
 docs/WebhookApi.md
 docs/WebhookIdParam.md
-docs/WebhookMetadata.md
 docs/WebhookParams.md
-docs/WebhookPatchPayload.md
 git_push.sh
 neotimo_xpz12013_flow/__init__.py
 neotimo_xpz12013_flow/api/__init__.py
@@ -54,12 +45,6 @@ neotimo_xpz12013_flow/exceptions.py
 neotimo_xpz12013_flow/models/__init__.py
 neotimo_xpz12013_flow/models/acknowledgement.py
 neotimo_xpz12013_flow/models/acknowledgement_detail.py
-neotimo_xpz12013_flow/models/algorithm.py
-neotimo_xpz12013_flow/models/basic_authentication.py
-neotimo_xpz12013_flow/models/callback_authentication.py
-neotimo_xpz12013_flow/models/callback_header.py
-neotimo_xpz12013_flow/models/callback_parameters.py
-neotimo_xpz12013_flow/models/callback_signature.py
 neotimo_xpz12013_flow/models/core_flow_info.py
 neotimo_xpz12013_flow/models/error.py
 neotimo_xpz12013_flow/models/flow.py
@@ -74,7 +59,6 @@ neotimo_xpz12013_flow/models/flow_type.py
 neotimo_xpz12013_flow/models/full_flow_info.py
 neotimo_xpz12013_flow/models/full_flow_info_extension.py
 neotimo_xpz12013_flow/models/list_webhooks200_response.py
-neotimo_xpz12013_flow/models/o_auth2_authentication.py
 neotimo_xpz12013_flow/models/processing_rule.py
 neotimo_xpz12013_flow/models/reason_code.py
 neotimo_xpz12013_flow/models/reason_code_enum.py
@@ -83,9 +67,7 @@ neotimo_xpz12013_flow/models/search_flow_filters.py
 neotimo_xpz12013_flow/models/search_flow_params.py
 neotimo_xpz12013_flow/models/webhook.py
 neotimo_xpz12013_flow/models/webhook_id_param.py
-neotimo_xpz12013_flow/models/webhook_metadata.py
 neotimo_xpz12013_flow/models/webhook_params.py
-neotimo_xpz12013_flow/models/webhook_patch_payload.py
 neotimo_xpz12013_flow/py.typed
 neotimo_xpz12013_flow/rest.py
 pyproject.toml
@@ -96,12 +78,6 @@ test-requirements.txt
 test/__init__.py
 test/test_acknowledgement.py
 test/test_acknowledgement_detail.py
-test/test_algorithm.py
-test/test_basic_authentication.py
-test/test_callback_authentication.py
-test/test_callback_header.py
-test/test_callback_parameters.py
-test/test_callback_signature.py
 test/test_core_flow_info.py
 test/test_error.py
 test/test_flow.py
@@ -117,7 +93,6 @@ test/test_flow_type.py
 test/test_full_flow_info.py
 test/test_full_flow_info_extension.py
 test/test_list_webhooks200_response.py
-test/test_o_auth2_authentication.py
 test/test_processing_rule.py
 test/test_reason_code.py
 test/test_reason_code_enum.py
@@ -128,7 +103,5 @@ test/test_supervisor_api.py
 test/test_webhook.py
 test/test_webhook_api.py
 test/test_webhook_id_param.py
-test/test_webhook_metadata.py
 test/test_webhook_params.py
-test/test_webhook_patch_payload.py
 tox.ini
