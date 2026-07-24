@@ -15,7 +15,7 @@
 """  # noqa: E501
 
 
-__version__ = "2.0.0"
+__version__ = "1.3.0"
 
 # import apis into sdk package
 from neotimo_xpz12013_flow.api.flow_api import FlowApi

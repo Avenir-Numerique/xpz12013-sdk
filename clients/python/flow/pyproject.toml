@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "neotimo_xpz12013_flow"
-version = "2.0.0"
+version = "1.3.0"
 description = "AFNOR Flow Service"
 authors = ["AFNOR <sg5@afnor.org>"]
 license = "NoLicense"

@@ -209,7 +209,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>fr.neotimo</groupId>
   <artifactId>xpz12013-directory</artifactId>
-  <version>2.0.0</version>
+  <version>1.3.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -219,7 +219,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "fr.neotimo:xpz12013-directory:2.0.0"
+compile "fr.neotimo:xpz12013-directory:1.3.0"
 ```
 
 ### Others
@@ -232,7 +232,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/xpz12013-directory-2.0.0.jar`
+- `target/xpz12013-directory-1.3.0.jar`
 - `target/lib/*.jar`
 
 ## Getting Started

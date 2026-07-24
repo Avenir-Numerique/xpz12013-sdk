@@ -1,12 +1,12 @@
 # Changelog
 
-Les versions du SDK suivent le [SemVer](https://semver.org/lang/fr/) de son API publique.
-Le numéro de version du SDK est **indépendant** de celui de la norme AFNOR XP Z12-013 couverte.
+Les versions du SDK sont **alignées sur la version de la norme AFNOR XP Z12-013** couverte.
 
-## 2.0.0 — Norme AFNOR XP Z12-013 v1.3.0
+## 1.3.0 — Norme AFNOR XP Z12-013 v1.3.0
 
-Couvre la norme **XP Z12-013 v1.3.0** (publiée le 30/06/2026). Version **majeure** : l'API
-publique du SDK change de façon incompatible.
+Couvre la norme **XP Z12-013 v1.3.0** (publiée le 30/06/2026). ⚠️ Cette version introduit des
+**ruptures d'API** malgré l'incrément mineur : le numéro suit la norme, pas le SemVer de l'API
+(cf. `docs/PUBLISHING.md`).
 
 ### Ruptures (breaking changes)
 
