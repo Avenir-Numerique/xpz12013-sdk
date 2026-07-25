@@ -24,7 +24,6 @@ docs/FullFlowInfo.md
 docs/FullFlowInfoExtension.md
 docs/ListWebhooks200Response.md
 docs/ProcessingRule.md
-docs/ReasonCode.md
 docs/ReasonCodeEnum.md
 docs/SearchFlowContent.md
 docs/SearchFlowFilters.md
@@ -73,7 +72,6 @@ src/main/java/fr/neotimo/xpz12013/flow/model/FullFlowInfo.java
 src/main/java/fr/neotimo/xpz12013/flow/model/FullFlowInfoExtension.java
 src/main/java/fr/neotimo/xpz12013/flow/model/ListWebhooks200Response.java
 src/main/java/fr/neotimo/xpz12013/flow/model/ProcessingRule.java
-src/main/java/fr/neotimo/xpz12013/flow/model/ReasonCode.java
 src/main/java/fr/neotimo/xpz12013/flow/model/ReasonCodeEnum.java
 src/main/java/fr/neotimo/xpz12013/flow/model/SearchFlowContent.java
 src/main/java/fr/neotimo/xpz12013/flow/model/SearchFlowFilters.java
@@ -102,7 +100,6 @@ src/test/java/fr/neotimo/xpz12013/flow/model/FullFlowInfoTest.java
 src/test/java/fr/neotimo/xpz12013/flow/model/ListWebhooks200ResponseTest.java
 src/test/java/fr/neotimo/xpz12013/flow/model/ProcessingRuleTest.java
 src/test/java/fr/neotimo/xpz12013/flow/model/ReasonCodeEnumTest.java
-src/test/java/fr/neotimo/xpz12013/flow/model/ReasonCodeTest.java
 src/test/java/fr/neotimo/xpz12013/flow/model/SearchFlowContentTest.java
 src/test/java/fr/neotimo/xpz12013/flow/model/SearchFlowFiltersTest.java
 src/test/java/fr/neotimo/xpz12013/flow/model/SearchFlowParamsTest.java

@@ -1128,9 +1128,7 @@ components:
     ReasonCode:
       description: A predefined set of reason code values + ability to extend this
         set
-      oneOf:
-      - $ref: '#/components/schemas/ReasonCodeEnum'
-      - type: string
+      type: string
     ReasonCodeEnum:
       description: |
         - `EmptyAttachement`      : One or more attachments are empty. (ie IRR_VID_PJ)
@@ -1319,7 +1317,7 @@ components:
         item: item
         level: Error
         reasonMessage: reasonMessage
-        reasonCode: EmptyAttachement
+        reasonCode: reasonCode
       properties:
         level:
           enum:
@@ -1330,7 +1328,9 @@ components:
           description: Item on which the error refers
           type: string
         reasonCode:
-          $ref: '#/components/schemas/ReasonCode'
+          description: A predefined set of reason code values + ability to extend
+            this set
+          type: string
         reasonMessage:
           type: string
       required:
@@ -1350,11 +1350,11 @@ components:
         - item: item
           level: Error
           reasonMessage: reasonMessage
-          reasonCode: EmptyAttachement
+          reasonCode: reasonCode
         - item: item
           level: Error
           reasonMessage: reasonMessage
-          reasonCode: EmptyAttachement
+          reasonCode: reasonCode
         status: null
       properties:
         status:
@@ -1411,11 +1411,11 @@ components:
           - item: item
             level: Error
             reasonMessage: reasonMessage
-            reasonCode: EmptyAttachement
+            reasonCode: reasonCode
           - item: item
             level: Error
             reasonMessage: reasonMessage
-            reasonCode: EmptyAttachement
+            reasonCode: reasonCode
           status: null
         flowDirection: Out
         name: name
@@ -1456,11 +1456,11 @@ components:
             - item: item
               level: Error
               reasonMessage: reasonMessage
-              reasonCode: EmptyAttachement
+              reasonCode: reasonCode
             - item: item
               level: Error
               reasonMessage: reasonMessage
-              reasonCode: EmptyAttachement
+              reasonCode: reasonCode
             status: null
           flowDirection: Out
           name: name
@@ -1478,11 +1478,11 @@ components:
             - item: item
               level: Error
               reasonMessage: reasonMessage
-              reasonCode: EmptyAttachement
+              reasonCode: reasonCode
             - item: item
               level: Error
               reasonMessage: reasonMessage
-              reasonCode: EmptyAttachement
+              reasonCode: reasonCode
             status: null
           flowDirection: Out
           name: name

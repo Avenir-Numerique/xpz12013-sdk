@@ -38,14 +38,14 @@ class TestAcknowledgementDetail(unittest.TestCase):
             return AcknowledgementDetail(
                 level = 'Error',
                 item = '',
-                reason_code = None,
+                reason_code = '',
                 reason_message = ''
             )
         else:
             return AcknowledgementDetail(
                 level = 'Error',
                 item = '',
-                reason_code = None,
+                reason_code = '',
                 reason_message = '',
         )
         """

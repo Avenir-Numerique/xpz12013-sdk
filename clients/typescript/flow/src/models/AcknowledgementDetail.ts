@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ReasonCode } from './ReasonCode';
-import {
-    ReasonCodeFromJSON,
-    ReasonCodeFromJSONTyped,
-    ReasonCodeToJSON,
-    ReasonCodeToJSONTyped,
-} from './ReasonCode';
-
 /**
  * 
  * @export
@@ -40,11 +32,11 @@ export interface AcknowledgementDetail {
      */
     item: string;
     /**
-     * 
-     * @type {ReasonCode}
+     * A predefined set of reason code values + ability to extend this set
+     * @type {string}
      * @memberof AcknowledgementDetail
      */
-    reasonCode: ReasonCode;
+    reasonCode: string;
     /**
      * 
      * @type {string}
@@ -87,7 +79,7 @@ export function AcknowledgementDetailFromJSONTyped(json: any, ignoreDiscriminato
         
         'level': json['level'],
         'item': json['item'],
-        'reasonCode': ReasonCodeFromJSON(json['reasonCode']),
+        'reasonCode': json['reasonCode'],
         'reasonMessage': json['reasonMessage'],
     };
 }
@@ -105,7 +97,7 @@ export function AcknowledgementDetailToJSONTyped(value?: AcknowledgementDetail |
         
         'level': value['level'],
         'item': value['item'],
-        'reasonCode': ReasonCodeToJSON(value['reasonCode']),
+        'reasonCode': value['reasonCode'],
         'reasonMessage': value['reasonMessage'],
     };
 }

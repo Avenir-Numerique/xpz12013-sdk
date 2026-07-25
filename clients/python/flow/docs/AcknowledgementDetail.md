@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **level** | **str** |  | 
 **item** | **str** | Item on which the error refers | 
-**reason_code** | [**ReasonCode**](ReasonCode.md) |  | 
+**reason_code** | **str** | A predefined set of reason code values + ability to extend this set | 
 **reason_message** | **str** |  | 
 
 ## Example

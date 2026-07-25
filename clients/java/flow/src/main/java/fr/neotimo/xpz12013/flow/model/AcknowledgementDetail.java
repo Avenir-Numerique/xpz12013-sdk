@@ -24,7 +24,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import fr.neotimo.xpz12013.flow.model.ReasonCode;
 import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -86,7 +85,7 @@ public class AcknowledgementDetail {
 
   public static final String JSON_PROPERTY_REASON_CODE = "reasonCode";
   @javax.annotation.Nonnull
-  private ReasonCode reasonCode;
+  private String reasonCode;
 
   public static final String JSON_PROPERTY_REASON_MESSAGE = "reasonMessage";
   @javax.annotation.Nonnull
@@ -143,26 +142,26 @@ public class AcknowledgementDetail {
   }
 
 
-  public AcknowledgementDetail reasonCode(@javax.annotation.Nonnull ReasonCode reasonCode) {
+  public AcknowledgementDetail reasonCode(@javax.annotation.Nonnull String reasonCode) {
     this.reasonCode = reasonCode;
     return this;
   }
 
   /**
-   * Get reasonCode
+   * A predefined set of reason code values + ability to extend this set
    * @return reasonCode
    */
   @javax.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_REASON_CODE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public ReasonCode getReasonCode() {
+  public String getReasonCode() {
     return reasonCode;
   }
 
 
   @JsonProperty(JSON_PROPERTY_REASON_CODE)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setReasonCode(@javax.annotation.Nonnull ReasonCode reasonCode) {
+  public void setReasonCode(@javax.annotation.Nonnull String reasonCode) {
     this.reasonCode = reasonCode;
   }
 
@@ -281,7 +280,7 @@ public class AcknowledgementDetail {
 
     // add `reasonCode` to the URL query string
     if (getReasonCode() != null) {
-      joiner.add(getReasonCode().toUrlQueryString(prefix + "reasonCode" + suffix));
+      joiner.add(String.format("%sreasonCode%s=%s", prefix, suffix, URLEncoder.encode(ApiClient.valueToString(getReasonCode()), StandardCharsets.UTF_8).replaceAll("\\+", "%20")));
     }
 
     // add `reasonMessage` to the URL query string

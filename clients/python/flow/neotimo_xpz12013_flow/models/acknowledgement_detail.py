@@ -20,7 +20,6 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator
 from typing import Any, ClassVar, Dict, List
-from neotimo_xpz12013_flow.models.reason_code import ReasonCode
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -30,7 +29,7 @@ class AcknowledgementDetail(BaseModel):
     """ # noqa: E501
     level: StrictStr
     item: StrictStr = Field(description="Item on which the error refers")
-    reason_code: ReasonCode = Field(alias="reasonCode")
+    reason_code: StrictStr = Field(description="A predefined set of reason code values + ability to extend this set", alias="reasonCode")
     reason_message: StrictStr = Field(alias="reasonMessage")
     __properties: ClassVar[List[str]] = ["level", "item", "reasonCode", "reasonMessage"]
 
@@ -80,9 +79,6 @@ class AcknowledgementDetail(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of reason_code
-        if self.reason_code:
-            _dict['reasonCode'] = self.reason_code.to_dict()
         return _dict
 
     @classmethod
@@ -97,7 +93,7 @@ class AcknowledgementDetail(BaseModel):
         _obj = cls.model_validate({
             "level": obj.get("level"),
             "item": obj.get("item"),
-            "reasonCode": ReasonCode.from_dict(obj["reasonCode"]) if obj.get("reasonCode") is not None else None,
+            "reasonCode": obj.get("reasonCode"),
             "reasonMessage": obj.get("reasonMessage")
         })
         return _obj

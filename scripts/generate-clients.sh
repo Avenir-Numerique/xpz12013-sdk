@@ -23,6 +23,32 @@ if [[ ! -f "$FLOW_SPEC" || ! -f "$DIRECTORY_SPEC" ]]; then
   exit 0
 fi
 
+# The norm models `ReasonCode` as an extensible set: oneOf[ReasonCodeEnum, string]. The
+# openapi-generator (typescript-fetch) mis-handles that oneOf-with-primitive and emits a broken
+# `import { string } from './string'`, breaking `npm run build`. We flatten ReasonCode to a plain
+# string (its faithful open form) in throwaway copies fed to the generator — spec/ stays pristine
+# and 1:1 with the norm. This mirrors the .NET NSwag side (An.Platform.Module.XpZ12013).
+WORK="$(mktemp -d)"
+trap 'rm -rf "$WORK"' EXIT
+
+flatten_reasoncode() { # <src> <dst>
+  python - "$1" "$2" <<'PY'
+import json, sys
+src, dst = sys.argv[1], sys.argv[2]
+doc = json.load(open(src, encoding='utf-8'))
+schemas = doc.get('components', {}).get('schemas', {})
+rc = schemas.get('ReasonCode')
+if isinstance(rc, dict) and 'oneOf' in rc:
+    schemas['ReasonCode'] = {'type': 'string', 'description': rc.get('description', '')}
+json.dump(doc, open(dst, 'w', encoding='utf-8'), ensure_ascii=False)
+PY
+}
+
+flatten_reasoncode "$FLOW_SPEC"      "$WORK/flow-service.json"
+flatten_reasoncode "$DIRECTORY_SPEC" "$WORK/directory-service.json"
+FLOW_SPEC="$WORK/flow-service.json"
+DIRECTORY_SPEC="$WORK/directory-service.json"
+
 OG=(npx --yes @openapitools/openapi-generator-cli generate)
 
 generate() { # <generator> <spec> <out> <config> [extra args...]

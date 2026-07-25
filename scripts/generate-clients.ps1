@@ -24,6 +24,33 @@ if (-not (Test-Path $flowSpec) -or -not (Test-Path $directorySpec)) {
     return
 }
 
+# `ReasonCode` est modélisé par la norme en oneOf[ReasonCodeEnum, string]. openapi-generator
+# (typescript-fetch) gère mal ce oneOf-avec-primitive et émet un `import { string } from './string'`
+# cassé (npm run build échoue). On aplatit ReasonCode en simple `string` (sa forme ouverte fidèle)
+# dans des copies jetables passées au générateur — spec/ reste 1:1 avec la norme. Miroir du côté
+# .NET NSwag (An.Platform.Module.XpZ12013).
+$work = Join-Path ([System.IO.Path]::GetTempPath()) ("xpz-gen-" + [System.Guid]::NewGuid().ToString("N"))
+New-Item -ItemType Directory -Force -Path $work | Out-Null
+
+function Convert-FlattenReasonCode {
+    param([string]$Src, [string]$Dst)
+    $doc = Get-Content $Src -Raw -Encoding UTF8 | ConvertFrom-Json
+    $schemas = $doc.components.schemas
+    if ($schemas -and ($schemas.PSObject.Properties.Name -contains 'ReasonCode') -and
+        ($schemas.ReasonCode.PSObject.Properties.Name -contains 'oneOf')) {
+        $desc = $schemas.ReasonCode.description
+        $schemas.ReasonCode = [pscustomobject]@{ type = 'string'; description = $desc }
+    }
+    ($doc | ConvertTo-Json -Depth 100) | Set-Content -Path $Dst -Encoding UTF8
+}
+
+$flowFlat = Join-Path $work "flow-service.json"
+$directoryFlat = Join-Path $work "directory-service.json"
+Convert-FlattenReasonCode $flowSpec $flowFlat
+Convert-FlattenReasonCode $directorySpec $directoryFlat
+$flowSpec = $flowFlat
+$directorySpec = $directoryFlat
+
 function Invoke-Generate {
     param([string]$Generator, [string]$Spec, [string]$Out, [string]$Config, [string]$AdditionalProperties)
     Write-Host "-> $Generator : $(Split-Path $Spec -Leaf) -> $Out"

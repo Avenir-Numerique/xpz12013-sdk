@@ -41,7 +41,7 @@ class TestAcknowledgement(unittest.TestCase):
                     neotimo_xpz12013_flow.models.acknowledgement_detail.AcknowledgementDetail(
                         level = 'Error', 
                         item = '', 
-                        reason_code = null, 
+                        reason_code = '', 
                         reason_message = '', )
                     ]
             )

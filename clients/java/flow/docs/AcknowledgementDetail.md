@@ -9,7 +9,7 @@
 |------------ | ------------- | ------------- | -------------|
 |**level** | [**LevelEnum**](#LevelEnum) |  |  |
 |**item** | **String** | Item on which the error refers |  |
-|**reasonCode** | [**ReasonCode**](ReasonCode.md) |  |  |
+|**reasonCode** | **String** | A predefined set of reason code values + ability to extend this set |  |
 |**reasonMessage** | **String** |  |  |
 
 
